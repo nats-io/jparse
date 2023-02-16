@@ -467,3 +467,17 @@ Department[name=HR, employees=[Employee[firstName=Sarah, lastName=Jones, dob=05/
 777 Rick 05/22/1990 false 111 
 777 Rick 05/22/1990 false 111 
 ```
+
+
+## Caveats and limitations
+
+
+* Not done yet (BenchMark will change)
+* Still needs to improve error handling  (Virtually none so no real useful messages if their are errors but easy to add).
+* Boon had really excellent error messages and JParse will to
+* Does not support any extras (by design)
+* Does not support NaN, +Infinity, -Infinity because that is not in the JSON org spec.
+* Does not support any attribute key types but Strings as per JSON org spec.
+* Just strict JSON no minimal JSON (Boon and others support strict and non strict modes, JParse only does strict)
+
+
