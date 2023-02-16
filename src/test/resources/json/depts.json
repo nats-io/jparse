@@ -1,0 +1,62 @@
+{
+  "departments": [
+    {
+      "departmentName" : "Engineering",
+      "employees": [
+        {
+          "firstName": "Bob",
+          "lastName": "Jones",
+          "dob": "05/22/1990",
+          "manager": true,
+          "id": 111,
+          "managerId": -1
+        },
+        {
+          "firstName": "Rick",
+          "lastName": "Hightower",
+          "dob": "05/22/1990",
+          "manager": false,
+          "id": 777,
+          "managerId": 111
+        },
+        {
+          "firstName": "Cindy",
+          "lastName": "Torre-alto",
+          "dob": "04/15/1993",
+          "manager": true,
+          "id": 999,
+          "managerId": 111
+        }
+      ]
+    },
+    {
+      "departmentName" : "HR",
+      "employees": [
+        {
+          "firstName": "Sarah",
+          "lastName": "Jones",
+          "dob": "05/22/1990",
+          "manager": true,
+          "id": 222,
+          "managerId": 111
+        },
+        {
+          "firstName": "Sam",
+          "lastName": "Smith",
+          "dob": "05/22/1990",
+          "manager": true,
+          "id": 555,
+          "managerId": 222
+        },
+        {
+          "firstName": "Suzy",
+          "lastName": "Jones",
+          "dob": "04/15/1993",
+          "manager": true,
+          "id": 551,
+          "managerId": 222
+        }
+      ]
+    }
+  ]
+}
