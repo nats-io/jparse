@@ -3,6 +3,7 @@ package com.cloudurable.jparse;
 import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.node.support.TokenList;
 import com.cloudurable.jparse.source.CharSource;
+import com.cloudurable.jparse.source.support.UnexpectedCharacterException;
 import com.cloudurable.jparse.token.Token;
 import com.cloudurable.jparse.token.TokenType;
 
@@ -86,7 +87,8 @@ public class JsonParser implements Parser {
                     break;
 
                 default:
-                    throw new IllegalStateException("Unexpected character " + ch + " at index " + source.getIndex());
+                    throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character", source, (char) ch);
+
 
             }
 
@@ -191,7 +193,7 @@ public class JsonParser implements Parser {
                     continue;
 
                 default:
-                    throw new IllegalStateException("Unexpected character " + ch + " at index " + source.getIndex());
+                    throw new UnexpectedCharacterException("Parsing Array Item", "Unexpected character", source, (char) ch);
 
             }
         }
@@ -248,19 +250,20 @@ public class JsonParser implements Parser {
                     break forLoop;
 
                 default:
-                    throw new IllegalStateException("Unexpected character " + (char) ch + " at index " + source.getIndex());
+                    throw new UnexpectedCharacterException("Parsing Object Key", "Unexpected character", source, (char) ch);
 
             }
 
         }
 
         if (!done) {
-            throw new IllegalStateException();
+
+            throw new UnexpectedCharacterException("Parsing Object Key", "Should be done but not", source);
         }
 
         final int tokensIndexNow = tokens.getIndex() - 1;
         if (tokenListIndex == tokensIndexNow) {
-            throw new IllegalStateException();
+            throw new UnexpectedCharacterException("Parsing Object Key", "Unexpected end of key", source);
         }
     }
 
@@ -333,13 +336,13 @@ public class JsonParser implements Parser {
                 case OBJECT_END_TOKEN:
                 case MAP_SEP:
                     if (source.getIndex() == tokenListIndex) {
-                        throw new IllegalStateException();
+                        throw new UnexpectedCharacterException("Parsing Value", "Key separator before value", source);
                     }
                     tokens.set(tokenListIndex, new Token(startIndex, source.getIndex(), TokenType.ATTRIBUTE_VALUE));
                     break forLoop;
 
                 default:
-                    throw new IllegalStateException("Unexpected character " + ch + " at index " + source.getIndex());
+                    throw new UnexpectedCharacterException("Parsing Value", "Unexpected character", source, ch);
 
             }
         }

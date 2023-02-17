@@ -16,6 +16,8 @@ public interface CharSource {
 
     char getCurrentChar();
 
+    char getCurrentCharSafe();
+
     char getChartAt(int index);
 
     String getString(int startIndex, int endIndex);
@@ -58,5 +60,7 @@ public interface CharSource {
     boolean isInteger(int startIndex, int endIndex);
 
     int nextSkipWhiteSpace();
+
+    String errorDetails( String message, int index, int ch );
 
 }

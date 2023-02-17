@@ -1,12 +1,16 @@
 package com.cloudurable.jparse;
 
 import com.cloudurable.jparse.node.ObjectNode;
+import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.source.Sources;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+
+import static com.cloudurable.jparse.Json.niceJson;
+import static com.cloudurable.jparse.Json.toRootNode;
 
 public class Example {
 
@@ -106,10 +110,23 @@ public class Example {
                             )));
 
             departments.forEach(System.out::println);
+
+
+            parseBadJson();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
+    }
+
+    private static void parseBadJson() {
+
+        //RootNode rootNode = toRootNode(niceJson("'hi mom"));
+
+        //RootNode rootNode = toRootNode(niceJson("['aabc', \n  'def', \n 123f3f.9]"));
+
+        //RootNode rootNode = toRootNode(niceJson("{'name':'rick', \n\n\n" +
+        //        " 'age':19, 'height'=10}"));
     }
 
     private static void exploreNode(ObjectNode node) {

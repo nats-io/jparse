@@ -4,6 +4,8 @@ import com.cloudurable.jparse.node.*;
 import com.cloudurable.jparse.path.PathElement;
 import com.cloudurable.jparse.path.PathNode;
 import com.cloudurable.jparse.path.PathParser;
+import com.cloudurable.jparse.source.support.PathException;
+import com.cloudurable.jparse.source.support.UnexpectedCharacterException;
 
 import java.util.Iterator;
 
@@ -72,7 +74,9 @@ public class Path {
                         if (node.isCollection()) {
                             node = node.asCollection().getNode(pathElement.asKey().toCharSequence());
                         } else {
-                            throw new IllegalStateException("Path not found at " + path + " path element key " + pathElement.asKey().toString());
+                            throw new PathException("Looking up Path", "Path not found at " + path + " path element key " + pathElement.asKey().toString(),
+                                    node.charSource(), node.rootElementToken().startIndex());
+
                         }
                 }
 

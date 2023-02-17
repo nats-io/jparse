@@ -52,19 +52,11 @@ public class RootNode implements CollectionNode {
     }
 
     private List<List<Token>> doGetChildrenTokens() {
-        if (getNode() instanceof CollectionNode) {
             return ((CollectionNode) getNode()).childrenTokens();
-        } else {
-            throw new IllegalStateException();
-        }
     }
 
     private Node doGetNode(Object key) {
-        if (getNode() instanceof CollectionNode) {
             return ((CollectionNode) getNode()).getNode(key);
-        } else {
-            throw new IllegalStateException();
-        }
     }
 
     public Node getNode() {

@@ -4,6 +4,7 @@ import com.cloudurable.jparse.node.support.CharArrayUtils;
 import com.cloudurable.jparse.node.support.NumberParseResult;
 import com.cloudurable.jparse.node.support.ParseConstants;
 import com.cloudurable.jparse.source.support.CharArraySegment;
+import com.cloudurable.jparse.source.support.UnexpectedCharacterException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -126,6 +127,15 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     }
 
     @Override
+    public char getCurrentCharSafe() {
+        if (index  >= data.length) {
+            return ETX;
+        }
+        return data[index];
+    }
+
+
+    @Override
     public char getChartAt(int index) {
         return data[index];
     }
@@ -182,9 +192,10 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         int i = ++index;
         final var data = this.data;
         final var length = data.length;
+        char ch = 0;
         boolean controlChar = false;
         for (; i < length; i++) {
-            char ch = data[i];
+            ch = data[i];
             switch (ch) {
                 case CONTROL_ESCAPE_TOKEN:
                     controlChar = true;
@@ -202,7 +213,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
             }
         }
-        throw new IllegalStateException("Unable to find closing for String");
+        throw new UnexpectedCharacterException("Parsing JSON Encoded String", "Unable to find closing for String", this, (int) ch, i);
     }
 
     @Override
@@ -211,16 +222,17 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         int i = ++index;
         final var data = this.data;
         final var length = data.length;
+        char ch = 0;
 
         for (; i < length; i++) {
-            char ch = data[i];
+           ch = data[i];
             switch (ch) {
                 case STRING_END_TOKEN:
                     index = i;
                     return i;
             }
         }
-        throw new IllegalStateException("Unable to find closing for String");
+        throw new UnexpectedCharacterException("Parsing JSON String", "Unable to find closing for String", this,  ch, i);
     }
 
 
@@ -271,7 +283,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
 
                 default:
-                    throw new IllegalStateException("Unexpected character " + ch + " at index " + index);
+                    throw new UnexpectedCharacterException("Parsing JSON Number", "Unexpected character", this,  ch, i);
 
             }
 
@@ -321,7 +333,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
 
                 default:
-                    throw new IllegalStateException("Unexpected character " + ch + " at index " + index);
+                    throw new UnexpectedCharacterException("Parsing JSON Float Number", "Unexpected character", this,  ch, i);
 
             }
 
@@ -358,7 +370,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case PLUS:
                     signOperator++;
                     if (signOperator > 1) {
-                        throw new IllegalStateException("Too many sign operators when parsing exponent of float");
+                        throw new UnexpectedCharacterException("Parsing JSON String", "Unable to find closing for String", this,  ch, i);
                     }
                     break;
 
@@ -376,7 +388,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
 
                 default:
-                    throw new IllegalStateException("Unexpected character " + ch + " at index " + index);
+                    throw new UnexpectedCharacterException("Parsing JSON String", "Unable to find closing for String", this,  ch, i);
 
             }
 
@@ -394,7 +406,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         if (this.data[++index] == 'a' && this.data[++index] == 'l' && this.data[++index] == 's' && this.data[++index] == 'e') {
             return index;
         } else {
-            throw new IllegalStateException("Unable to parse false");
+            throw new UnexpectedCharacterException("Parsing JSON False Boolean", "Unexpected character", this);
+
         }
     }
 
@@ -403,7 +416,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         if (this.data[++index] == 'r' && this.data[++index] == 'u' && this.data[++index] == 'e') {
             return index;
         } else {
-            throw new IllegalStateException("Unable to parse true");
+
+            throw new UnexpectedCharacterException("Parsing JSON True Boolean", "Unexpected character", this);
         }
     }
 
@@ -412,7 +426,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         if (this.data[++index] == 'u' && this.data[++index] == 'l' && this.data[++index] == 'l') {
             return index;
         } else {
-            throw new IllegalStateException("Unable to parse null");
+            throw new UnexpectedCharacterException("Parsing JSON Null", "Unexpected character", this);
         }
     }
 
@@ -638,7 +652,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 return value;
             }
         } catch (Exception ex) {
-            throw new IllegalStateException("Unable to parse " + getString(from, to), ex);
+            throw new UnexpectedCharacterException("Convert JSON number to Java double",
+                    "Unable to parse " + getString(from, to), this,  this.getChartAt(from), from);
         }
     }
 
@@ -755,5 +770,82 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
         return negative ? num * -1 : num;
 
+    }
+
+
+    @Override
+    public String errorDetails( String message, int index, int ch ) {
+        StringBuilder buf = new StringBuilder(255);
+
+        final var array = data;
+
+        buf.append( message ).append("\n");
+
+
+        buf.append("\n");
+        buf.append( "The current character read is " + debugCharDescription( ch ) ).append('\n');
+
+
+        int line = 0;
+        int lastLineIndex = 0;
+
+        for ( int i = 0; i < index && i < array.length; i++ ) {
+            if ( array[ i ] == '\n' ) {
+                line++;
+                lastLineIndex = i + 1;
+            }
+        }
+
+        int count = 0;
+
+        for ( int i = lastLineIndex; i < array.length; i++, count++ ) {
+            if ( array[ i ] == '\n' ) {
+                break;
+            }
+        }
+
+
+        buf.append( "line number " + (line + 1) ).append('\n');
+        buf.append( "index number " + index ).append('\n');
+
+
+        try {
+            buf.append( new String( array, lastLineIndex, count ) ).append('\n');
+        } catch ( Exception ex ) {
+
+            try {
+                int start =  index = ( index - 10 < 0 ) ? 0 : index - 10;
+
+                buf.append( new String( array, start, index ) ).append('\n');
+            } catch ( Exception ex2 ) {
+                buf.append( new String( array, 0, array.length ) ).append('\n');
+            }
+        }
+        for ( int i = 0; i < ( index - lastLineIndex ); i++ ) {
+            buf.append( '.' );
+        }
+        buf.append( '^' );
+
+        return buf.toString();
+    }
+
+
+
+    public static String debugCharDescription( int c ) {
+        String charString;
+        if ( c == ' ' ) {
+            charString = "[SPACE]";
+        } else if ( c == '\t' ) {
+            charString = "[TAB]";
+
+        } else if ( c == '\n' ) {
+            charString = "[NEWLINE]";
+
+        } else {
+            charString = "'" + (char)c + "'";
+        }
+
+        charString = charString + " with an int value of " + ( ( int ) c );
+        return charString;
     }
 }
