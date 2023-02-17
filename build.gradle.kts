@@ -15,6 +15,8 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
     testImplementation("com.jayway.jsonpath:json-path:2.4.0")
+    testImplementation("org.noggit:noggit:0.8")
+
 }
 
 tasks.getByName<Test>("test") {

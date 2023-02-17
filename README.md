@@ -35,13 +35,22 @@ Yes.
 ```text
 Benchmark                                  Mode  Cnt       Score   Error  Units
 BenchMark.simpleDeserializeJParseWebXML    thrpt    2  237334.575          ops/s
-BenchMark.simpleDeserializeJacksonWebXML  thrpt    2  114135.958          ops/s
+BenchMark.simpleDeserializeJacksonWebXML   thrpt    2  114135.958          ops/s
 ```
 
 ```text 
 Benchmark                            Mode  Cnt        Score   Error  Units
 BenchMark.simpleDeserializeJParseGlossary    thrpt    2  1059241.326          ops/s
 BenchMark.simpleDeserializeJacksonGlossary   thrpt    2   466824.567          ops/s
+```
+
+```text 
+
+Benchmark                                      Mode  Cnt       Score   Error  Units
+BenchMark.readGlossaryJParse                  thrpt    2  613833.642          ops/s
+BenchMark.readGlossaryJackson                 thrpt    2  289058.722          ops/s
+BenchMark.readGlossaryNoggit                  thrpt    2  528108.306          ops/s
+BenchMark.readWebGlossaryNoggitObjectBuilder  thrpt    2  323058.191          ops/s
 ```
 
 
