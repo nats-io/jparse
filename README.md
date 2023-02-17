@@ -3,6 +3,51 @@
 J Parse is another JSON Parser similar to Boon, Jackson or GSON.
 
 
+# Why JParse 
+
+JParse is the most efficient JSON parser for the JVM yet - it uses an index overlay to deliver lightning-fast parsing speeds. 
+
+The JParse parser is designed to revolutionize the way developers process and analyze JSON data, by providing a smarter, 
+more efficient approach to JSON parsing.
+
+So, what is an index overlay, and why is it such a game-changer? Put simply, an index overlay is a mechanism that allows
+our JSON parser to access and analyze data in real-time as it is being parsed (before it Is completely parsed and deserialized). 
+This means that instead of having to wait until the entire JSON document is parsed before analyzing it, 
+our parser can extract and analyze specific pieces of data that you want. 
+
+This dramatically speeds up the parsing process and reduces the amount of memory required to parse large JSON documents. 
+It can also speed up mapping JSON objects and arrays to Java objects. It for sure speeds up the process by avoiding tons of buffer copies.
+This is especially the case if you only want a portion of the JSON payload and want to use the built-in JSONPath support.
+
+But that's not all - with our JSON parser you can easily implement advanced features, such as support for incremental 
+parsing, in-memory compression, and automatic schema generation. The index overlay feature is a boon and makes our 
+parser the most efficient, flexible, and developer-friendly JSON parser available today.
+
+Whether you're processing massive data sets, building complex data pipelines, or simply looking for a faster, 
+more efficient way to parse JSON data, our index overlay JSON parser is the ideal solution.
+Try it today and experience the power of real-time JSON parsing for yourself!
+
+## What is an Index overlay parser
+
+An index overlay parser is a type of parser used for processing structured data, particularly JSON data. 
+Unlike traditional parsers that typically parse the entire data document before returning the results, 
+an index overlay parser uses a mechanism that allows for real-time access and analysis of data as it is being parsed.
+
+Specifically, an index overlay parser creates an index or a mapping of the data elements in the JSON document during 
+the parsing process. This index allows the parser to quickly access and retrieve specific data elements in the document
+as needed, without having to re-parse the entire document again. This dramatically speed up the parsing process, 
+especially for large or complex JSON documents, and can also reduce the memory requirements for parsing.
+
+For example, suppose you have a large JSON document that contains multiple nested objects, and you need to extract only 
+a specific piece of data from it. With a traditional parser, you would have to parse the entire document, and then 
+traverse the entire object hierarchy to find the data you need. With an index overlay parser, however, the parser 
+can access the specific data element directly using the index it has created during parsing, significantly 
+reducing the time and memory required to process the document.
+
+In summary, an index overlay parser offers a more efficient and faster way to process JSON data, by creating an 
+index of the data elements during parsing, and allowing for real-time access and analysis of data as it is being parsed.
+
+
 
 ## Why not just update Boon?
 I am one of the original authors of Boon, which was a utility library that became a JSON parser.
