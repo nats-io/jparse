@@ -4,7 +4,7 @@ import com.cloudurable.jparse.node.support.NodeUtils;
 import com.cloudurable.jparse.node.support.TokenSubList;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.token.Token;
-import com.cloudurable.jparse.token.TokenType;
+import com.cloudurable.jparse.token.TokenTypes;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -43,10 +43,8 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
 
     @Override
     public Node getNode(Object key) {
-        Node node = lookupElement((CharSequence) key);
-        return node;
+        return lookupElement((CharSequence) key);
     }
-
 
     public List<CharSequence> getKeys() {
         return keys();
@@ -105,7 +103,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
                     @Override
                     public Entry<CharSequence, Node> next() {
                         CharSequence nextKey = iterator.next();
-                        return new Entry<CharSequence, Node>() {
+                        return new Entry<>() {
                             @Override
                             public CharSequence getKey() {
                                 return nextKey;
@@ -136,9 +134,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ObjectNode)) return false;
-
-        final ObjectNode other = (ObjectNode) o;
+        if (!(o instanceof final ObjectNode other)) return false;
 
         if (this.tokens.size() != other.tokens.size()) {
             return false;
@@ -152,8 +148,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
             return false;
         }
 
-        for (int index = 0; index < keys.size(); index++) {
-            Object key = keys.get(index);
+        for (Object key : keys) {
             final var otherElementValue = other.getNode(key);
             final var thisElementValue = this.getNode(key);
 
@@ -174,8 +169,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
             return hashCode;
         }
         final var keys = keys();
-        for (int index = 0; index < keys.size(); index++) {
-            Object key = keys.get(index);
+        for (Object key : keys) {
             this.getNode(key);
         }
         hashCode = this.elementMap.hashCode();
@@ -255,10 +249,6 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
 
 
     private boolean keyMatch(final List<Token> tokens, final Node key) {
-        final var rootToken = tokens.get(1);
-        if (NodeType.tokenTypeToElement(rootToken.type()) != key.type()) {
-            return false;
-        }
         return NodeUtils.createNodeForObject(tokens, source, objectsKeysCanBeEncoded).equals(key);
     }
 
@@ -291,7 +281,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
 
         final Token keyToken = itemKey.get(1);
 
-        if (keyToken.type() == TokenType.STRING) {
+        if (keyToken.type() == TokenTypes.STRING_TOKEN) {
             if (keyToken.length() != key.length()) {
                 return false;
             }
@@ -320,15 +310,12 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
             keys = new ArrayList<>(childrenTokens.size() / 2);
             for (int index = 0; index < childrenTokens.size(); index += 2) {
                 List<Token> itemKey = childrenTokens.get(index);
-                CharSequence element = null;
+                CharSequence element;
                 Token keyToken = itemKey.get(1);
-                switch (keyToken.type()) {
-                    case STRING:
-                        element = new StringNode(keyToken, source, objectsKeysCanBeEncoded).toString();
-                        break;
-                    default:
-                        throw new IllegalStateException("Only String are allowed for keys");
-                }
+                element = switch (keyToken.type()) {
+                    case TokenTypes.STRING_TOKEN -> new StringNode(keyToken, source, objectsKeysCanBeEncoded).toString();
+                    default -> throw new IllegalStateException("Only String are allowed for keys");
+                };
                 keys.add(element);
             }
         }

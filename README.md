@@ -401,7 +401,7 @@ We have automated and sped up common mappings and filtering.
 ```java
 
 
-            final var rick2 = engineeringEmployees.findFirstObjectNode(
+            final var rick2 = engineeringEmployees.findObjectNode(
                     objectNode ->
                             objectNode.getString("firstName").equals("Rick")
 

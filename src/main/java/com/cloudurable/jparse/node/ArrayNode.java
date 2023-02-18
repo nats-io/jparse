@@ -49,8 +49,8 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
     @Override
     public Node getNode(Object key) {
         return key instanceof String ?
-                this.getNodeAt(Integer.valueOf((String)key)) :
-         this.getNodeAt((Integer) key);
+                this.getNodeAt(Integer.valueOf((String) key)) :
+                this.getNodeAt((Integer) key);
     }
 
     public Node getNodeAt(int index) {
@@ -245,7 +245,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
 
     @Override
     public Node get(int index) {
-        final var node =  getNodeAt(index);
+        final var node = getNodeAt(index);
         return node.type() == NodeType.NULL ? null : node;
     }
 
@@ -297,13 +297,13 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
 
 
     public <R> List<R> mapObjectNode(Function<ObjectNode, ? extends R> mapper) {
-        return mapNode(node -> mapper.apply(node.asCollection().asObject())) ;
+        return map(node -> mapper.apply(node.asCollection().asObject()));
     }
 
-    public <R> List<R> mapNode(Function<Node, ? extends R> mapper) {
+    public <R> List<R> map(Function<Node, ? extends R> mapper) {
         List<R> list = new ArrayList<>(this.size());
         Node[] elements = elements();
-        for (int i = 0 ; i < elements.length; i++) {
+        for (int i = 0; i < elements.length; i++) {
             Node element = elements[i];
             if (element == null) {
                 element = getNodeAt(i);
@@ -314,27 +314,75 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         return list;
     }
 
-    public Optional<ObjectNode> findFirstObjectNode(Predicate<ObjectNode> predicate) {
-        Node[] elements = elements();
+    public Optional<ObjectNode> findObjectNode(Predicate<ObjectNode> predicate) {
+        final Node[] elements = elements();
         ObjectNode node = null;
-        for (int i = 0 ; i < elements.length; i++) {
+        for (int i = 0; i < elements.length; i++) {
             Node element = elements[i];
             if (element == null) {
                 element = getNodeAt(i);
-                elements[i] = element;
             }
             if (element.type() == NodeType.OBJECT) {
                 ObjectNode objectNode = element.asCollection().asObject();
                 if (predicate.test(objectNode)) {
-                        node = objectNode;
+                    node = objectNode;
+                    break;
                 }
             }
-
         }
         return Optional.ofNullable(node);
     }
 
+    public Optional<Node> find(Predicate<Node> predicate) {
+        Node[] elements = elements();
+        Node node = null;
+        for (int i = 0; i < elements.length; i++) {
+            Node element = elements[i];
+            if (element == null) {
+                element = getNodeAt(i);
+            }
+            if (predicate.test(element)) {
+                node = element;
+                break;
+            }
+        }
+        return Optional.ofNullable(node);
+    }
 
+    public List<ObjectNode> filterObjects(Predicate<ObjectNode> predicate) {
+        Node[] elements = elements();
+        final var length = elements.length;
+        final var arrayList = new ArrayList<ObjectNode>(length / 2);
+        for (int i = 0; i < length; i++) {
+            Node element = elements[i];
+            if (element == null) {
+                element = getNodeAt(i);
+            }
+            if (element.type() == NodeType.OBJECT) {
+                ObjectNode objectNode = element.asCollection().asObject();
+                if (predicate.test(objectNode)) {
+                    arrayList.add(objectNode);
+                }
+            }
+        }
+        return arrayList;
+    }
+
+    public List<Node> filter(Predicate<Node> predicate) {
+        Node[] elements = elements();
+        final var length = elements.length;
+        final var arrayList = new ArrayList<Node>(length / 2);
+        for (int i = 0; i < length; i++) {
+            Node element = elements[i];
+            if (element == null) {
+                element = getNodeAt(i);
+            }
+            if (predicate.test(element)) {
+                arrayList.add(element);
+            }
+        }
+        return arrayList;
+    }
 
 
 }

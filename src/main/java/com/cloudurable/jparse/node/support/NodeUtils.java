@@ -26,7 +26,7 @@ public class NodeUtils {
                 break;
             }
 
-            if (token.type().isComplex()) {
+            if (token.type() <= 3) {
 
                 int childCount = tokens.countChildren(index, token);
                 int endIndex = index + childCount;

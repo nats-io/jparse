@@ -1,7 +1,7 @@
 package com.cloudurable.jparse.node.support;
 
 import com.cloudurable.jparse.token.Token;
-import com.cloudurable.jparse.token.TokenType;
+import com.cloudurable.jparse.token.TokenTypes;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,9 +12,9 @@ class TokenListTest {
     @Test
     void cloneList() {
         final var tokenList = new TokenList();
-        tokenList.add(new Token(1, 2, TokenType.ARRAY));
-        tokenList.add(new Token(3, 4, TokenType.ARRAY));
-        tokenList.add(new Token(5, 6, TokenType.ARRAY));
+        tokenList.add(new Token(1, 2, TokenTypes.ARRAY_TOKEN));
+        tokenList.add(new Token(3, 4, TokenTypes.ARRAY_TOKEN));
+        tokenList.add(new Token(5, 6, TokenTypes.ARRAY_TOKEN));
 
         final var tokenList2 = tokenList.compactClone();
 
