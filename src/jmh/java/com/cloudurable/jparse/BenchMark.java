@@ -59,11 +59,11 @@ public class BenchMark {
 
     static {
         try {
-            final File file = new File("./src/test/resources/json/glossary.json");
+            //final File file = new File("./src/test/resources/json/glossary.json");
             //final File file = new File("./src/test/resources/json/doubles.json");
             //final File file = new File("./src/test/resources/json/ints.json");
 
-            //final File file = new File("./src/test/resources/json/webxml.json");
+            final File file = new File("./src/test/resources/json/webxml.json");
             //final File file = new File("./src/test/resources/json/types.json");
             final CharSource charSource = Sources.fileSource(file);
             jsonData = charSource.toString().trim();
@@ -71,48 +71,19 @@ public class BenchMark {
             throw new IllegalStateException(ex);
         }
     }
-//
-//    @Benchmark
-//    public void readWebJSONJackson(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(jsonData, mapTypeRef));
-//    }
-//
-//    @Benchmark
-//    public void readWebJSONJParse(Blackhole bh) {
-//        bh.consume(new JsonParser().parse(jsonData));
-//    }
-//
-//    @Benchmark
-//    public void readWebJSONNoggitStax(Blackhole bh) throws Exception {
-//
-//        final var jsonParser =  new JSONParser(jsonData);
-//
-//        int event = -1;
-//        while (event!=JSONParser.EOF) {
-//            event = jsonParser.nextEvent();
-//        }
-//
-//        bh.consume(event);
-//    }
-//    @Benchmark
-//    public void readWebJSONNoggitObjectBuilder(Blackhole bh) throws Exception {
-//
-//        bh.consume(ObjectBuilder.fromJSON(jsonData));
-//    }
-
 
     @Benchmark
-    public void readGlossaryJackson(Blackhole bh) throws JsonProcessingException {
+    public void readWebJSONJackson(Blackhole bh) throws JsonProcessingException {
         bh.consume(mapper.readValue(jsonData, mapTypeRef));
     }
 
     @Benchmark
-    public void readGlossaryJParse(Blackhole bh) {
+    public void readWebJSONJParse(Blackhole bh) {
         bh.consume(new JsonParser().parse(jsonData));
     }
 
     @Benchmark
-    public void readGlossaryNoggit(Blackhole bh) throws Exception {
+    public void readWebJSONNoggitStax(Blackhole bh) throws Exception {
 
         final var jsonParser =  new JSONParser(jsonData);
 
@@ -123,12 +94,41 @@ public class BenchMark {
 
         bh.consume(event);
     }
-
     @Benchmark
-    public void readWebGlossaryNoggitObjectBuilder(Blackhole bh) throws Exception {
+    public void readWebJSONNoggitObjectBuilder(Blackhole bh) throws Exception {
 
         bh.consume(ObjectBuilder.fromJSON(jsonData));
     }
+
+//
+//    @Benchmark
+//    public void readGlossaryJackson(Blackhole bh) throws JsonProcessingException {
+//        bh.consume(mapper.readValue(jsonData, mapTypeRef));
+//    }
+//
+//    @Benchmark
+//    public void readGlossaryJParse(Blackhole bh) {
+//        bh.consume(new JsonParser().parse(jsonData));
+//    }
+//
+//    @Benchmark
+//    public void readGlossaryNoggit(Blackhole bh) throws Exception {
+//
+//        final var jsonParser =  new JSONParser(jsonData);
+//
+//        int event = -1;
+//        while (event!=JSONParser.EOF) {
+//            event = jsonParser.nextEvent();
+//        }
+//
+//        bh.consume(event);
+//    }
+//
+//    @Benchmark
+//    public void readWebGlossaryNoggitObjectBuilder(Blackhole bh) throws Exception {
+//
+//        bh.consume(ObjectBuilder.fromJSON(jsonData));
+//    }
 
 //    @Benchmark
 //    public void simpleParseJJson(Blackhole bh) {
