@@ -47,7 +47,8 @@ reducing the time and memory required to process the document.
 In summary, an index overlay parser offers a more efficient and faster way to process JSON data, by creating an 
 index of the data elements during parsing, and allowing for real-time access and analysis of data as it is being parsed.
 
-
+If you would like to learn more about index overlay parsers vs. DOM and Event parsers, read this
+[JSON parser description: DOM vs. Index Overlay vs. Event Driven](https://github.com/RichardHightower/jparse/wiki/JSON-parser-description--DOM-vs.-Index-Overlay-vs.-Event-Driven).
 
 ## Why not just update Boon?
 I am one of the original authors of Boon, which was a utility library that became a JSON parser.
@@ -59,8 +60,8 @@ Boon is 90,000 lines of code (just Java main not including test classes).
 Boon does too many things that no one uses. It was due for a complete redesign. 
 It also uses Unsafe which you can't do in later version of Java. 
 
-JParse is mostly done and is only 4,100 lines long vs. 90,000 LoC of Boon. 
-Jackson core is 55,000 LOC and there are other libs needed for various data types and mappings. 
+JParse is feature complete now done and is only 4,570 lines long vs. 90,000 LoC of Boon. 
+Jackson core is 55,000 LOC and there are other libs needed for various data types and mappings if you use Jackson. 
 
 
 ## What is JParse?
@@ -74,40 +75,15 @@ as well as very fast mapping. It will not grow in feature set. Any other feature
 
 Yes. 
 
-
-#### Parsing normal JSON
-
-```text
-Benchmark                                  Mode  Cnt       Score   Error  Units
-BenchMark.simpleDeserializeJParseWebXML    thrpt    2  237334.575          ops/s
-BenchMark.simpleDeserializeJacksonWebXML   thrpt    2  114135.958          ops/s
-```
-
 ```text 
-Benchmark                            Mode  Cnt        Score   Error  Units
-BenchMark.simpleDeserializeJParseGlossary    thrpt    2  1059241.326          ops/s
-BenchMark.simpleDeserializeJacksonGlossary   thrpt    2   466824.567          ops/s
-```
-
-```text 
-
 Benchmark                                      Mode  Cnt        Score   Error  Units
 BenchMark.readGlossaryJParse                  thrpt    2  1034323.573          ops/s
 BenchMark.readGlossaryNoggit                  thrpt    2   830511.356          ops/s
 BenchMark.readGlossaryNoggitObjectBuilder     thrpt    2   541948.355          ops/s
 BenchMark.readGlossaryJackson                 thrpt    2   468925.690          ops/s
-
 ```
-
-```text
-BenchMark.readWebJSONJParse                   thrpt    2   220019.324          ops/s
-BenchMark.readWebJSONJackson                  thrpt    2   104249.861          ops/s
-```
-
-#### Parsing large primitive arrays and basic values
 
 ```text 
-
 Benchmark                             Mode  Cnt        Score   Error  Units
 BenchMark.jParseBigDecimalArrayFast  thrpt    2  1201663.430          ops/s
 BenchMark.jacksonBigDecimalArray     thrpt    2   722409.093          ops/s
@@ -115,65 +91,11 @@ BenchMark.jacksonBigDecimalArray     thrpt    2   722409.093          ops/s
 
 BenchMark.jParseDoubleArrayFast      thrpt    2   890538.018          ops/s
 BenchMark.jacksonDoubleArray         thrpt    2   627404.869          ops/s
-
-
-BenchMark.jParseFloatArrayFast       thrpt    2   894741.821          ops/s
-BenchMark.jacksonFloatArray          thrpt    2   484765.612          ops/s
-
-
-
-Benchmark                       Mode  Cnt        Score   Error  Units
-BenchMark.jParseBigIntArray    thrpt    2   889298.905          ops/s
-BenchMark.jacksonBigIntArray   thrpt    2   888873.432          ops/s
-
-BenchMark.jParseIntArray       thrpt    2  1541039.040          ops/s
-BenchMark.jacksonIntArray      thrpt    2  1124429.948          ops/s
-
-BenchMark.jParseLongArray      thrpt    2  1418787.047          ops/s
-BenchMark.jacksonLongArray     thrpt    2  1163603.399          ops/s
 ```
 
-#### Serialize and Deserialize 
-```text 
-
-Benchmark                                         Mode  Cnt       Score   Error  Units
-BenchMark.deserializeIntoMapJParseAndSerialize   thrpt    2  867284.089          ops/s
-BenchMark.deserializeIntoMapJacksonAndSerialize  thrpt    2  264564.015          ops/s
-
-```
-
-```text
-Benchmark                                                    Mode  Cnt       Score   Error  Units
-BenchMark.deserializeIntoMapJParseAndGetPathThenSerialize   thrpt    2  788400.189          ops/s
-BenchMark.deserializeIntoMapJacksonAndGetPathThenSerialize  thrpt    2  285313.787          ops/s
-```
-
-
-#### Working with Paths
-
-```text
-
-Benchmark                                        Mode  Cnt       Score   Error  Units
-BenchMark.simpleDeserializeJParseThenPathGrab   thrpt    2  445645.130          ops/s
-BenchMark.simpleDeserializeJacksonThenPathGrab  thrpt    2  293524.053          ops/s
-
-
-
-Benchmark                                       Mode  Cnt       Score   Error  Units
-BenchMark.simpleDeserializeJParseThenPathGrab  thrpt    2  467119.563          ops/s
-BenchMark.simpleDeserializeJaywayThenPathGrab  thrpt    2  382242.810          ops/s
-
-
-Benchmark                                             Mode  Cnt       Score   Error  Units
-BenchMark.simpleDeserializeJParseThenPathGrabWEBXML  thrpt    2  142538.504          ops/s
-BenchMark.simpleDeserializeJaywayThenPathGrabWEBXML  thrpt    2  113641.983          ops/s
-
-
-
-```
+To see more [JSON benchmarks go here](https://github.com/RichardHightower/jparse/wiki/JSON-BenchMarks).
 
 ## Using JParse
-
 
 
 
@@ -531,12 +453,13 @@ Department[name=HR, employees=[Employee[firstName=Sarah, lastName=Jones, dob=05/
 ## Caveats and limitations
 
 
-* Not done yet (BenchMark will change)
-* Still needs to improve error handling  (Virtually none so no real useful messages if their are errors but easy to add).
-* Boon had really excellent error messages and JParse will to
+* Not done yet (BenchMark have changed a bit -- some got slightly better most some got slightly worse)
+* Still needs to improve error handling  (Did a solid first pass but there is room for improvement).
+* Boon had really excellent error messages and JParse will to (Not as good as I thought actually)
 * Does not support any extras (by design)
 * Does not support NaN, +Infinity, -Infinity because that is not in the JSON org spec.
 * Does not support any attribute key types but Strings as per JSON org spec.
 * Just strict JSON no minimal JSON (Boon and others support strict and non strict modes, JParse only does strict)
+* It is new so there could be bugs and mistakes. 
 
 
