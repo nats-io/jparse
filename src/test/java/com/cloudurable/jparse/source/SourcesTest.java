@@ -140,11 +140,11 @@ public class SourcesTest {
         walkFull(jsonRoot.getNode());
         testJsonElementPathLookup(jsonRoot);
 
-        String string = charSource.getString(token.startIndex(), token.endIndex());
+        String string = charSource.getString(token.startIndex, token.endIndex);
         assertEquals(glossaryJson, string);
-        String string2 = new String(charSource.getArray(token.startIndex(), token.endIndex()));
+        String string2 = new String(charSource.getArray(token.startIndex, token.endIndex));
         assertEquals(glossaryJson, string2);
-        charSource.getChartAt(token.startIndex());
+        charSource.getChartAt(token.startIndex);
     }
 
     private void testJsonElementPathLookup(RootNode jsonRoot) {

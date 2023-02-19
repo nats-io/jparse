@@ -22,19 +22,19 @@ public class StringNode implements ScalarNode, CharSequence {
     public StringNode(Token token, CharSource source, boolean encodeStringByDefault) {
         this.token = token;
         this.source = source;
-        start = token.startIndex();
-        end = token.endIndex();
+        start = token.startIndex;
+        end = token.endIndex;
         this.encodeStringByDefault = encodeStringByDefault;
-        this.length = token.endIndex() - token.startIndex();
+        this.length = token.endIndex - token.startIndex;
     }
 
     public StringNode(Token token, CharSource source) {
         this.token = token;
         this.source = source;
-        start = token.startIndex();
-        end = token.endIndex();
+        start = token.startIndex;
+        end = token.endIndex;
         this.encodeStringByDefault = true;
-        this.length = token.endIndex() - token.startIndex();
+        this.length = token.endIndex - token.startIndex;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class StringNode implements ScalarNode, CharSequence {
 
     @Override
     public char charAt(int index) {
-        return source.getChartAt(token.startIndex() + index);
+        return source.getChartAt(token.startIndex + index);
     }
 
     @Override

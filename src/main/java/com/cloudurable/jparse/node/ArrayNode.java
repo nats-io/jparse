@@ -49,8 +49,8 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
     @Override
     public Node getNode(Object key) {
         return key instanceof String ?
-                this.getNodeAt(Integer.valueOf((String)key)) :
-         this.getNodeAt((Integer) key);
+                this.getNodeAt(Integer.valueOf((String) key)) :
+                this.getNodeAt((Integer) key);
     }
 
     public Node getNodeAt(int index) {
@@ -60,6 +60,10 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
             elements()[index] = NodeUtils.createNode(tokens, source, objectsKeysCanBeEncoded);
         }
         return elements()[index];
+    }
+
+    public Optional<Node> lookupNodeAt(int index) {
+       return Optional.ofNullable(getNodeAt(index));
     }
 
     public long getLong(int index) {
@@ -75,7 +79,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         double[] array = new double[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getDouble(token.startIndex(), token.endIndex());
+            array[i] = source.getDouble(token.startIndex, token.endIndex);
         }
         return array;
     }
@@ -85,7 +89,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         float[] array = new float[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getFloat(token.startIndex(), token.endIndex());
+            array[i] = source.getFloat(token.startIndex, token.endIndex);
         }
         return array;
     }
@@ -95,7 +99,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         double[] array = new double[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex(), token.endIndex()).doubleValue();
+            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).doubleValue();
         }
         return array;
     }
@@ -105,7 +109,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         float[] array = new float[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = (float) source.getBigDecimal(token.startIndex(), token.endIndex()).doubleValue();
+            array[i] = (float) source.getBigDecimal(token.startIndex, token.endIndex).doubleValue();
         }
         return array;
     }
@@ -115,7 +119,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         int[] array = new int[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex(), token.endIndex()).intValue();
+            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).intValue();
         }
         return array;
     }
@@ -125,7 +129,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         long[] array = new long[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex(), token.endIndex()).longValue();
+            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).longValue();
         }
         return array;
     }
@@ -135,7 +139,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         BigDecimal[] array = new BigDecimal[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex(), token.endIndex());
+            array[i] = source.getBigDecimal(token.startIndex, token.endIndex);
         }
         return array;
     }
@@ -145,7 +149,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         BigInteger[] array = new BigInteger[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex(), token.endIndex()).toBigInteger();
+            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).toBigInteger();
         }
         return array;
     }
@@ -155,7 +159,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         int[] array = new int[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getInt(token.startIndex(), token.endIndex());
+            array[i] = source.getInt(token.startIndex, token.endIndex);
         }
         return array;
     }
@@ -165,7 +169,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         long[] array = new long[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getLong(token.startIndex(), token.endIndex());
+            array[i] = source.getLong(token.startIndex, token.endIndex);
         }
         return array;
     }
@@ -245,7 +249,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
 
     @Override
     public Node get(int index) {
-        final var node =  getNodeAt(index);
+        final var node = getNodeAt(index);
         return node.type() == NodeType.NULL ? null : node;
     }
 
@@ -297,13 +301,13 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
 
 
     public <R> List<R> mapObjectNode(Function<ObjectNode, ? extends R> mapper) {
-        return mapNode(node -> mapper.apply(node.asCollection().asObject())) ;
+        return map(node -> mapper.apply(node.asCollection().asObject()));
     }
 
-    public <R> List<R> mapNode(Function<Node, ? extends R> mapper) {
+    public <R> List<R> map(Function<Node, ? extends R> mapper) {
         List<R> list = new ArrayList<>(this.size());
         Node[] elements = elements();
-        for (int i = 0 ; i < elements.length; i++) {
+        for (int i = 0; i < elements.length; i++) {
             Node element = elements[i];
             if (element == null) {
                 element = getNodeAt(i);
@@ -314,27 +318,75 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         return list;
     }
 
-    public Optional<ObjectNode> findFirstObjectNode(Predicate<ObjectNode> predicate) {
-        Node[] elements = elements();
+    public Optional<ObjectNode> findObjectNode(Predicate<ObjectNode> predicate) {
+        final Node[] elements = elements();
         ObjectNode node = null;
-        for (int i = 0 ; i < elements.length; i++) {
+        for (int i = 0; i < elements.length; i++) {
             Node element = elements[i];
             if (element == null) {
                 element = getNodeAt(i);
-                elements[i] = element;
             }
             if (element.type() == NodeType.OBJECT) {
                 ObjectNode objectNode = element.asCollection().asObject();
                 if (predicate.test(objectNode)) {
-                        node = objectNode;
+                    node = objectNode;
+                    break;
                 }
             }
-
         }
         return Optional.ofNullable(node);
     }
 
+    public Optional<Node> find(Predicate<Node> predicate) {
+        Node[] elements = elements();
+        Node node = null;
+        for (int i = 0; i < elements.length; i++) {
+            Node element = elements[i];
+            if (element == null) {
+                element = getNodeAt(i);
+            }
+            if (predicate.test(element)) {
+                node = element;
+                break;
+            }
+        }
+        return Optional.ofNullable(node);
+    }
 
+    public List<ObjectNode> filterObjects(Predicate<ObjectNode> predicate) {
+        Node[] elements = elements();
+        final var length = elements.length;
+        final var arrayList = new ArrayList<ObjectNode>(length / 2);
+        for (int i = 0; i < length; i++) {
+            Node element = elements[i];
+            if (element == null) {
+                element = getNodeAt(i);
+            }
+            if (element.type() == NodeType.OBJECT) {
+                ObjectNode objectNode = element.asCollection().asObject();
+                if (predicate.test(objectNode)) {
+                    arrayList.add(objectNode);
+                }
+            }
+        }
+        return arrayList;
+    }
+
+    public List<Node> filter(Predicate<Node> predicate) {
+        Node[] elements = elements();
+        final var length = elements.length;
+        final var arrayList = new ArrayList<Node>(length / 2);
+        for (int i = 0; i < length; i++) {
+            Node element = elements[i];
+            if (element == null) {
+                element = getNodeAt(i);
+            }
+            if (predicate.test(element)) {
+                arrayList.add(element);
+            }
+        }
+        return arrayList;
+    }
 
 
 }

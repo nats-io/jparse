@@ -5,7 +5,7 @@ import com.cloudurable.jparse.node.support.TokenList;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.source.support.UnexpectedCharacterException;
 import com.cloudurable.jparse.token.Token;
-import com.cloudurable.jparse.token.TokenType;
+import com.cloudurable.jparse.token.TokenTypes;
 
 import java.util.List;
 
@@ -99,19 +99,19 @@ public class JsonParser implements Parser {
     private void parseFalse(CharSource source, TokenList tokens) {
         int start = source.getIndex();
         int end = source.findFalseEnd();
-        tokens.add(new Token(start, end, TokenType.BOOLEAN));
+        tokens.add(new Token(start, end, TokenTypes.BOOLEAN_TOKEN));
     }
 
     private void parseTrue(CharSource source, TokenList tokens) {
         int start = source.getIndex();
         int end = source.findTrueEnd();
-        tokens.add(new Token(start, end, TokenType.BOOLEAN));
+        tokens.add(new Token(start, end, TokenTypes.BOOLEAN_TOKEN));
     }
 
     private void parseNull(CharSource source, TokenList tokens) {
         int start = source.getIndex();
         int end = source.findNullEnd();
-        tokens.add(new Token(start, end, TokenType.NULL));
+        tokens.add(new Token(start, end, TokenTypes.NULL_TOKEN));
     }
 
     private void parseArray(final CharSource source, final TokenList tokens) {
@@ -126,7 +126,7 @@ public class JsonParser implements Parser {
 
         final int endSourceIndex = source.getIndex() + 1;
 
-        final Token arrayToken = new Token(startSourceIndex, endSourceIndex, TokenType.ARRAY);
+        final Token arrayToken = new Token(startSourceIndex, endSourceIndex, TokenTypes.ARRAY_TOKEN);
         tokens.set(tokenListIndex, arrayToken);
     }
 
@@ -206,7 +206,7 @@ public class JsonParser implements Parser {
 
         final var numberParse = source.findEndOfNumber();
 
-        tokens.add(new Token(startIndex, numberParse.endIndex(), numberParse.wasFloat() ? TokenType.FLOAT : TokenType.INT));
+        tokens.add(new Token(startIndex, numberParse.endIndex(), numberParse.wasFloat() ? TokenTypes.FLOAT_TOKEN : TokenTypes.INT_TOKEN));
     }
 
 
@@ -239,12 +239,12 @@ public class JsonParser implements Parser {
                     } else {
                         strEndIndex = source.findEndString();
                     }
-                    tokens.add(new Token(strStartIndex + 1, strEndIndex, TokenType.STRING));
+                    tokens.add(new Token(strStartIndex + 1, strEndIndex, TokenTypes.STRING_TOKEN));
                     break;
 
 
                 case ATTRIBUTE_SEP:
-                    final Token token = new Token(startIndex, source.getIndex(), TokenType.ATTRIBUTE_KEY);
+                    final Token token = new Token(startIndex, source.getIndex(), TokenTypes.ATTRIBUTE_KEY_TOKEN);
                     tokens.set(tokenListIndex, token);
                     done = true;
                     break forLoop;
@@ -322,7 +322,7 @@ public class JsonParser implements Parser {
                 case MINUS:
                 case PLUS:
                     parseNumber(source, tokens);
-                    tokens.set(tokenListIndex, new Token(startIndex, source.getIndex(), TokenType.ATTRIBUTE_VALUE));
+                    tokens.set(tokenListIndex, new Token(startIndex, source.getIndex(), TokenTypes.ATTRIBUTE_VALUE_TOKEN));
                     if (source.getCurrentChar() == MAP_SEP) {
                         return false;
                     }
@@ -338,7 +338,7 @@ public class JsonParser implements Parser {
                     if (source.getIndex() == tokenListIndex) {
                         throw new UnexpectedCharacterException("Parsing Value", "Key separator before value", source);
                     }
-                    tokens.set(tokenListIndex, new Token(startIndex, source.getIndex(), TokenType.ATTRIBUTE_VALUE));
+                    tokens.set(tokenListIndex, new Token(startIndex, source.getIndex(), TokenTypes.ATTRIBUTE_VALUE_TOKEN));
                     break forLoop;
 
                 default:
@@ -352,7 +352,7 @@ public class JsonParser implements Parser {
     private void parseString(final CharSource source, TokenList tokens) {
         final int startIndex = source.getIndex();
         final int endIndex = source.findEndOfEncodedString();
-        tokens.add(new Token(startIndex + 1, endIndex, TokenType.STRING));
+        tokens.add(new Token(startIndex + 1, endIndex, TokenTypes.STRING_TOKEN));
     }
 
 
@@ -371,7 +371,7 @@ public class JsonParser implements Parser {
             done = parseValue(source, tokens);
         }
 
-        tokens.set(tokenListIndex, new Token(startSourceIndex, source.getIndex() + 1, TokenType.OBJECT));
+        tokens.set(tokenListIndex, new Token(startSourceIndex, source.getIndex() + 1, TokenTypes.OBJECT_TOKEN));
     }
 
 

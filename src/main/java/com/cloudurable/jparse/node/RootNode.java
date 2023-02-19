@@ -6,6 +6,7 @@ import com.cloudurable.jparse.node.support.TokenSubList;
 import com.cloudurable.jparse.path.PathNode;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.token.Token;
+import static com.cloudurable.jparse.token.TokenTypes.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -30,23 +31,23 @@ public class RootNode implements CollectionNode {
     }
 
     public NodeType getType() {
-        return NodeType.tokenTypeToElement(tokens.get(0).type());
+        return NodeType.tokenTypeToElement(rootToken.type);
     }
 
     @Override
     public Node getNode(Object key) {
-        return switch (rootToken.type()) {
-            case OBJECT -> getObjectNode().getNode(key);
-            case ARRAY -> getArrayNode().getNode(key);
+        return switch (rootToken.type) {
+            case OBJECT_TOKEN -> getObjectNode().getNode(key);
+            case ARRAY_TOKEN -> getArrayNode().getNode(key);
             default -> doGetNode(key);
         };
     }
 
     @Override
     public List<List<Token>> childrenTokens() {
-        return switch (rootToken.type()) {
-            case OBJECT -> getObjectNode().childrenTokens();
-            case ARRAY -> getArrayNode().childrenTokens();
+        return switch (rootToken.type) {
+            case OBJECT_TOKEN -> getObjectNode().childrenTokens();
+            case ARRAY_TOKEN -> getArrayNode().childrenTokens();
             default -> doGetChildrenTokens();
         };
     }

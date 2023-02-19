@@ -44,14 +44,14 @@ public class TokenSubList extends AbstractList<Token> {
         final Token[] tokens = this.tokens;
         final int length = this.size;
         final int offset = this.offset;
-        final int rootTokenStart = rootToken.startIndex();
-        final int rootTokenEnd = rootToken.endIndex();
+        final int rootTokenStart = rootToken.startIndex;
+        final int rootTokenEnd = rootToken.endIndex;
         for (; idx < length; idx++) {
             Token token = tokens[idx + offset];
 
 
-            if (token.startIndex() >= rootTokenStart
-                    && token.endIndex() <= rootTokenEnd) {
+            if (token.startIndex >= rootTokenStart
+                    && token.endIndex <= rootTokenEnd) {
                 count++;
             } else {
                 break;

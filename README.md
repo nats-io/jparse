@@ -94,11 +94,15 @@ BenchMark.simpleDeserializeJacksonGlossary   thrpt    2   466824.567          op
 Benchmark                                      Mode  Cnt        Score   Error  Units
 BenchMark.readGlossaryJParse                  thrpt    2  1034323.573          ops/s
 BenchMark.readGlossaryNoggit                  thrpt    2   830511.356          ops/s
-BenchMark.readWebGlossaryNoggitObjectBuilder  thrpt    2   541948.355          ops/s
+BenchMark.readGlossaryNoggitObjectBuilder     thrpt    2   541948.355          ops/s
 BenchMark.readGlossaryJackson                 thrpt    2   468925.690          ops/s
 
 ```
 
+```text
+BenchMark.readWebJSONJParse                   thrpt    2   220019.324          ops/s
+BenchMark.readWebJSONJackson                  thrpt    2   104249.861          ops/s
+```
 
 #### Parsing large primitive arrays and basic values
 
@@ -402,7 +406,7 @@ We have automated and sped up common mappings and filtering.
 ```java
 
 
-            final var rick2 = engineeringEmployees.findFirstObjectNode(
+            final var rick2 = engineeringEmployees.findObjectNode(
                     objectNode ->
                             objectNode.getString("firstName").equals("Rick")
 

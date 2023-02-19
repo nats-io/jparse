@@ -3,7 +3,7 @@ package com.cloudurable.jparse;
 
 import com.cloudurable.jparse.node.*;
 import com.cloudurable.jparse.source.Sources;
-import com.cloudurable.jparse.token.TokenType;
+import com.cloudurable.jparse.token.TokenTypes;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -314,8 +314,8 @@ class JsonParserTest {
 
         assertEquals(4, jsonRoot.getBooleanNode().length());
         assertEquals(NodeType.BOOLEAN, jsonRoot.getBooleanNode().type());
-        assertEquals(TokenType.BOOLEAN, jsonRoot.getBooleanNode().rootElementToken().type());
-        assertEquals(TokenType.BOOLEAN, jsonRoot.getBooleanNode().tokens().get(0).type());
+        assertEquals(TokenTypes.BOOLEAN_TOKEN, jsonRoot.getBooleanNode().rootElementToken().type);
+        assertEquals(TokenTypes.BOOLEAN_TOKEN, jsonRoot.getBooleanNode().tokens().get(0).type);
     }
 
 
@@ -336,8 +336,8 @@ class JsonParserTest {
 
         assertEquals(4, jsonRoot.getNullNode().length());
         assertEquals(NodeType.NULL, jsonRoot.getNullNode().type());
-        assertEquals(TokenType.NULL, jsonRoot.getNullNode().rootElementToken().type());
-        assertEquals(TokenType.NULL, jsonRoot.getNullNode().tokens().get(0).type());
+        assertEquals(TokenTypes.NULL_TOKEN, jsonRoot.getNullNode().rootElementToken().type);
+        assertEquals(TokenTypes.NULL_TOKEN, jsonRoot.getNullNode().tokens().get(0).type);
     }
 
     @Test
@@ -359,8 +359,8 @@ class JsonParserTest {
 
         assertEquals(5, jsonRoot.getBooleanNode().length());
         assertEquals(NodeType.BOOLEAN, jsonRoot.getBooleanNode().type());
-        assertEquals(TokenType.BOOLEAN, jsonRoot.getBooleanNode().rootElementToken().type());
-        assertEquals(TokenType.BOOLEAN, jsonRoot.getBooleanNode().tokens().get(0).type());
+        assertEquals(TokenTypes.BOOLEAN_TOKEN, jsonRoot.getBooleanNode().rootElementToken().type);
+        assertEquals(TokenTypes.BOOLEAN_TOKEN, jsonRoot.getBooleanNode().tokens().get(0).type);
     }
 
 

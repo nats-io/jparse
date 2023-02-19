@@ -24,7 +24,7 @@ public class IndexPathNode extends Number implements ScalarNode, CharSequence, P
 
     @Override
     public int intValue() {
-        return source.getInt(token.startIndex(), token.endIndex());
+        return source.getInt(token.startIndex, token.endIndex);
     }
 
     @Override

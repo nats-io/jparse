@@ -1,7 +1,7 @@
 package com.cloudurable.jparse.path;
 
 import com.cloudurable.jparse.token.Token;
-import com.cloudurable.jparse.token.TokenType;
+import com.cloudurable.jparse.token.TokenTypes;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Consumer;
@@ -23,8 +23,8 @@ class PathParserScanTest {
         final var token1 = tokens.get(0);
         final var token2 = tokens.get(1);
 
-        assertEquals(TokenType.PATH_KEY, token1.type());
-        assertEquals(TokenType.PATH_KEY, token2.type());
+        assertEquals(TokenTypes.PATH_KEY_TOKEN, token1.type);
+        assertEquals(TokenTypes.PATH_KEY_TOKEN, token2.type);
 
 
         assertEquals("abc", token1.asString(testPath));
@@ -46,8 +46,8 @@ class PathParserScanTest {
         final var token1 = tokens.get(0);
         final var token2 = tokens.get(1);
 
-        assertEquals(TokenType.PATH_KEY, token1.type());
-        assertEquals(TokenType.PATH_INDEX, token2.type());
+        assertEquals(TokenTypes.PATH_KEY_TOKEN, token1.type);
+        assertEquals(TokenTypes.PATH_INDEX_TOKEN, token2.type);
 
 
         assertEquals("abc", token1.asString(testPath));
@@ -68,8 +68,8 @@ class PathParserScanTest {
         final var token1 = tokens.get(0);
         final var token2 = tokens.get(1);
 
-        assertEquals(TokenType.PATH_KEY, token1.type());
-        assertEquals(TokenType.PATH_KEY, token2.type());
+        assertEquals(TokenTypes.PATH_KEY_TOKEN, token1.type);
+        assertEquals(TokenTypes.PATH_KEY_TOKEN, token2.type);
 
 
         assertEquals("abc", token1.asString(testPath));
@@ -86,7 +86,7 @@ class PathParserScanTest {
         final var testPath = "[2]";
         final var tokens = pathParser.scan(testPath);
         final var token1 = tokens.get(0);
-        assertEquals(TokenType.PATH_INDEX, token1.type());
+        assertEquals(TokenTypes.PATH_INDEX_TOKEN, token1.type);
         assertEquals("2", token1.asString(testPath));
     }
 
@@ -99,7 +99,7 @@ class PathParserScanTest {
         final var tokens = pathParser.scan(testPath);
         final var token1 = tokens.get(0);
 
-        assertEquals(TokenType.PATH_KEY, token1.type());
+        assertEquals(TokenTypes.PATH_KEY_TOKEN, token1.type);
         assertEquals("abc", token1.asString(testPath));
 
 
@@ -113,12 +113,7 @@ class PathParserScanTest {
 
         final String testPath = "['web-app'].servlet[0]['init-param'].useJSP";
         final var tokens = pathParser.scan(testPath);
-        tokens.forEach(new Consumer<Token>() {
-            @Override
-            public void accept(Token token) {
-                System.out.printf("%s %s \n", token.type(), token.asString(testPath));
-            }
-        });
+        tokens.forEach(token -> System.out.printf("%s %s \n", token.type, token.asString(testPath)));
 
     }
 

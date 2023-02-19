@@ -25,33 +25,33 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
 
     @Override
     public int intValue() {
-        return source.getInt(token.startIndex(), token.endIndex());
+        return source.getInt(token.startIndex, token.endIndex);
     }
 
     @Override
     public long longValue() {
-        return source.getLong(token.startIndex(), token.endIndex());
+        return source.getLong(token.startIndex, token.endIndex);
     }
 
     @Override
     public float floatValue() {
-        return source.getFloat(token.startIndex(), token.endIndex());
+        return source.getFloat(token.startIndex, token.endIndex);
     }
 
     @Override
     public double doubleValue() {
-        return source.getDouble(token.startIndex(), token.endIndex());
+        return source.getDouble(token.startIndex, token.endIndex);
     }
 
 
     @Override
     public BigDecimal bigDecimalValue() {
-        return source.getBigDecimal(token.startIndex(), token.endIndex());
+        return source.getBigDecimal(token.startIndex, token.endIndex);
     }
 
     @Override
     public BigInteger bigIntegerValue() {
-        return source.getBigInteger(token.startIndex(), token.endIndex());
+        return source.getBigInteger(token.startIndex, token.endIndex);
     }
 
 
@@ -73,7 +73,7 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
 
     @Override
     public int length() {
-        return token.endIndex() - token.startIndex();
+        return token.endIndex - token.startIndex;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
         if (index > length()) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
-        return source.getChartAt(token.startIndex() + index);
+        return source.getChartAt(token.startIndex + index);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
         if (end > length()) {
             throw new IndexOutOfBoundsException();
         }
-        return source.getCharSequence(start + token.startIndex(), end + token.startIndex());
+        return source.getCharSequence(start + token.startIndex, end + token.startIndex);
     }
 
     @Override
@@ -127,14 +127,14 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
 
     public boolean isInteger() {
         return switch (elementType) {
-            case INT -> source.isInteger(this.token.startIndex(), this.token.endIndex());
+            case INT -> source.isInteger(this.token.startIndex, this.token.endIndex);
             default -> false;
         };
     }
 
     public boolean isLong() {
         return switch (elementType) {
-            case INT -> !source.isInteger(this.token.startIndex(), this.token.endIndex());
+            case INT -> !source.isInteger(this.token.startIndex, this.token.endIndex);
             default -> false;
         };
     }

@@ -3,7 +3,7 @@ package com.cloudurable.jparse;
 
 import com.cloudurable.jparse.source.Sources;
 import com.cloudurable.jparse.token.Token;
-import com.cloudurable.jparse.token.TokenType;
+import com.cloudurable.jparse.token.TokenTypes;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -21,30 +21,30 @@ class JsonScannerTest {
         final var json = "{'1':2,'2':7,'abc':[1,2,3]}";
         final List<Token> tokens = tokens(json);
         //showTokens(tokens);
-        validateToken(tokens.get(0), TokenType.OBJECT, 0, 27);
+        validateToken(tokens.get(0), TokenTypes.OBJECT_TOKEN, 0, 27);
 
-        validateToken(tokens.get(1), TokenType.ATTRIBUTE_KEY, 1, 4);
-        validateToken(tokens.get(2), TokenType.STRING, 2, 3);
-        validateToken(tokens.get(3), TokenType.ATTRIBUTE_VALUE, 5, 6);
-        validateToken(tokens.get(4), TokenType.INT, 5, 6);
-
-
-        validateToken(tokens.get(5), TokenType.ATTRIBUTE_KEY, 7, 10);
-        validateToken(tokens.get(6), TokenType.STRING, 8, 9);
-        validateToken(tokens.get(7), TokenType.ATTRIBUTE_VALUE, 11, 12);
-        validateToken(tokens.get(8), TokenType.INT, 11, 12);
+        validateToken(tokens.get(1), TokenTypes.ATTRIBUTE_KEY_TOKEN, 1, 4);
+        validateToken(tokens.get(2), TokenTypes.STRING_TOKEN, 2, 3);
+        validateToken(tokens.get(3), TokenTypes.ATTRIBUTE_VALUE_TOKEN, 5, 6);
+        validateToken(tokens.get(4), TokenTypes.INT_TOKEN, 5, 6);
 
 
-        validateToken(tokens.get(9), TokenType.ATTRIBUTE_KEY, 13, 18);
-        validateToken(tokens.get(10), TokenType.STRING, 14, 17);
+        validateToken(tokens.get(5), TokenTypes.ATTRIBUTE_KEY_TOKEN, 7, 10);
+        validateToken(tokens.get(6), TokenTypes.STRING_TOKEN, 8, 9);
+        validateToken(tokens.get(7), TokenTypes.ATTRIBUTE_VALUE_TOKEN, 11, 12);
+        validateToken(tokens.get(8), TokenTypes.INT_TOKEN, 11, 12);
 
 
-        validateToken(tokens.get(11), TokenType.ATTRIBUTE_VALUE, 19, 26);
-        validateToken(tokens.get(12), TokenType.ARRAY, 19, 26);
+        validateToken(tokens.get(9), TokenTypes.ATTRIBUTE_KEY_TOKEN, 13, 18);
+        validateToken(tokens.get(10), TokenTypes.STRING_TOKEN, 14, 17);
 
-        validateToken(tokens.get(13), TokenType.INT, 20, 21);
-        validateToken(tokens.get(14), TokenType.INT, 22, 23);
-        validateToken(tokens.get(15), TokenType.INT, 24, 25);
+
+        validateToken(tokens.get(11), TokenTypes.ATTRIBUTE_VALUE_TOKEN, 19, 26);
+        validateToken(tokens.get(12), TokenTypes.ARRAY_TOKEN, 19, 26);
+
+        validateToken(tokens.get(13), TokenTypes.INT_TOKEN, 20, 21);
+        validateToken(tokens.get(14), TokenTypes.INT_TOKEN, 22, 23);
+        validateToken(tokens.get(15), TokenTypes.INT_TOKEN, 24, 25);
 
     }
 
@@ -57,19 +57,19 @@ class JsonScannerTest {
 
         final List<Token> tokens = parser.scan(json.replace("'", "\""));
 
-        assertEquals(TokenType.ARRAY, tokens.get(0).type());
-        assertEquals(0, tokens.get(0).startIndex());
-        assertEquals(9, tokens.get(0).endIndex());
+        assertEquals(TokenTypes.ARRAY_TOKEN, tokens.get(0).type);
+        assertEquals(0, tokens.get(0).startIndex);
+        assertEquals(9, tokens.get(0).endIndex);
 
 
-        assertEquals(TokenType.INT, tokens.get(1).type());
-        assertEquals(2, tokens.get(1).startIndex());
-        assertEquals(3, tokens.get(1).endIndex());
+        assertEquals(TokenTypes.INT_TOKEN, tokens.get(1).type);
+        assertEquals(2, tokens.get(1).startIndex);
+        assertEquals(3, tokens.get(1).endIndex);
 
 
-        assertEquals(TokenType.INT, tokens.get(2).type());
-        assertEquals(6, tokens.get(2).startIndex());
-        assertEquals(7, tokens.get(2).endIndex());
+        assertEquals(TokenTypes.INT_TOKEN, tokens.get(2).type);
+        assertEquals(6, tokens.get(2).startIndex);
+        assertEquals(7, tokens.get(2).endIndex);
 
     }
 
@@ -81,19 +81,19 @@ class JsonScannerTest {
 
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
 
-        assertEquals(TokenType.ARRAY, tokens.get(0).type());
-        assertEquals(0, tokens.get(0).startIndex());
-        assertEquals(5, tokens.get(0).endIndex());
+        assertEquals(TokenTypes.ARRAY_TOKEN, tokens.get(0).type);
+        assertEquals(0, tokens.get(0).startIndex);
+        assertEquals(5, tokens.get(0).endIndex);
 
 
-        assertEquals(TokenType.INT, tokens.get(1).type());
-        assertEquals(1, tokens.get(1).startIndex());
-        assertEquals(2, tokens.get(1).endIndex());
+        assertEquals(TokenTypes.INT_TOKEN, tokens.get(1).type);
+        assertEquals(1, tokens.get(1).startIndex);
+        assertEquals(2, tokens.get(1).endIndex);
 
 
-        assertEquals(TokenType.INT, tokens.get(2).type());
-        assertEquals(3, tokens.get(2).startIndex());
-        assertEquals(4, tokens.get(2).endIndex());
+        assertEquals(TokenTypes.INT_TOKEN, tokens.get(2).type);
+        assertEquals(3, tokens.get(2).startIndex);
+        assertEquals(4, tokens.get(2).endIndex);
 
     }
 
@@ -106,19 +106,19 @@ class JsonScannerTest {
         final String json = "['h','a']";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
 
-        assertEquals(TokenType.ARRAY, tokens.get(0).type());
-        assertEquals(0, tokens.get(0).startIndex());
-        assertEquals(9, tokens.get(0).endIndex());
+        assertEquals(TokenTypes.ARRAY_TOKEN, tokens.get(0).type);
+        assertEquals(0, tokens.get(0).startIndex);
+        assertEquals(9, tokens.get(0).endIndex);
 
 
-        assertEquals(TokenType.STRING, tokens.get(1).type());
-        assertEquals(2, tokens.get(1).startIndex());
-        assertEquals(3, tokens.get(1).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, tokens.get(1).type);
+        assertEquals(2, tokens.get(1).startIndex);
+        assertEquals(3, tokens.get(1).endIndex);
 
 
-        assertEquals(TokenType.STRING, tokens.get(2).type());
-        assertEquals(6, tokens.get(2).startIndex());
-        assertEquals(7, tokens.get(2).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, tokens.get(2).type);
+        assertEquals(6, tokens.get(2).startIndex);
+        assertEquals(7, tokens.get(2).endIndex);
 
         tokens.get(0).toString();
 
@@ -132,9 +132,9 @@ class JsonScannerTest {
         final String json = "[{'h':'a'}]";
         final List<Token> tokens = parser.scan(Sources.charSeqSource(json.replace("'", "\"")));
 
-        assertEquals(TokenType.ARRAY, tokens.get(0).type());
+        assertEquals(TokenTypes.ARRAY_TOKEN, tokens.get(0).type);
         assertEquals(json, tokens.get(0).asString(json));
-        assertEquals(TokenType.OBJECT, tokens.get(1).type());
+        assertEquals(TokenTypes.OBJECT_TOKEN, tokens.get(1).type);
         assertEquals("{'h':'a'}", tokens.get(1).asString(json));
 
 
@@ -147,9 +147,9 @@ class JsonScannerTest {
         //...................01234567890123456789012
         final String json = "[{'h':'a'},{'i':'b'}]";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
-        assertEquals(TokenType.ARRAY, tokens.get(0).type());
-        assertEquals(TokenType.OBJECT, tokens.get(1).type());
-        assertEquals(TokenType.OBJECT, tokens.get(6).type());
+        assertEquals(TokenTypes.ARRAY_TOKEN, tokens.get(0).type);
+        assertEquals(TokenTypes.OBJECT_TOKEN, tokens.get(1).type);
+        assertEquals(TokenTypes.OBJECT_TOKEN, tokens.get(6).type);
 
         assertEquals("{'i':'b'}", tokens.get(6).asString(json));
         assertEquals("{'h':'a'}", tokens.get(1).asString(json));
@@ -161,10 +161,10 @@ class JsonScannerTest {
         //...................01234567890123456789012
         final String json = "{'h':'a', 'i':'b'}";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
-        assertEquals(TokenType.OBJECT, tokens.get(0).type());
-        assertEquals(18, tokens.get(0).endIndex());
-        assertEquals(TokenType.ATTRIBUTE_KEY, tokens.get(1).type());
-        assertEquals(TokenType.STRING, tokens.get(2).type());
+        assertEquals(TokenTypes.OBJECT_TOKEN, tokens.get(0).type);
+        assertEquals(18, tokens.get(0).endIndex);
+        assertEquals(TokenTypes.ATTRIBUTE_KEY_TOKEN, tokens.get(1).type);
+        assertEquals(TokenTypes.STRING_TOKEN, tokens.get(2).type);
 
     }
 
@@ -175,11 +175,11 @@ class JsonScannerTest {
         final String json = "[['h','a'],['i','b']]";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
 
-        assertEquals(TokenType.ARRAY, tokens.get(0).type());
-        assertEquals(TokenType.ARRAY, tokens.get(1).type());
-        assertEquals(TokenType.STRING, tokens.get(2).type());
-        assertEquals(TokenType.STRING, tokens.get(3).type());
-        assertEquals(TokenType.ARRAY, tokens.get(4).type());
+        assertEquals(TokenTypes.ARRAY_TOKEN, tokens.get(0).type);
+        assertEquals(TokenTypes.ARRAY_TOKEN, tokens.get(1).type);
+        assertEquals(TokenTypes.STRING_TOKEN, tokens.get(2).type);
+        assertEquals(TokenTypes.STRING_TOKEN, tokens.get(3).type);
+        assertEquals(TokenTypes.ARRAY_TOKEN, tokens.get(4).type);
 
         assertEquals("['i','b']", tokens.get(4).asString(json));
 
@@ -194,11 +194,11 @@ class JsonScannerTest {
         final String json = "{'1':1}";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
 
-        assertEquals(TokenType.OBJECT, tokens.get(0).type());
-        assertEquals(TokenType.ATTRIBUTE_KEY, tokens.get(1).type());
-        assertEquals(TokenType.STRING, tokens.get(2).type());
-        assertEquals(TokenType.ATTRIBUTE_VALUE, tokens.get(3).type());
-        assertEquals(TokenType.INT, tokens.get(4).type());
+        assertEquals(TokenTypes.OBJECT_TOKEN, tokens.get(0).type);
+        assertEquals(TokenTypes.ATTRIBUTE_KEY_TOKEN, tokens.get(1).type);
+        assertEquals(TokenTypes.STRING_TOKEN, tokens.get(2).type);
+        assertEquals(TokenTypes.ATTRIBUTE_VALUE_TOKEN, tokens.get(3).type);
+        assertEquals(TokenTypes.INT_TOKEN, tokens.get(4).type);
 
     }
 
@@ -220,15 +220,15 @@ class JsonScannerTest {
          * Token[startIndex=11, endIndex=12, type=ATTRIBUTE_VALUE] 7
          * Token[startIndex=11, endIndex=12, type=INT] 8
          */
-        validateToken(tokens.get(0), TokenType.OBJECT, 0, 13);
-        validateToken(tokens.get(1), TokenType.ATTRIBUTE_KEY, 1, 4);
-        validateToken(tokens.get(2), TokenType.STRING, 2, 3);
-        validateToken(tokens.get(3), TokenType.ATTRIBUTE_VALUE, 5, 6);
-        validateToken(tokens.get(4), TokenType.INT, 5, 6);
-        validateToken(tokens.get(5), TokenType.ATTRIBUTE_KEY, 7, 10);
-        validateToken(tokens.get(6), TokenType.STRING, 8, 9);
-        validateToken(tokens.get(7), TokenType.ATTRIBUTE_VALUE, 11, 12);
-        validateToken(tokens.get(8), TokenType.INT, 11, 12);
+        validateToken(tokens.get(0), TokenTypes.OBJECT_TOKEN, 0, 13);
+        validateToken(tokens.get(1), TokenTypes.ATTRIBUTE_KEY_TOKEN, 1, 4);
+        validateToken(tokens.get(2), TokenTypes.STRING_TOKEN, 2, 3);
+        validateToken(tokens.get(3), TokenTypes.ATTRIBUTE_VALUE_TOKEN, 5, 6);
+        validateToken(tokens.get(4), TokenTypes.INT_TOKEN, 5, 6);
+        validateToken(tokens.get(5), TokenTypes.ATTRIBUTE_KEY_TOKEN, 7, 10);
+        validateToken(tokens.get(6), TokenTypes.STRING_TOKEN, 8, 9);
+        validateToken(tokens.get(7), TokenTypes.ATTRIBUTE_VALUE_TOKEN, 11, 12);
+        validateToken(tokens.get(8), TokenTypes.INT_TOKEN, 11, 12);
 
 
     }
@@ -241,9 +241,9 @@ class JsonScannerTest {
         final String json = "1";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
 
-        assertEquals(TokenType.INT, tokens.get(0).type());
-        assertEquals(0, tokens.get(0).startIndex());
-        assertEquals(1, tokens.get(0).endIndex());
+        assertEquals(TokenTypes.INT_TOKEN, tokens.get(0).type);
+        assertEquals(0, tokens.get(0).startIndex);
+        assertEquals(1, tokens.get(0).endIndex);
 
 
     }
@@ -255,9 +255,9 @@ class JsonScannerTest {
         final String json = "1.1";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
 
-        assertEquals(TokenType.FLOAT, tokens.get(0).type());
-        assertEquals(0, tokens.get(0).startIndex());
-        assertEquals(3, tokens.get(0).endIndex());
+        assertEquals(TokenTypes.FLOAT_TOKEN, tokens.get(0).type);
+        assertEquals(0, tokens.get(0).startIndex);
+        assertEquals(3, tokens.get(0).endIndex);
 
 
     }
@@ -269,9 +269,9 @@ class JsonScannerTest {
         final String json = "1.1e-12";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
 
-        assertEquals(TokenType.FLOAT, tokens.get(0).type());
-        assertEquals(0, tokens.get(0).startIndex());
-        assertEquals(7, tokens.get(0).endIndex());
+        assertEquals(TokenTypes.FLOAT_TOKEN, tokens.get(0).type);
+        assertEquals(0, tokens.get(0).startIndex);
+        assertEquals(7, tokens.get(0).endIndex);
 
 
     }
@@ -283,20 +283,20 @@ class JsonScannerTest {
         final String json = "['h',1]";
 
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
-        assertEquals(TokenType.ARRAY, tokens.get(0).type());
-        assertEquals(0, tokens.get(0).startIndex());
-        assertEquals(7, tokens.get(0).endIndex());
+        assertEquals(TokenTypes.ARRAY_TOKEN, tokens.get(0).type);
+        assertEquals(0, tokens.get(0).startIndex);
+        assertEquals(7, tokens.get(0).endIndex);
 
 
-        assertEquals(TokenType.STRING, tokens.get(1).type());
-        assertEquals(2, tokens.get(1).startIndex());
-        assertEquals(3, tokens.get(1).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, tokens.get(1).type);
+        assertEquals(2, tokens.get(1).startIndex);
+        assertEquals(3, tokens.get(1).endIndex);
         assertEquals("h", tokens.get(1).asString(json));
 
 
-        assertEquals(TokenType.INT, tokens.get(2).type());
-        assertEquals(5, tokens.get(2).startIndex());
-        assertEquals(6, tokens.get(2).endIndex());
+        assertEquals(TokenTypes.INT_TOKEN, tokens.get(2).type);
+        assertEquals(5, tokens.get(2).startIndex);
+        assertEquals(6, tokens.get(2).endIndex);
         assertEquals("1", tokens.get(2).asString(json));
 
     }
@@ -308,19 +308,19 @@ class JsonScannerTest {
         final String json = "['h','i']";
 
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
-        assertEquals(TokenType.ARRAY, tokens.get(0).type());
-        assertEquals(0, tokens.get(0).startIndex());
-        assertEquals(9, tokens.get(0).endIndex());
+        assertEquals(TokenTypes.ARRAY_TOKEN, tokens.get(0).type);
+        assertEquals(0, tokens.get(0).startIndex);
+        assertEquals(9, tokens.get(0).endIndex);
 
 
-        assertEquals(TokenType.STRING, tokens.get(1).type());
-        assertEquals(2, tokens.get(1).startIndex());
-        assertEquals(3, tokens.get(1).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, tokens.get(1).type);
+        assertEquals(2, tokens.get(1).startIndex);
+        assertEquals(3, tokens.get(1).endIndex);
 
 
-        assertEquals(TokenType.STRING, tokens.get(2).type());
-        assertEquals(6, tokens.get(2).startIndex());
-        assertEquals(7, tokens.get(2).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, tokens.get(2).type);
+        assertEquals(6, tokens.get(2).startIndex);
+        assertEquals(7, tokens.get(2).endIndex);
 
     }
 
@@ -330,31 +330,31 @@ class JsonScannerTest {
         //0123456789
         final String json = "{'h':'a'}";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
-        assertEquals(TokenType.OBJECT, tokens.get(0).type());
-        assertEquals(0, tokens.get(0).startIndex());
-        assertEquals(9, tokens.get(0).endIndex());
+        assertEquals(TokenTypes.OBJECT_TOKEN, tokens.get(0).type);
+        assertEquals(0, tokens.get(0).startIndex);
+        assertEquals(9, tokens.get(0).endIndex);
         final Token key = tokens.get(1);
         final Token keyValue = tokens.get(2);
         final Token value = tokens.get(3);
         final Token valueValue = tokens.get(4);
 
-        assertEquals(TokenType.ATTRIBUTE_KEY, key.type());
-        assertEquals(1, key.startIndex());
-        assertEquals(4, key.endIndex());
+        assertEquals(TokenTypes.ATTRIBUTE_KEY_TOKEN, key.type);
+        assertEquals(1, key.startIndex);
+        assertEquals(4, key.endIndex);
 
-        assertEquals(TokenType.STRING, keyValue.type());
-        assertEquals(2, keyValue.startIndex());
-        assertEquals(3, keyValue.endIndex());
-
-
-        assertEquals(TokenType.ATTRIBUTE_VALUE, value.type());
-        assertEquals(5, value.startIndex());
-        assertEquals(8, value.endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, keyValue.type);
+        assertEquals(2, keyValue.startIndex);
+        assertEquals(3, keyValue.endIndex);
 
 
-        assertEquals(TokenType.STRING, valueValue.type());
-        assertEquals(6, valueValue.startIndex());
-        assertEquals(7, valueValue.endIndex());
+        assertEquals(TokenTypes.ATTRIBUTE_VALUE_TOKEN, value.type);
+        assertEquals(5, value.startIndex);
+        assertEquals(8, value.endIndex);
+
+
+        assertEquals(TokenTypes.STRING_TOKEN, valueValue.type);
+        assertEquals(6, valueValue.startIndex);
+        assertEquals(7, valueValue.endIndex);
     }
 
 
@@ -364,31 +364,31 @@ class JsonScannerTest {
         //0123456789
         final String json = "{'h' : 1 }";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
-        assertEquals(TokenType.OBJECT, tokens.get(0).type());
-        assertEquals(0, tokens.get(0).startIndex());
-        assertEquals(10, tokens.get(0).endIndex());
+        assertEquals(TokenTypes.OBJECT_TOKEN, tokens.get(0).type);
+        assertEquals(0, tokens.get(0).startIndex);
+        assertEquals(10, tokens.get(0).endIndex);
         final Token key = tokens.get(1);
         final Token keyValue = tokens.get(2);
         final Token value = tokens.get(3);
         final Token valueValue = tokens.get(4);
 
-        assertEquals(TokenType.ATTRIBUTE_KEY, key.type());
-        assertEquals(1, key.startIndex());
-        assertEquals(5, key.endIndex());
+        assertEquals(TokenTypes.ATTRIBUTE_KEY_TOKEN, key.type);
+        assertEquals(1, key.startIndex);
+        assertEquals(5, key.endIndex);
 
-        assertEquals(TokenType.STRING, keyValue.type());
-        assertEquals(2, keyValue.startIndex());
-        assertEquals(3, keyValue.endIndex());
-
-
-        assertEquals(TokenType.ATTRIBUTE_VALUE, value.type());
-//        assertEquals(6, value.startIndex());
-        assertEquals(9, value.endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, keyValue.type);
+        assertEquals(2, keyValue.startIndex);
+        assertEquals(3, keyValue.endIndex);
 
 
-        assertEquals(TokenType.INT, valueValue.type());
-        assertEquals(7, valueValue.startIndex());
-        assertEquals(8, valueValue.endIndex());
+        assertEquals(TokenTypes.ATTRIBUTE_VALUE_TOKEN, value.type);
+//        assertEquals(6, value.startIndex);
+        assertEquals(9, value.endIndex);
+
+
+        assertEquals(TokenTypes.INT_TOKEN, valueValue.type);
+        assertEquals(7, valueValue.startIndex);
+        assertEquals(8, valueValue.endIndex);
     }
 
 
@@ -398,9 +398,9 @@ class JsonScannerTest {
         //01234567890123456789
         final String json = "{'h':'a', 'i':'b'}";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
-        assertEquals(TokenType.OBJECT, tokens.get(0).type());
-        assertEquals(0, tokens.get(0).startIndex());
-        assertEquals(18, tokens.get(0).endIndex());
+        assertEquals(TokenTypes.OBJECT_TOKEN, tokens.get(0).type);
+        assertEquals(0, tokens.get(0).startIndex);
+        assertEquals(18, tokens.get(0).endIndex);
         final Token key = tokens.get(1);
         final Token keyValue = tokens.get(2);
         final Token value = tokens.get(3);
@@ -411,40 +411,40 @@ class JsonScannerTest {
         final Token value2 = tokens.get(7);
         final Token valueValue2 = tokens.get(8);
 
-        assertEquals(TokenType.ATTRIBUTE_KEY, key.type());
-        assertEquals(1, key.startIndex());
-        assertEquals(4, key.endIndex());
+        assertEquals(TokenTypes.ATTRIBUTE_KEY_TOKEN, key.type);
+        assertEquals(1, key.startIndex);
+        assertEquals(4, key.endIndex);
 
-        assertEquals(TokenType.STRING, keyValue.type());
-        assertEquals(2, keyValue.startIndex());
-        assertEquals(3, keyValue.endIndex());
-
-
-        assertEquals(TokenType.ATTRIBUTE_VALUE, value.type());
-        assertEquals(5, value.startIndex());
-        assertEquals(8, value.endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, keyValue.type);
+        assertEquals(2, keyValue.startIndex);
+        assertEquals(3, keyValue.endIndex);
 
 
-        assertEquals(TokenType.STRING, valueValue.type());
-        assertEquals(6, valueValue.startIndex());
-        assertEquals(7, valueValue.endIndex());
+        assertEquals(TokenTypes.ATTRIBUTE_VALUE_TOKEN, value.type);
+        assertEquals(5, value.startIndex);
+        assertEquals(8, value.endIndex);
 
 
-        assertEquals(TokenType.ATTRIBUTE_KEY, key2.type());
-//        assertEquals(9, key2.startIndex());
-        assertEquals(13, key2.endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, valueValue.type);
+        assertEquals(6, valueValue.startIndex);
+        assertEquals(7, valueValue.endIndex);
 
-        assertEquals(TokenType.STRING, keyValue2.type());
-        assertEquals(11, keyValue2.startIndex());
-        assertEquals(12, keyValue2.endIndex());
 
-        assertEquals(TokenType.ATTRIBUTE_VALUE, value2.type());
-        assertEquals(14, value2.startIndex());
-        assertEquals(17, value2.endIndex());
+        assertEquals(TokenTypes.ATTRIBUTE_KEY_TOKEN, key2.type);
+//        assertEquals(9, key2.startIndex);
+        assertEquals(13, key2.endIndex);
 
-        assertEquals(TokenType.STRING, valueValue2.type());
-        assertEquals(15, valueValue2.startIndex());
-        assertEquals(16, valueValue2.endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, keyValue2.type);
+        assertEquals(11, keyValue2.startIndex);
+        assertEquals(12, keyValue2.endIndex);
+
+        assertEquals(TokenTypes.ATTRIBUTE_VALUE_TOKEN, value2.type);
+        assertEquals(14, value2.startIndex);
+        assertEquals(17, value2.endIndex);
+
+        assertEquals(TokenTypes.STRING_TOKEN, valueValue2.type);
+        assertEquals(15, valueValue2.startIndex);
+        assertEquals(16, valueValue2.endIndex);
 
     }
 
@@ -455,7 +455,7 @@ class JsonScannerTest {
         //01234567890123456789
         final String json = "   {'h':   'a',\n\t 'i':'b'\n\t } \n\t    \n";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
-        assertEquals(TokenType.OBJECT, tokens.get(0).type());
+        assertEquals(TokenTypes.OBJECT_TOKEN, tokens.get(0).type);
         final Token key = tokens.get(1);
         final Token keyValue = tokens.get(2);
         final Token value = tokens.get(3);
@@ -466,24 +466,24 @@ class JsonScannerTest {
         final Token value2 = tokens.get(7);
         final Token valueValue2 = tokens.get(8);
 
-        assertEquals(TokenType.ATTRIBUTE_KEY, key.type());
+        assertEquals(TokenTypes.ATTRIBUTE_KEY_TOKEN, key.type);
 
-        assertEquals(TokenType.STRING, keyValue.type());
-
-
-        assertEquals(TokenType.ATTRIBUTE_VALUE, value.type());
+        assertEquals(TokenTypes.STRING_TOKEN, keyValue.type);
 
 
-        assertEquals(TokenType.STRING, valueValue.type());
+        assertEquals(TokenTypes.ATTRIBUTE_VALUE_TOKEN, value.type);
 
 
-        assertEquals(TokenType.ATTRIBUTE_KEY, key2.type());
+        assertEquals(TokenTypes.STRING_TOKEN, valueValue.type);
 
-        assertEquals(TokenType.STRING, keyValue2.type());
 
-        assertEquals(TokenType.ATTRIBUTE_VALUE, value2.type());
+        assertEquals(TokenTypes.ATTRIBUTE_KEY_TOKEN, key2.type);
 
-        assertEquals(TokenType.STRING, valueValue2.type());
+        assertEquals(TokenTypes.STRING_TOKEN, keyValue2.type);
+
+        assertEquals(TokenTypes.ATTRIBUTE_VALUE_TOKEN, value2.type);
+
+        assertEquals(TokenTypes.STRING_TOKEN, valueValue2.type);
 
     }
 
@@ -495,9 +495,9 @@ class JsonScannerTest {
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
         assertEquals(1, tokens.size());
         final Token token = tokens.get(0);
-        assertEquals(1, token.startIndex());
-        assertEquals(2, token.endIndex());
-        assertEquals(str, json.substring(token.startIndex(), token.endIndex()));
+        assertEquals(1, token.startIndex);
+        assertEquals(2, token.endIndex);
+        assertEquals(str, json.substring(token.startIndex, token.endIndex));
     }
 
     @Test
@@ -508,9 +508,9 @@ class JsonScannerTest {
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
         assertEquals(1, tokens.size());
         final Token token = tokens.get(0);
-        assertEquals(6, token.startIndex());
-        assertEquals(12, token.endIndex());
-        assertEquals(str, json.substring(token.startIndex(), token.endIndex()));
+        assertEquals(6, token.startIndex);
+        assertEquals(12, token.endIndex);
+        assertEquals(str, json.substring(token.startIndex, token.endIndex));
     }
 
     @Test
@@ -521,9 +521,9 @@ class JsonScannerTest {
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
         assertEquals(1, tokens.size());
         final Token token = tokens.get(0);
-        assertEquals(6, token.startIndex());
-        assertEquals(30, token.endIndex());
-        assertEquals(str, json.substring(token.startIndex(), token.endIndex()));
+        assertEquals(6, token.startIndex);
+        assertEquals(30, token.endIndex);
+        assertEquals(str, json.substring(token.startIndex, token.endIndex));
     }
 
     @Test
@@ -534,9 +534,9 @@ class JsonScannerTest {
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
         assertEquals(1, tokens.size());
         final Token token = tokens.get(0);
-        assertEquals(0, token.startIndex());
-        assertEquals(1, token.endIndex());
-        assertEquals("1", json.substring(token.startIndex(), token.endIndex()));
+        assertEquals(0, token.startIndex);
+        assertEquals(1, token.endIndex);
+        assertEquals("1", json.substring(token.startIndex, token.endIndex));
     }
 
     @Test
@@ -547,9 +547,9 @@ class JsonScannerTest {
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
         assertEquals(1, tokens.size());
         final Token token = tokens.get(0);
-        assertEquals(0, token.startIndex());
-        assertEquals(1, token.endIndex());
-        assertEquals("1", json.substring(token.startIndex(), token.endIndex()));
+        assertEquals(0, token.startIndex);
+        assertEquals(1, token.endIndex);
+        assertEquals("1", json.substring(token.startIndex, token.endIndex));
     }
 
 
@@ -561,12 +561,12 @@ class JsonScannerTest {
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
         assertEquals(1, tokens.size());
         final Token token = tokens.get(0);
-        assertEquals(0, token.startIndex());
-        assertEquals(10, token.endIndex());
-        assertEquals(TokenType.INT, token.type());
+        assertEquals(0, token.startIndex);
+        assertEquals(10, token.endIndex);
+        assertEquals(TokenTypes.INT_TOKEN, token.type);
 
 
-        String value = json.substring(token.startIndex(), token.endIndex());
+        String value = json.substring(token.startIndex, token.endIndex);
         assertEquals("1234567890", value);
     }
 
@@ -578,11 +578,11 @@ class JsonScannerTest {
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
         assertEquals(1, tokens.size());
         final Token token = tokens.get(0);
-        assertEquals(0, token.startIndex());
-        assertEquals(10, token.endIndex());
-        assertEquals(TokenType.INT, token.type());
+        assertEquals(0, token.startIndex);
+        assertEquals(10, token.endIndex);
+        assertEquals(TokenTypes.INT_TOKEN, token.type);
 
-        String value = json.substring(token.startIndex(), token.endIndex());
+        String value = json.substring(token.startIndex, token.endIndex);
         assertEquals("1234567890", value);
     }
 
@@ -595,12 +595,12 @@ class JsonScannerTest {
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
         assertEquals(1, tokens.size());
         final Token token = tokens.get(0);
-        assertEquals(0, token.startIndex());
-        assertEquals(4, token.endIndex());
-        assertEquals(TokenType.FLOAT, token.type());
+        assertEquals(0, token.startIndex);
+        assertEquals(4, token.endIndex);
+        assertEquals(TokenTypes.FLOAT_TOKEN, token.type);
 
 
-        String value = json.substring(token.startIndex(), token.endIndex());
+        String value = json.substring(token.startIndex, token.endIndex);
         assertEquals("1.12", value);
     }
 
@@ -612,12 +612,12 @@ class JsonScannerTest {
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
         assertEquals(1, tokens.size());
         final Token token = tokens.get(0);
-        assertEquals(0, token.startIndex());
-        assertEquals(4, token.endIndex());
-        assertEquals(TokenType.FLOAT, token.type());
+        assertEquals(0, token.startIndex);
+        assertEquals(4, token.endIndex);
+        assertEquals(TokenTypes.FLOAT_TOKEN, token.type);
 
 
-        String value = json.substring(token.startIndex(), token.endIndex());
+        String value = json.substring(token.startIndex, token.endIndex);
         assertEquals("1.12", value);
     }
 
@@ -629,12 +629,12 @@ class JsonScannerTest {
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
         assertEquals(1, tokens.size());
         final Token token = tokens.get(0);
-        assertEquals(0, token.startIndex());
-        assertEquals(6, token.endIndex());
-        assertEquals(TokenType.FLOAT, token.type());
+        assertEquals(0, token.startIndex);
+        assertEquals(6, token.endIndex);
+        assertEquals(TokenTypes.FLOAT_TOKEN, token.type);
 
 
-        String value = json.substring(token.startIndex(), token.endIndex());
+        String value = json.substring(token.startIndex, token.endIndex);
         assertEquals("1.12e5", value);
     }
 
@@ -646,12 +646,12 @@ class JsonScannerTest {
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
         assertEquals(1, tokens.size());
         final Token token = tokens.get(0);
-        assertEquals(0, token.startIndex());
-        assertEquals(3, token.endIndex());
-        assertEquals(TokenType.FLOAT, token.type());
+        assertEquals(0, token.startIndex);
+        assertEquals(3, token.endIndex);
+        assertEquals(TokenTypes.FLOAT_TOKEN, token.type);
 
 
-        String value = json.substring(token.startIndex(), token.endIndex());
+        String value = json.substring(token.startIndex, token.endIndex);
         assertEquals("1e5", value);
     }
 
@@ -818,8 +818,8 @@ class JsonScannerTest {
         final String json = "[123.1e-9]";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
 
-        assertEquals(TokenType.ARRAY, tokens.get(0).type());
-        assertEquals(TokenType.FLOAT, tokens.get(1).type());
+        assertEquals(TokenTypes.ARRAY_TOKEN, tokens.get(0).type);
+        assertEquals(TokenTypes.FLOAT_TOKEN, tokens.get(1).type);
 
         assertEquals("123.1e-9", tokens.get(1).asString(json));
 
