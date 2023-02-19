@@ -5,7 +5,7 @@ import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.node.support.TokenList;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.token.Token;
-import com.cloudurable.jparse.token.TokenType;
+import com.cloudurable.jparse.token.TokenTypes;
 
 import java.util.List;
 
@@ -232,7 +232,7 @@ public class PathParser implements Parser {
         final var endIndex = source.getIndex();
         int i = source.nextSkipWhiteSpace();
         if (i == INDEX_BRACKET_END_TOKEN) {
-            tokens.add(new Token(startIndex, endIndex, TokenType.PATH_KEY));
+            tokens.add(new Token(startIndex, endIndex, TokenTypes.PATH_KEY_TOKEN));
         } else {
             throw new IllegalStateException("Unable to understand char " + ch + " index " + source.getIndex());
         }
@@ -311,7 +311,7 @@ public class PathParser implements Parser {
 
                 case INDEX_BRACKET_START_TOKEN:
                     final var endIndex = source.getIndex();
-                    tokens.add(new Token(startIndex, endIndex, TokenType.PATH_KEY));
+                    tokens.add(new Token(startIndex, endIndex, TokenTypes.PATH_KEY_TOKEN));
                     parseIndexOrKey(source, (char) source.next(), tokens);
                     return;
 
@@ -323,7 +323,7 @@ public class PathParser implements Parser {
 
         final var endIndex = source.getIndex();
 
-        tokens.add(new Token(startIndex, endIndex, TokenType.PATH_KEY));
+        tokens.add(new Token(startIndex, endIndex, TokenTypes.PATH_KEY_TOKEN));
 
 
     }
@@ -364,7 +364,7 @@ public class PathParser implements Parser {
 
         final var endIndex = source.getIndex();
 
-        tokens.add(new Token(startIndex, endIndex, TokenType.PATH_INDEX));
+        tokens.add(new Token(startIndex, endIndex, TokenTypes.PATH_INDEX_TOKEN));
 
     }
 

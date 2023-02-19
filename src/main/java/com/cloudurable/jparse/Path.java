@@ -75,7 +75,7 @@ public class Path {
                             node = node.asCollection().getNode(pathElement.asKey().toCharSequence());
                         } else {
                             throw new PathException("Looking up Path", "Path not found at " + path + " path element key " + pathElement.asKey().toString(),
-                                    node.charSource(), node.rootElementToken().startIndex());
+                                    node.charSource(), node.rootElementToken().startIndex);
 
                         }
                 }

@@ -77,7 +77,7 @@ public class Example {
             });
 
 
-            final var rick2 = engineeringEmployees.findFirstObjectNode(
+            final var rick2 = engineeringEmployees.findObjectNode(
                     objectNode ->
                             objectNode.getString("firstName").equals("Rick")
 

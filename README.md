@@ -1,6 +1,6 @@
 # J Parse 
 
-J Parse is another JSON Parser similar to Boon, Jackson or GSON.
+JParse, the most efficient JSON parser for the JVM yet.
 
 
 # Why JParse 
@@ -401,7 +401,7 @@ We have automated and sped up common mappings and filtering.
 ```java
 
 
-            final var rick2 = engineeringEmployees.findFirstObjectNode(
+            final var rick2 = engineeringEmployees.findObjectNode(
                     objectNode ->
                             objectNode.getString("firstName").equals("Rick")
 

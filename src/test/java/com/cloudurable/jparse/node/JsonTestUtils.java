@@ -2,7 +2,6 @@ package com.cloudurable.jparse.node;
 
 import com.cloudurable.jparse.Json;
 import com.cloudurable.jparse.token.Token;
-import com.cloudurable.jparse.token.TokenType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,10 +22,10 @@ public class JsonTestUtils {
         tokens.forEach(token -> out.println(token));
     }
 
-    public static void validateToken(Token token, TokenType type, int start, int end) {
-        assertEquals(type, token.type());
-        assertEquals(start, token.startIndex());
-        assertEquals(end, token.endIndex());
+    public static void validateToken(Token token, int type, int start, int end) {
+        assertEquals(type, token.type);
+        assertEquals(start, token.startIndex);
+        assertEquals(end, token.endIndex);
     }
 
 

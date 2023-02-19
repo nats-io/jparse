@@ -85,7 +85,7 @@ public class EqualityTest {
     private void doAssert(Node v1, Node v2) {
         v1.charSource();
         assertEquals(v1, v2);
-        assertEquals(v1.rootElementToken().type(), v2.rootElementToken().type());
+        assertEquals(v1.rootElementToken().type, v2.rootElementToken().type);
         assertEquals(v1.type(), v2.type());
         assertEquals(v1.hashCode(), v2.hashCode());
         assertEquals(v1.charAt(0), v2.charAt(0));
