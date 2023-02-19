@@ -75,6 +75,12 @@ as well as very fast mapping. It will not grow in feature set. Any other feature
 
 Yes. 
 
+
+<img width="1196" alt="image" src="https://user-images.githubusercontent.com/382678/219976407-eb8200f1-d038-44e2-bea7-504181fc2f52.png">
+
+<img width="1164" alt="image" src="https://user-images.githubusercontent.com/382678/219976440-10ca4901-4a81-4d44-87e4-0fc970955fd4.png">
+
+
 ```text 
 Benchmark                                      Mode  Cnt        Score   Error  Units
 BenchMark.readGlossaryJParse                  thrpt    2  1034323.573          ops/s
