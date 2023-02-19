@@ -1,6 +1,7 @@
 package com.cloudurable.jparse;
 
 import com.cloudurable.jparse.node.RootNode;
+import com.cloudurable.jparse.node.support.PathUtils;
 import com.cloudurable.jparse.path.PathElement;
 import com.cloudurable.jparse.path.PathNode;
 import com.cloudurable.jparse.source.CharSource;
@@ -19,14 +20,17 @@ import org.noggit.*;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BenchMark {
 
 
     final static String jsonData;
     final static String doublesJsonData;
+    final static String intsJsonData;
     final static String webXmlJsonData;
     final static String glossaryJsonData;
 
@@ -57,9 +61,9 @@ public class BenchMark {
 
     final static ObjectMapper mapper = new ObjectMapper();
 
-    //final static String objectPath = "glossary.GlossDiv.GlossList.GlossEntry.GlossDef.para";
+    final static String glossaryObjectPath = "glossary.GlossDiv.GlossList.GlossEntry.GlossDef.para";
+    final static String webXmlObjectPath = "['web-app'].servlet[0]['init-param'].useJSP";
 
-    final static String objectPath = "['web-app'].servlet[0]['init-param'].useJSP";
     //final static String objectPath = "1/1";
 
 
@@ -72,6 +76,8 @@ public class BenchMark {
             final File file = new File("./src/test/resources/json/webxml.json");
             //final File file = new File("./src/test/resources/json/types.json");
 
+
+            intsJsonData = Sources.fileSource(new File("./src/test/resources/json/ints.json")).toString().trim();
             doublesJsonData = Sources.fileSource(new File("./src/test/resources/json/doubles.json")).toString().trim();
             glossaryJsonData = Sources.fileSource(new File("./src/test/resources/json/glossary.json")).toString().trim();
             webXmlJsonData = Sources.fileSource(new File("./src/test/resources/json/webxml.json")).toString().trim();
@@ -218,7 +224,7 @@ public class BenchMark {
 //        }
     }
 
-//
+
 //    @Benchmark
 //    public void pathParse(Blackhole bh) {
 //      bh.consume(Path.toPath("foo.bar.baz[99][0][10][11]['hi mom']"));
@@ -226,64 +232,62 @@ public class BenchMark {
 //
 //    @Benchmark
 //    public void jParseLongArrayFast(Blackhole bh) {
-//        bh.consume(Json.toLongArrayFast(jsonData));
+//        bh.consume(Json.toArrayNode(intsJsonData).getLongArrayFast());
 //    }
 //
 //
 //    @Benchmark
 //    public void jParseLongArray(Blackhole bh) {
-//        bh.consume(Json.toLongArray(jsonData));
+//        bh.consume(Json.toArrayNode(intsJsonData).getLongArray());
 //    }
 //
 //    @Benchmark
 //    public void jacksonLongArray(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(jsonData, long[].class));
+//        bh.consume(mapper.readValue(intsJsonData, long[].class));
 //    }
 //
 //    @Benchmark
 //    public void jParseIntArray(Blackhole bh) {
-//        bh.consume(Json.toIntArray(jsonData));
+//        bh.consume(Json.toArrayNode(intsJsonData).getIntArray());
 //    }
 //
 //    @Benchmark
 //    public void jParseIntArrayFast(Blackhole bh) {
-//        bh.consume(Json.toIntArrayFast(jsonData));
+//        bh.consume(Json.toArrayNode(intsJsonData).getIntArrayFast());
 //    }
 //
 //    @Benchmark
 //    public void jacksonIntArray(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(jsonData, int[].class));
+//        bh.consume(mapper.readValue(intsJsonData, int[].class));
 //    }
 //
 //
 //    @Benchmark
 //    public void jParseBigIntArray(Blackhole bh) {
-//        bh.consume(Json.toBigIntegerArray(jsonData));
+//        bh.consume(Json.toArrayNode(intsJsonData).getBigIntegerArray());
+//
 //    }
 //
 //    @Benchmark
 //    public void jacksonBigIntArray(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(jsonData, BigInteger[].class));
+//        bh.consume(mapper.readValue(intsJsonData, BigInteger[].class));
 //    }
 
-
-
-
-    @Benchmark
-    public void jParseFloatArray(Blackhole bh) {
-        bh.consume(Json.toArrayNode(doublesJsonData).getFloatArray());
-    }
-
-    @Benchmark
-    public void jParseFloatArrayFast(Blackhole bh) {
-        bh.consume(Json.toArrayNode(doublesJsonData).getFloatArrayFast());
-    }
-
-
-    @Benchmark
-    public void jacksonFloatArray(Blackhole bh) throws JsonProcessingException {
-        bh.consume(mapper.readValue(doublesJsonData, float[].class));
-    }
+//    @Benchmark
+//    public void jParseFloatArray(Blackhole bh) {
+//        bh.consume(Json.toArrayNode(doublesJsonData).getFloatArray());
+//    }
+//
+//    @Benchmark
+//    public void jParseFloatArrayFast(Blackhole bh) {
+//        bh.consume(Json.toArrayNode(doublesJsonData).getFloatArrayFast());
+//    }
+//
+//
+//    @Benchmark
+//    public void jacksonFloatArray(Blackhole bh) throws JsonProcessingException {
+//        bh.consume(mapper.readValue(doublesJsonData, float[].class));
+//    }
 
 //
 //    @Benchmark
@@ -346,42 +350,41 @@ public class BenchMark {
 //        bh.consume(jsonParser.parse(jsonData));
 //    }
 
-//    @Benchmark
-//    public void simpleDeserializeJaywayThenPathGrab(Blackhole bh) throws JsonProcessingException {
-//
-//        DocumentContext jsonContext = JsonPath.parse(jsonData);
-//        String result = jsonContext.read(objectPath);
-//        bh.consume(result);
-//    }
-//    @Benchmark
-//    public void simpleDeserializeJParseThenPathGrab(Blackhole bh) {
-//        bh.consume(Path.atPath(objectPath, new JsonParser().parse(jsonData)));
-//    }
+    @Benchmark
+    public void jaywayThenPathGrabGlossary(Blackhole bh) throws JsonProcessingException {
 
-//    @Benchmark
-//    public void simpleDeserializeJaywayThenPathGrabWEBXML(Blackhole bh) throws JsonProcessingException {
-//
-//        DocumentContext jsonContext = JsonPath.parse(jsonData);
-//        Boolean result = jsonContext.read(objectPath);
-//        bh.consume(result);
-//    }
-//
-//    static final PathNode path =      Path.toPath(objectPath);
-//    @Benchmark
-//    public void simpleDeserializeJParseThenPathGrabWEBXML(Blackhole bh) {
-//        bh.consume(Path.atPath(path, new JsonParser().parse(jsonData)));
-//    }
+        DocumentContext jsonContext = JsonPath.parse(glossaryJsonData);
+        String result = jsonContext.read(glossaryObjectPath);
+        bh.consume(result);
+    }
+    @Benchmark
+    public void jparsePathGrabGlossary(Blackhole bh) {
+        bh.consume(Path.atPath(glossaryObjectPath, new JsonParser().parse(glossaryJsonData)));
+    }
+
+    @Benchmark
+    public void jaywayPathGrabWebXML(Blackhole bh) throws JsonProcessingException {
+
+        DocumentContext jsonContext = JsonPath.parse(webXmlJsonData);
+        Boolean result = jsonContext.read(webXmlObjectPath);
+        bh.consume(result);
+    }
+
+    @Benchmark
+    public void jparsePathGrabWebXML(Blackhole bh) {
+        bh.consume(Path.atPath(webXmlObjectPath, new JsonParser().parse(webXmlJsonData)));
+    }
 
 
-//    @Benchmark
-//    public void simpleDeserializeJParseThenPathGrabOld(Blackhole bh) {
-//        bh.consume(PathUtils.getLastObject(objectPath, new JsonParser().parse(jsonData)));
-//    }
+    @Benchmark
+    public void jacksonPathGrabWebXML(Blackhole bh) throws JsonProcessingException {
+        bh.consume(PathUtils.getLastObject(webXmlObjectPath, mapper.readValue(webXmlJsonData, mapTypeRef)));
+    }
 
-//    @Benchmark
-//    public void simpleDeserializeJacksonThenPathGrab(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(PathUtils.getLastObject(objectPath, mapper.readValue(jsonData, mapTypeRef)));
-//    }
+    @Benchmark
+    public void jacksonPathGrabGlossary(Blackhole bh) throws JsonProcessingException {
+        bh.consume(PathUtils.getLastObject(glossaryObjectPath, mapper.readValue(glossaryJsonData, mapTypeRef)));
+    }
 
 
 //    @Benchmark
@@ -393,24 +396,24 @@ public class BenchMark {
 //    public void deserializeIntoMapJackson(Blackhole bh) throws JsonProcessingException {
 //        bh.consume(mapper.readValue(jsonData, mapTypeRef));
 //    }
-//
-//    @Benchmark
-//    public void deserializeIntoMapJParseAndGetPathThenSerialize(Blackhole bh) {
-//        final var map = Json.toMap(jsonData);
-//        final var map2 = map.get("glossary");
-//        final var map3 = ((Map<String, Object>) map2).get("GlossDiv");
-//        bh.consume(map);
-//        bh.consume(Json.serialize(map3));
-//    }
-//
-//    @Benchmark
-//    public void deserializeIntoMapJacksonAndGetPathThenSerialize(Blackhole bh) throws JsonProcessingException {
-//        final var map = mapper.readValue(jsonData, mapTypeRef);
-//        final var map2 = map.get("glossary");
-//        final var map3 = ((Map<String, Object>) map2).get("GlossDiv");
-//        bh.consume(map);
-//        bh.consume(mapper.writeValueAsString(map3));
-//    }
+
+    @Benchmark
+    public void deserializeIntoMapJParseAndGetPathThenSerialize(Blackhole bh) {
+        final var map = Json.toMap(glossaryJsonData);
+        final var map2 = map.get("glossary");
+        final var map3 = ((Map<String, Object>) map2).get("GlossDiv");
+        bh.consume(map);
+        bh.consume(Json.serialize(map3));
+    }
+
+    @Benchmark
+    public void deserializeIntoMapJacksonAndGetPathThenSerialize(Blackhole bh) throws JsonProcessingException {
+        final var map = mapper.readValue(glossaryJsonData, mapTypeRef);
+        final var map2 = map.get("glossary");
+        final var map3 = ((Map<String, Object>) map2).get("GlossDiv");
+        bh.consume(map);
+        bh.consume(mapper.writeValueAsString(map3));
+    }
 
 
 //    @Benchmark

@@ -102,9 +102,33 @@ class FunctionalTest {
 
     @Test
     void filterObjects() {
+        final String json = getJson();
+
+
+        final var departmentsNode = Path.atPath("departments", json).asCollection().asArray();
+
+        final var engineering = departmentsNode.filterObjects(objectNode -> {
+                    return objectNode.getNode("departmentName").asScalar().equalsString("Engineering");
+                }
+        );
+
+        assertEquals(1, engineering.size());
     }
 
     @Test
     void filter() {
+
+        final String json = getJson();
+
+
+        final var departmentsNode = Path.atPath("departments", json).asCollection().asArray();
+
+        final var engineering = departmentsNode.filter(node -> {
+                    final var objectNode = node.asCollection().asObject();
+                    return objectNode.getNode("departmentName").asScalar().equalsString("Engineering");
+                }
+        );
+
+        assertEquals(1, engineering.size());
     }
 }
