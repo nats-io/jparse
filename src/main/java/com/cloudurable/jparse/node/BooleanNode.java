@@ -15,7 +15,7 @@ public class BooleanNode implements ScalarNode {
     public BooleanNode(final Token token, final CharSource source) {
         this.token = token;
         this.source = source;
-        this.value = source.getChartAt(token.startIndex()) == 't';
+        this.value = source.getChartAt(token.startIndex) == 't';
     }
 
     @Override

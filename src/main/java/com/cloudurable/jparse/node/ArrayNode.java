@@ -75,7 +75,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         double[] array = new double[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getDouble(token.startIndex(), token.endIndex());
+            array[i] = source.getDouble(token.startIndex, token.endIndex);
         }
         return array;
     }
@@ -85,7 +85,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         float[] array = new float[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getFloat(token.startIndex(), token.endIndex());
+            array[i] = source.getFloat(token.startIndex, token.endIndex);
         }
         return array;
     }
@@ -95,7 +95,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         double[] array = new double[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex(), token.endIndex()).doubleValue();
+            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).doubleValue();
         }
         return array;
     }
@@ -105,7 +105,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         float[] array = new float[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = (float) source.getBigDecimal(token.startIndex(), token.endIndex()).doubleValue();
+            array[i] = (float) source.getBigDecimal(token.startIndex, token.endIndex).doubleValue();
         }
         return array;
     }
@@ -115,7 +115,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         int[] array = new int[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex(), token.endIndex()).intValue();
+            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).intValue();
         }
         return array;
     }
@@ -125,7 +125,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         long[] array = new long[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex(), token.endIndex()).longValue();
+            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).longValue();
         }
         return array;
     }
@@ -135,7 +135,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         BigDecimal[] array = new BigDecimal[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex(), token.endIndex());
+            array[i] = source.getBigDecimal(token.startIndex, token.endIndex);
         }
         return array;
     }
@@ -145,7 +145,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         BigInteger[] array = new BigInteger[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex(), token.endIndex()).toBigInteger();
+            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).toBigInteger();
         }
         return array;
     }
@@ -155,7 +155,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         int[] array = new int[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getInt(token.startIndex(), token.endIndex());
+            array[i] = source.getInt(token.startIndex, token.endIndex);
         }
         return array;
     }
@@ -165,7 +165,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         long[] array = new long[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getLong(token.startIndex(), token.endIndex());
+            array[i] = source.getLong(token.startIndex, token.endIndex);
         }
         return array;
     }

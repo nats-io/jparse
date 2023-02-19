@@ -314,8 +314,8 @@ class JsonParserTest {
 
         assertEquals(4, jsonRoot.getBooleanNode().length());
         assertEquals(NodeType.BOOLEAN, jsonRoot.getBooleanNode().type());
-        assertEquals(TokenTypes.BOOLEAN_TOKEN, jsonRoot.getBooleanNode().rootElementToken().type());
-        assertEquals(TokenTypes.BOOLEAN_TOKEN, jsonRoot.getBooleanNode().tokens().get(0).type());
+        assertEquals(TokenTypes.BOOLEAN_TOKEN, jsonRoot.getBooleanNode().rootElementToken().type);
+        assertEquals(TokenTypes.BOOLEAN_TOKEN, jsonRoot.getBooleanNode().tokens().get(0).type);
     }
 
 
@@ -336,8 +336,8 @@ class JsonParserTest {
 
         assertEquals(4, jsonRoot.getNullNode().length());
         assertEquals(NodeType.NULL, jsonRoot.getNullNode().type());
-        assertEquals(TokenTypes.NULL_TOKEN, jsonRoot.getNullNode().rootElementToken().type());
-        assertEquals(TokenTypes.NULL_TOKEN, jsonRoot.getNullNode().tokens().get(0).type());
+        assertEquals(TokenTypes.NULL_TOKEN, jsonRoot.getNullNode().rootElementToken().type);
+        assertEquals(TokenTypes.NULL_TOKEN, jsonRoot.getNullNode().tokens().get(0).type);
     }
 
     @Test
@@ -359,8 +359,8 @@ class JsonParserTest {
 
         assertEquals(5, jsonRoot.getBooleanNode().length());
         assertEquals(NodeType.BOOLEAN, jsonRoot.getBooleanNode().type());
-        assertEquals(TokenTypes.BOOLEAN_TOKEN, jsonRoot.getBooleanNode().rootElementToken().type());
-        assertEquals(TokenTypes.BOOLEAN_TOKEN, jsonRoot.getBooleanNode().tokens().get(0).type());
+        assertEquals(TokenTypes.BOOLEAN_TOKEN, jsonRoot.getBooleanNode().rootElementToken().type);
+        assertEquals(TokenTypes.BOOLEAN_TOKEN, jsonRoot.getBooleanNode().tokens().get(0).type);
     }
 
 

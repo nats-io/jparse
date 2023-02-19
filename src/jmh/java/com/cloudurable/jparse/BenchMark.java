@@ -26,6 +26,12 @@ public class BenchMark {
 
 
     final static String jsonData;
+    final static String doublesJsonData;
+    final static String webXmlJsonData;
+    final static String glossaryJsonData;
+
+
+
 
     final static TypeReference<HashMap<String, Object>> mapTypeRef
             = new TypeReference<>() {
@@ -65,8 +71,11 @@ public class BenchMark {
 
             final File file = new File("./src/test/resources/json/webxml.json");
             //final File file = new File("./src/test/resources/json/types.json");
-            final CharSource charSource = Sources.fileSource(file);
-            jsonData = charSource.toString().trim();
+
+            doublesJsonData = Sources.fileSource(new File("./src/test/resources/json/doubles.json")).toString().trim();
+            glossaryJsonData = Sources.fileSource(new File("./src/test/resources/json/glossary.json")).toString().trim();
+            webXmlJsonData = Sources.fileSource(new File("./src/test/resources/json/webxml.json")).toString().trim();
+            jsonData = webXmlJsonData;
         } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }
@@ -77,44 +86,45 @@ public class BenchMark {
 //        bh.consume(mapper.readValue(jsonData, mapTypeRef));
 //    }
 //
-    @Benchmark
-    public void readWebJSONJParse(Blackhole bh) {
-        bh.consume(new JsonParser().parse(jsonData));
-    }
-
-    @Benchmark
-    public void readWebJSONNoggitStax(Blackhole bh) throws Exception {
-
-        final var jsonParser =  new JSONParser(jsonData);
-
-        int event = -1;
-        while (event!=JSONParser.EOF) {
-            event = jsonParser.nextEvent();
-        }
-
-        bh.consume(event);
-    }
-    @Benchmark
-    public void readWebJSONNoggitObjectBuilder(Blackhole bh) throws Exception {
-
-        bh.consume(ObjectBuilder.fromJSON(jsonData));
-    }
-
+//    @Benchmark
+//    public void readWebJSONNoggitStax(Blackhole bh) throws Exception {
 //
+//        final var jsonParser =  new JSONParser(jsonData);
+//
+//        int event = -1;
+//        while (event!=JSONParser.EOF) {
+//            event = jsonParser.nextEvent();
+//        }
+//
+//        bh.consume(event);
+//    }
+//    @Benchmark
+//    public void readWebJSONJParse(Blackhole bh) {
+//        bh.consume(new JsonParser().parse(jsonData));
+//    }
+//
+
+//    @Benchmark
+//    public void readWebJSONANoggitObjectBuilder(Blackhole bh) throws Exception {
+//
+//        bh.consume(ObjectBuilder.fromJSON(jsonData));
+//    }
+
+
 //    @Benchmark
 //    public void readGlossaryJackson(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(jsonData, mapTypeRef));
+//        bh.consume(mapper.readValue(glossaryJsonData, mapTypeRef));
 //    }
 //
 //    @Benchmark
 //    public void readGlossaryJParse(Blackhole bh) {
-//        bh.consume(new JsonParser().parse(jsonData));
+//        bh.consume(new JsonParser().parse(glossaryJsonData));
 //    }
 //
 //    @Benchmark
 //    public void readGlossaryNoggit(Blackhole bh) throws Exception {
 //
-//        final var jsonParser =  new JSONParser(jsonData);
+//        final var jsonParser =  new JSONParser(glossaryJsonData);
 //
 //        int event = -1;
 //        while (event!=JSONParser.EOF) {
@@ -127,7 +137,7 @@ public class BenchMark {
 //    @Benchmark
 //    public void readWebGlossaryNoggitObjectBuilder(Blackhole bh) throws Exception {
 //
-//        bh.consume(ObjectBuilder.fromJSON(jsonData));
+//        bh.consume(ObjectBuilder.fromJSON(glossaryJsonData));
 //    }
 
 //    @Benchmark
@@ -257,61 +267,51 @@ public class BenchMark {
 //    }
 
 
-//
-//    @Benchmark
-//    public void jParseBigDecimalArray(Blackhole bh) {
-//        bh.consume(Json.toBigDecimalArray(jsonData));
-//    }
-//
-//    @Benchmark
-//    public void jacksonBigDecimalArray(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(jsonData, BigDecimal[].class));
-//    }
-//
-//
-//    @Benchmark
-//    public void jParseFloatArray(Blackhole bh) {
-//        bh.consume(Json.toFloatArray(jsonData));
-//    }
-//
-//    @Benchmark
-//    public void jParseFloatArrayFast(Blackhole bh) {
-//        bh.consume(Json.toFloatArrayFast(jsonData));
-//    }
-//
-//
-//    @Benchmark
-//    public void jacksonFloatArray(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(jsonData, float[].class));
-//    }
-//
+
+
+    @Benchmark
+    public void jParseFloatArray(Blackhole bh) {
+        bh.consume(Json.toArrayNode(doublesJsonData).getFloatArray());
+    }
+
+    @Benchmark
+    public void jParseFloatArrayFast(Blackhole bh) {
+        bh.consume(Json.toArrayNode(doublesJsonData).getFloatArrayFast());
+    }
+
+
+    @Benchmark
+    public void jacksonFloatArray(Blackhole bh) throws JsonProcessingException {
+        bh.consume(mapper.readValue(doublesJsonData, float[].class));
+    }
+
 //
 //    @Benchmark
 //    public void jParseDoubleArray(Blackhole bh) {
-//        bh.consume(Json.toDoubleArray(jsonData));
+//        bh.consume(Json.toArrayNode(doublesJsonData).getDoubleArray());
 //    }
 //
 //    @Benchmark
 //    public void jParseDoubleArrayFast(Blackhole bh) {
-//        bh.consume(Json.toDoubleArrayFast(jsonData));
+//        bh.consume(Json.toArrayNode(doublesJsonData).getDoubleArrayFast());
 //    }
 //
 //
 //    @Benchmark
 //    public void jacksonDoubleArray(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(jsonData, double[].class));
+//        bh.consume(mapper.readValue(doublesJsonData, double[].class));
 //    }
 //
 //
 //    @Benchmark
-//    public void jParseBigDecimalArrayFast(Blackhole bh) {
-//        bh.consume(Json.toBigDecimalArray(jsonData));
+//    public void jParseBigDecimalArray(Blackhole bh) {
+//        bh.consume(Json.toArrayNode(doublesJsonData).getBigDecimalArray());
 //    }
 //
 //
 //    @Benchmark
 //    public void jacksonBigDecimalArray(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(jsonData, BigDecimal[].class));
+//        bh.consume(mapper.readValue(doublesJsonData, BigDecimal[].class));
 //    }
 
 

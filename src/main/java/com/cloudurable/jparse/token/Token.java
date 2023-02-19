@@ -4,28 +4,14 @@ import com.cloudurable.jparse.source.CharSource;
 
 public class Token {
 
-    private final int startIndex;
-    private final int endIndex;
-    private final int tokenType;
+    public final int startIndex;
+    public final int endIndex;
+    public final int type;
 
-    public Token(final int startIndex, final int endIndex, final int tokenType) {
+    public Token(int startIndex, int endIndex, int type) {
         this.startIndex = startIndex;
         this.endIndex = endIndex;
-        this.tokenType = tokenType;
-    }
-
-    public int startIndex() {
-        return startIndex;
-    }
-
-    public int endIndex() {
-        return endIndex;
-    }
-
-
-
-    public int type() {
-        return tokenType;
+        this.type = type;
     }
 
     public String asString(String buffer) {

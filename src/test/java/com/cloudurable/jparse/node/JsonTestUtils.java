@@ -23,9 +23,9 @@ public class JsonTestUtils {
     }
 
     public static void validateToken(Token token, int type, int start, int end) {
-        assertEquals(type, token.type());
-        assertEquals(start, token.startIndex());
-        assertEquals(end, token.endIndex());
+        assertEquals(type, token.type);
+        assertEquals(start, token.startIndex);
+        assertEquals(end, token.endIndex);
     }
 
 

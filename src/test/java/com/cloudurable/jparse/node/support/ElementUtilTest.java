@@ -30,14 +30,14 @@ class ElementUtilTest {
         List<List<Token>> childrenTokens = NodeUtils.getChildrenTokens((TokenSubList) list.subList(0, list.size()));
 
         List<Token> array1 = childrenTokens.get(0);
-        assertEquals(TokenTypes.STRING_TOKEN, array1.get(0).type());
-        assertEquals(2, array1.get(0).startIndex());
-        assertEquals(6, array1.get(0).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, array1.get(0).type);
+        assertEquals(2, array1.get(0).startIndex);
+        assertEquals(6, array1.get(0).endIndex);
 
         List<Token> array2 = childrenTokens.get(1);
-        assertEquals(TokenTypes.STRING_TOKEN, array2.get(0).type());
-        assertEquals(8, array2.get(0).startIndex());
-        assertEquals(20, array2.get(0).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, array2.get(0).type);
+        assertEquals(8, array2.get(0).startIndex);
+        assertEquals(20, array2.get(0).endIndex);
 
 
     }
@@ -59,22 +59,22 @@ class ElementUtilTest {
 
         assertEquals(2, childrenTokens.size());
         List<Token> array1 = childrenTokens.get(0);
-        assertEquals(TokenTypes.STRING_TOKEN, array1.get(0).type());
-        assertEquals(2, array1.get(0).startIndex());
-        assertEquals(6, array1.get(0).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, array1.get(0).type);
+        assertEquals(2, array1.get(0).startIndex);
+        assertEquals(6, array1.get(0).endIndex);
 
         List<Token> array2 = childrenTokens.get(1);
-        assertEquals(TokenTypes.ARRAY_TOKEN, array2.get(0).type());
-        assertEquals(8, array2.get(0).startIndex());
-        assertEquals(20, array2.get(0).endIndex());
+        assertEquals(TokenTypes.ARRAY_TOKEN, array2.get(0).type);
+        assertEquals(8, array2.get(0).startIndex);
+        assertEquals(20, array2.get(0).endIndex);
 
-        assertEquals(TokenTypes.STRING_TOKEN, array2.get(1).type());
-        assertEquals(9, array2.get(1).startIndex());
-        assertEquals(13, array2.get(1).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, array2.get(1).type);
+        assertEquals(9, array2.get(1).startIndex);
+        assertEquals(13, array2.get(1).endIndex);
 
-        assertEquals(TokenTypes.STRING_TOKEN, array2.get(2).type());
-        assertEquals(15, array2.get(2).startIndex());
-        assertEquals(17, array2.get(2).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, array2.get(2).type);
+        assertEquals(15, array2.get(2).startIndex);
+        assertEquals(17, array2.get(2).endIndex);
 
 
     }
@@ -98,23 +98,23 @@ class ElementUtilTest {
         assertEquals(2, childrenTokens.size());
 
         List<Token> array1 = childrenTokens.get(0);
-        assertEquals(TokenTypes.ARRAY_TOKEN, array1.get(0).type());
-        assertEquals(1, array1.get(0).startIndex());
-        assertEquals(10, array1.get(0).endIndex());
+        assertEquals(TokenTypes.ARRAY_TOKEN, array1.get(0).type);
+        assertEquals(1, array1.get(0).startIndex);
+        assertEquals(10, array1.get(0).endIndex);
 
-        assertEquals(TokenTypes.STRING_TOKEN, array1.get(1).type());
-        assertEquals(2, array1.get(1).startIndex());
-        assertEquals(6, array1.get(1).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, array1.get(1).type);
+        assertEquals(2, array1.get(1).startIndex);
+        assertEquals(6, array1.get(1).endIndex);
 
 
         List<Token> array2 = childrenTokens.get(1);
-        assertEquals(TokenTypes.ARRAY_TOKEN, array2.get(0).type());
-        assertEquals(11, array2.get(0).startIndex());
-        assertEquals(21, array2.get(0).endIndex());
+        assertEquals(TokenTypes.ARRAY_TOKEN, array2.get(0).type);
+        assertEquals(11, array2.get(0).startIndex);
+        assertEquals(21, array2.get(0).endIndex);
 
-        assertEquals(TokenTypes.STRING_TOKEN, array2.get(1).type());
-        assertEquals(11, array2.get(1).startIndex());
-        assertEquals(15, array2.get(1).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, array2.get(1).type);
+        assertEquals(11, array2.get(1).startIndex);
+        assertEquals(15, array2.get(1).endIndex);
     }
 
 
@@ -135,23 +135,23 @@ class ElementUtilTest {
         List<List<Token>> childrenTokens = NodeUtils.getChildrenTokens((TokenSubList) list.subList(0, list.size()));
 
         List<Token> key = childrenTokens.get(0);
-        assertEquals(TokenTypes.ATTRIBUTE_KEY_TOKEN, key.get(0).type());
-        assertEquals(1, key.get(0).startIndex());
-        assertEquals(6, key.get(0).endIndex());
+        assertEquals(TokenTypes.ATTRIBUTE_KEY_TOKEN, key.get(0).type);
+        assertEquals(1, key.get(0).startIndex);
+        assertEquals(6, key.get(0).endIndex);
 
-        assertEquals(TokenTypes.STRING_TOKEN, key.get(1).type());
-        assertEquals(2, key.get(1).startIndex());
-        assertEquals(6, key.get(1).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, key.get(1).type);
+        assertEquals(2, key.get(1).startIndex);
+        assertEquals(6, key.get(1).endIndex);
 
 
         List<Token> value = childrenTokens.get(1);
-        assertEquals(TokenTypes.ATTRIBUTE_VALUE_TOKEN, value.get(0).type());
-        assertEquals(6, value.get(0).startIndex());
-        assertEquals(10, value.get(0).endIndex());
+        assertEquals(TokenTypes.ATTRIBUTE_VALUE_TOKEN, value.get(0).type);
+        assertEquals(6, value.get(0).startIndex);
+        assertEquals(10, value.get(0).endIndex);
 
-        assertEquals(TokenTypes.STRING_TOKEN, value.get(1).type());
-        assertEquals(7, value.get(1).startIndex());
-        assertEquals(10, value.get(1).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, value.get(1).type);
+        assertEquals(7, value.get(1).startIndex);
+        assertEquals(10, value.get(1).endIndex);
     }
 
 
@@ -200,23 +200,23 @@ class ElementUtilTest {
 
     public void validateSimpleObject(List<List<Token>> childrenTokens) {
         List<Token> key = childrenTokens.get(0);
-        assertEquals(TokenTypes.ATTRIBUTE_KEY_TOKEN, key.get(0).type());
-        assertEquals(1, key.get(0).startIndex());
-        assertEquals(4, key.get(0).endIndex());
+        assertEquals(TokenTypes.ATTRIBUTE_KEY_TOKEN, key.get(0).type);
+        assertEquals(1, key.get(0).startIndex);
+        assertEquals(4, key.get(0).endIndex);
 
-        assertEquals(TokenTypes.STRING_TOKEN, key.get(1).type());
-        assertEquals(2, key.get(1).startIndex());
-        assertEquals(3, key.get(1).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, key.get(1).type);
+        assertEquals(2, key.get(1).startIndex);
+        assertEquals(3, key.get(1).endIndex);
 
 
         List<Token> value = childrenTokens.get(1);
-        assertEquals(TokenTypes.ATTRIBUTE_VALUE_TOKEN, value.get(0).type());
-        assertEquals(5, value.get(0).startIndex());
-        assertEquals(8, value.get(0).endIndex());
+        assertEquals(TokenTypes.ATTRIBUTE_VALUE_TOKEN, value.get(0).type);
+        assertEquals(5, value.get(0).startIndex);
+        assertEquals(8, value.get(0).endIndex);
 
-        assertEquals(TokenTypes.STRING_TOKEN, value.get(1).type());
-        assertEquals(6, value.get(1).startIndex());
-        assertEquals(7, value.get(1).endIndex());
+        assertEquals(TokenTypes.STRING_TOKEN, value.get(1).type);
+        assertEquals(6, value.get(1).startIndex);
+        assertEquals(7, value.get(1).endIndex);
 
     }
 

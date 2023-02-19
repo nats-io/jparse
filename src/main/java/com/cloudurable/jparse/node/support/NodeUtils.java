@@ -22,11 +22,11 @@ public class NodeUtils {
         for (int index = 1; index < tokens.size(); index++) {
             Token token = tokens.get(index);
 
-            if (token.startIndex() > root.endIndex()) {
+            if (token.startIndex > root.endIndex) {
                 break;
             }
 
-            if (token.type() <= 3) {
+            if (token.type <= 3) {
 
                 int childCount = tokens.countChildren(index, token);
                 int endIndex = index + childCount;
@@ -44,7 +44,7 @@ public class NodeUtils {
 
     public static Node createNode(final List<Token> tokens, final CharSource source, boolean objectsKeysCanBeEncoded) {
 
-        final NodeType nodeType = NodeType.tokenTypeToElement(tokens.get(0).type());
+        final NodeType nodeType = NodeType.tokenTypeToElement(tokens.get(0).type);
 
         return switch (nodeType) {
             case ARRAY -> new ArrayNode((TokenSubList) tokens, source, objectsKeysCanBeEncoded);
@@ -65,7 +65,7 @@ public class NodeUtils {
 
         final var rootToken = theTokens.get(1);
         final var tokens = theTokens.subList(1, theTokens.size());
-        final NodeType nodeType = NodeType.tokenTypeToElement(rootToken.type());
+        final NodeType nodeType = NodeType.tokenTypeToElement(rootToken.type);
 
         return switch (nodeType) {
             case ARRAY -> new ArrayNode((TokenSubList) tokens, source, objectsKeysCanBeEncoded);

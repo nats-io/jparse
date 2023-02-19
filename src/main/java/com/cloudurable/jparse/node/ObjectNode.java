@@ -281,7 +281,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
 
         final Token keyToken = itemKey.get(1);
 
-        if (keyToken.type() == TokenTypes.STRING_TOKEN) {
+        if (keyToken.type == TokenTypes.STRING_TOKEN) {
             if (keyToken.length() != key.length()) {
                 return false;
             }
@@ -295,7 +295,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
                 }
                 return true;
             } else {
-                return source.matchChars(keyToken.startIndex(), keyToken.endIndex(), key);
+                return source.matchChars(keyToken.startIndex, keyToken.endIndex, key);
             }
         }
         return false;
@@ -312,7 +312,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
                 List<Token> itemKey = childrenTokens.get(index);
                 CharSequence element;
                 Token keyToken = itemKey.get(1);
-                element = switch (keyToken.type()) {
+                element = switch (keyToken.type) {
                     case TokenTypes.STRING_TOKEN -> new StringNode(keyToken, source, objectsKeysCanBeEncoded).toString();
                     default -> throw new IllegalStateException("Only String are allowed for keys");
                 };
