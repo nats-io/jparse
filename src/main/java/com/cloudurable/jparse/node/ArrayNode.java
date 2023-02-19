@@ -62,6 +62,10 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         return elements()[index];
     }
 
+    public Optional<Node> lookupNodeAt(int index) {
+       return Optional.ofNullable(getNodeAt(index));
+    }
+
     public long getLong(int index) {
         return getNumberNode(index).longValue();
     }

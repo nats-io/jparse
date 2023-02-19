@@ -45,7 +45,6 @@ public class Json {
         return parser.scan(json);
     }
 
-
     public static ArrayNode toArrayNode(final CharSource json) {
         final var parser = new JsonParser();
         return parser.parse(json).getArrayNode();
