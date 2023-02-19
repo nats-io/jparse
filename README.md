@@ -91,11 +91,12 @@ BenchMark.simpleDeserializeJacksonGlossary   thrpt    2   466824.567          op
 
 ```text 
 
-Benchmark                                      Mode  Cnt       Score   Error  Units
-BenchMark.readGlossaryJParse                  thrpt    2  613833.642          ops/s
-BenchMark.readGlossaryJackson                 thrpt    2  289058.722          ops/s
-BenchMark.readGlossaryNoggit                  thrpt    2  528108.306          ops/s
-BenchMark.readWebGlossaryNoggitObjectBuilder  thrpt    2  323058.191          ops/s
+Benchmark                                      Mode  Cnt        Score   Error  Units
+BenchMark.readGlossaryJParse                  thrpt    2  1034323.573          ops/s
+BenchMark.readGlossaryNoggit                  thrpt    2   830511.356          ops/s
+BenchMark.readWebGlossaryNoggitObjectBuilder  thrpt    2   541948.355          ops/s
+BenchMark.readGlossaryJackson                 thrpt    2   468925.690          ops/s
+
 ```
 
 
