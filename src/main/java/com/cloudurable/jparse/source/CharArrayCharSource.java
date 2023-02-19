@@ -88,17 +88,16 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         return data[++index];
     }
 
+
     @Override
     public int nextSkipWhiteSpace() {
         int index = this.index + 1;
         final var data = this.data;
         final var length = data.length;
-
         int ch = ETX;
 
-
         loop:
-        for (; index < length; index++ ) {
+        for (; index < length; index++) {
             ch = data[index];
             switch (ch) {
                 case NEW_LINE_WS:
@@ -109,11 +108,43 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 default: break loop;
             }
         }
-
         this.index = index ;
-
         return ch;
     }
+
+    //
+//    @Override
+//    public int nextSkipWhiteSpace() {
+//        int index = this.index + 1;
+//        final var data = this.data;
+//        final var length = data.length;
+//        int ch = ETX;
+//
+//        //loop:
+//        while (index < length) {
+//            ch = data[index];
+//            if (ch < 33) {
+//                index++;
+//                continue;
+//            }
+//                break;
+//
+////            switch (ch) {
+////
+////                case NEW_LINE_WS:
+////                case CARRIAGE_RETURN_WS:
+////                case TAB_WS:
+////                case SPACE_WS:
+////                    continue;
+////                default: break loop;
+////            }
+//        }
+//
+//        this.index = index ;
+//
+//        return ch;
+//    }
+
 
     @Override
     public int getIndex() {

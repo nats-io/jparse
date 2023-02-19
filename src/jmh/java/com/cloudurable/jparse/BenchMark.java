@@ -90,42 +90,26 @@ public class BenchMark {
     public static void main(String... args) throws Exception {
 
         try {
-//            System.out.println(Path.atPath(objectPath, new JsonParser().parse(jsonData)));
-//            DocumentContext jsonContext = JsonPath.parse(jsonData);
-//            Boolean result = jsonContext.read(objectPath);
-//            System.out.println(result);
+            long startTime = System.currentTimeMillis();
 
 
-            final var jsonParser =  new JSONParser(jsonData);
+            for (int i = 0; i < 1_500_000; i++) {
 
-            while (jsonParser.nextEvent()!=JSONParser.EOF) {
+                final RootNode root = new JsonParser().parse(webXmlJsonData);
+                final var result = Path.atPath(webXmlObjectPath, root);
 
+                //PathNode pathElements = Path.toPath("foo.bar.baz[99][0][10][11]['hi mom']");
+
+
+                if (i % 100_000 == 0) {
+                    System.out.printf("Elapsed time %s %s \n", ((System.currentTimeMillis() - startTime) / 1000.0), result);
+                }
             }
+            System.out.println("Total Elapsed time " + ((System.currentTimeMillis() - startTime) / 1000.0));
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-//
-//        try {
-//            long startTime = System.currentTimeMillis();
-//
-//            for (int i = 0; i < 1_500_000; i++) {
-//
-//                final RootNode root = new JsonParser().parse(jsonData);
-//                final var result = Path.atPath(objectPath, root);
-//
-//                //PathNode pathElements = Path.toPath("foo.bar.baz[99][0][10][11]['hi mom']");
-//
-//
-//                if (i % 100_000 == 0) {
-//                    System.out.printf("Elapsed time %s %s \n", ((System.currentTimeMillis() - startTime) / 1000.0), result);
-//                }
-//            }
-//            System.out.println("Total Elapsed time " + ((System.currentTimeMillis() - startTime) / 1000.0));
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
     }
 
 //
@@ -182,23 +166,33 @@ public class BenchMark {
 //    }
 
 
-    @Benchmark
-    public void readWebJSONJParse(Blackhole bh) {
-        bh.consume(new JsonParser().parse(webXmlJsonData));
-    }
+//    @Benchmark
+//    public void readWebJSONJParse(Blackhole bh) {
+//        bh.consume(new JsonParser().parse(webXmlJsonData));
+//    }
+//
+//    @Benchmark
+//    public void readWebJSONJackson(Blackhole bh) throws JsonProcessingException {
+//        bh.consume(mapper.readValue(webXmlJsonData, mapTypeRef));
+//    }
 
-    @Benchmark
-    public void readWebJSONJackson(Blackhole bh) throws JsonProcessingException {
-        bh.consume(mapper.readValue(webXmlJsonData, mapTypeRef));
-    }
-
-    @Benchmark
-    public void readGlossaryJackson(Blackhole bh) throws JsonProcessingException {
-        bh.consume(mapper.readValue(glossaryJsonData, mapTypeRef));
-    }
+//    @Benchmark
+//    public void readGlossaryJackson(Blackhole bh) throws JsonProcessingException {
+//        bh.consume(mapper.readValue(glossaryJsonData, mapTypeRef));
+//    }
 
     @Benchmark
     public void readGlossaryJParse(Blackhole bh) {
+        bh.consume(new JsonParser().parse(glossaryJsonData));
+    }
+
+    @Benchmark
+    public void readGlossaryJParse1(Blackhole bh) {
+        bh.consume(new JsonParser().parse(glossaryJsonData));
+    }
+
+    @Benchmark
+    public void readGlossaryJParse2(Blackhole bh) {
         bh.consume(new JsonParser().parse(glossaryJsonData));
     }
 //
