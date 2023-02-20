@@ -1,4 +1,4 @@
-package com.cloudurable.jparse;
+package com.cloudurable.jparse.parser;
 
 import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.node.support.TokenList;
@@ -9,10 +9,9 @@ import com.cloudurable.jparse.token.TokenTypes;
 
 import java.util.List;
 
-public class JsonParser implements Parser {
+public class JsonParser implements IndexOverlayParser {
 
     private final boolean objectsKeysCanBeEncoded;
-
 
     public JsonParser() {
         this.objectsKeysCanBeEncoded = false;
@@ -22,7 +21,6 @@ public class JsonParser implements Parser {
         this.objectsKeysCanBeEncoded = objectsKeysCanBeEncoded;
 
     }
-
 
     @Override
     public List<Token> scan(final CharSource source) {
@@ -89,9 +87,7 @@ public class JsonParser implements Parser {
                 default:
                     throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character", source, (char) ch);
 
-
             }
-
         }
         return tokens;
     }
@@ -201,11 +197,8 @@ public class JsonParser implements Parser {
     }
 
     private void parseNumber(final CharSource source, TokenList tokens) {
-
         final int startIndex = source.getIndex();
-
         final var numberParse = source.findEndOfNumber();
-
         tokens.add(new Token(startIndex, numberParse.endIndex(), numberParse.wasFloat() ? TokenTypes.FLOAT_TOKEN : TokenTypes.INT_TOKEN));
     }
 
@@ -220,8 +213,6 @@ public class JsonParser implements Parser {
 
         forLoop:
         for (; ch != ETX; ch = source.nextSkipWhiteSpace()) {
-
-
             switch (ch) {
 
                 case NEW_LINE_WS:
@@ -229,7 +220,6 @@ public class JsonParser implements Parser {
                 case TAB_WS:
                 case SPACE_WS:
                     continue;
-
 
                 case STRING_START_TOKEN:
                     final int strStartIndex = source.getIndex();
@@ -253,7 +243,6 @@ public class JsonParser implements Parser {
                     throw new UnexpectedCharacterException("Parsing Object Key", "Unexpected character", source, (char) ch);
 
             }
-
         }
 
         if (!done) {
@@ -291,7 +280,6 @@ public class JsonParser implements Parser {
                 case TAB_WS:
                 case SPACE_WS:
                     continue;
-
 
                 case TRUE_BOOLEAN_START:
                     parseTrue(source, tokens);
@@ -332,7 +320,6 @@ public class JsonParser implements Parser {
                         break;
                     }
 
-
                 case OBJECT_END_TOKEN:
                 case MAP_SEP:
                     if (source.getIndex() == tokenListIndex) {
@@ -357,11 +344,9 @@ public class JsonParser implements Parser {
 
 
     private void parseObject(final CharSource source, TokenList tokens) {
-
         final int startSourceIndex = source.getIndex();
         final int tokenListIndex = tokens.getIndex();
         tokens.placeHolder();
-
 
         boolean done = false;
         while (!done) {
@@ -370,7 +355,6 @@ public class JsonParser implements Parser {
             //Value
             done = parseValue(source, tokens);
         }
-
         tokens.set(tokenListIndex, new Token(startSourceIndex, source.getIndex() + 1, TokenTypes.OBJECT_TOKEN));
     }
 

@@ -4,6 +4,7 @@ import com.cloudurable.jparse.node.ArrayNode;
 import com.cloudurable.jparse.node.Node;
 import com.cloudurable.jparse.node.ObjectNode;
 import com.cloudurable.jparse.node.RootNode;
+import com.cloudurable.jparse.parser.JsonParser;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.token.Token;
 

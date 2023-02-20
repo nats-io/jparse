@@ -1,29 +1,21 @@
 package com.cloudurable.jparse;
 
-import com.cloudurable.jparse.node.RootNode;
-import com.cloudurable.jparse.node.support.PathUtils;
-import com.cloudurable.jparse.path.PathElement;
-import com.cloudurable.jparse.path.PathNode;
+import com.cloudurable.jparse.parser.JsonEventParser;
+import com.cloudurable.jparse.parser.JsonParser;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.source.Sources;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.cloudurable.jparse.token.TokenEventListener;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
 import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
 import org.noggit.*;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class BenchMark {
 
@@ -89,14 +81,18 @@ public class BenchMark {
 
     public static void main(String... args) throws Exception {
 
+
+
         try {
             long startTime = System.currentTimeMillis();
 
 
             for (int i = 0; i < 1_500_000; i++) {
 
-                final RootNode root = new JsonParser().parse(webXmlJsonData);
-                final var result = Path.atPath(webXmlObjectPath, root);
+//                final RootNode root = new JsonParser().parse(webXmlJsonData);
+//                final var result = Path.atPath(webXmlObjectPath, root);
+
+                final var result = new JsonEventParser().parse(glossaryJsonData);
 
                 //PathNode pathElements = Path.toPath("foo.bar.baz[99][0][10][11]['hi mom']");
 
@@ -187,33 +183,51 @@ public class BenchMark {
     }
 
     @Benchmark
-    public void readGlossaryJParse1(Blackhole bh) {
-        bh.consume(new JsonParser().parse(glossaryJsonData));
+    public void readGlossaryJParseWithEvents(Blackhole bh) {
+        bh.consume(new JsonEventParser().parse(glossaryJsonData));
     }
 
     @Benchmark
-    public void readGlossaryJParse2(Blackhole bh) {
-        bh.consume(new JsonParser().parse(glossaryJsonData));
+    public void readGlossaryNoggitEvent(Blackhole bh) throws Exception {
+
+        final var jsonParser =  new JSONParser(glossaryJsonData);
+
+        int event = -1;
+        while (event!=JSONParser.EOF) {
+            event = jsonParser.nextEvent();
+        }
+
+        bh.consume(event);
     }
-//
-//    @Benchmark
-//    public void readGlossaryNoggit(Blackhole bh) throws Exception {
-//
-//        final var jsonParser =  new JSONParser(glossaryJsonData);
-//
-//        int event = -1;
-//        while (event!=JSONParser.EOF) {
-//            event = jsonParser.nextEvent();
-//        }
-//
-//        bh.consume(event);
-//    }
-//
-//    @Benchmark
-//    public void readWebGlossaryNoggitObjectBuilder(Blackhole bh) throws Exception {
-//
-//        bh.consume(ObjectBuilder.fromJSON(glossaryJsonData));
-//    }
+
+
+    @Benchmark
+    public void readGlossaryEventJParse(Blackhole bh) throws Exception {
+
+        final var jsonParser =  new JsonEventParser();
+        final int [] token = new int[1];
+        final var events = new TokenEventListener() {
+            @Override
+            public void start(int tokenId, int index, CharSource source) {
+                token[0] = tokenId;
+            }
+
+            @Override
+            public void end(int tokenId, int index, CharSource source) {
+                token[0] = tokenId;
+            }
+        };
+
+        jsonParser.parse(glossaryJsonData, events);
+
+        bh.consume(token);
+    }
+
+    @Benchmark
+    public void readWebGlossaryNoggitObjectBuilder(Blackhole bh) throws Exception {
+
+        bh.consume(ObjectBuilder.fromJSON(glossaryJsonData));
+    }
 
 
 

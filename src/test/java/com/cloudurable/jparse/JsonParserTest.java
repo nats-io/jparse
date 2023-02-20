@@ -2,6 +2,8 @@ package com.cloudurable.jparse;
 
 
 import com.cloudurable.jparse.node.*;
+import com.cloudurable.jparse.parser.IndexOverlayParser;
+import com.cloudurable.jparse.parser.JsonParser;
 import com.cloudurable.jparse.source.Sources;
 import com.cloudurable.jparse.token.TokenTypes;
 import org.junit.jupiter.api.Test;
@@ -236,7 +238,7 @@ class JsonParserTest {
 
     @Test
     void testParseNumberJsonElement() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "1";
         RootNode jsonRoot = parser.parse(Sources.stringSource(json));
         assertEquals(1, jsonRoot.getInt());
@@ -248,7 +250,7 @@ class JsonParserTest {
 
     @Test
     void testParseFloatJsonElement() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "1.1";
         RootNode jsonRoot = parser.parse(Sources.stringSource(json));
         assertEquals(1.1, jsonRoot.getFloat(), 0.001);
@@ -297,7 +299,7 @@ class JsonParserTest {
 
     @Test
     void testSimpleBooleanTrue() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "true";
 
         final RootNode jsonRoot = parser.parse(Sources.charSeqSource(json));
@@ -321,7 +323,7 @@ class JsonParserTest {
 
     @Test
     void testSimpleNull() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "null";
 
         final RootNode jsonRoot = parser.parse(Sources.charSeqSource(json));
@@ -342,7 +344,7 @@ class JsonParserTest {
 
     @Test
     void testSimpleBooleanFalse() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "false";
 
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json));
@@ -366,7 +368,7 @@ class JsonParserTest {
 
     @Test
     void testSimpleString() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "\"abc\"";
 
         final RootNode jsonRoot = parser.parse(Sources.charSeqSource(json));
@@ -377,7 +379,7 @@ class JsonParserTest {
 
     @Test
     void testSimpleEncodedString() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         //....................012 3 4 5 6
         final String json = "'abc`n`b`r`u1234'";
 
@@ -398,7 +400,7 @@ class JsonParserTest {
 
     @Test
     void testGetNumFloat() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "1.1";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
         assertEquals(1.1, jsonRoot.getNumberNode().floatValue(), 0.001);
@@ -407,7 +409,7 @@ class JsonParserTest {
 
     @Test
     void testGetNumInt() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "1";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
         assertEquals(1.0, jsonRoot.getNumberNode().floatValue(), 0.001);
@@ -417,7 +419,7 @@ class JsonParserTest {
 
     @Test
     void testSimpleStringFromMap() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "{'a':'abc'}";
         final RootNode jsonRoot = parser.parse(json.replace("'", "\""));
 
@@ -465,7 +467,7 @@ class JsonParserTest {
 
     @Test
     void test3ItemMap() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         //...................012345678901234567890
         final String json = "{'a':'abc','b':'def', 'c': true}";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
@@ -479,7 +481,7 @@ class JsonParserTest {
 
     @Test
     void test2ItemIntKeyMap() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         //...................0123456789
         final String json = "{'1':2,'2':3}";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
@@ -497,7 +499,7 @@ class JsonParserTest {
 
     @Test
     void testSimpleMapFromMap() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "{'a':{'a':'abc'}}";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
         assertEquals("abc", jsonRoot.getObjectNode().getObjectNode("a").getStringNode("a").toString());
@@ -560,7 +562,7 @@ class JsonParserTest {
 
     @Test
     void testSimpleFloatFromArray() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "[1.1,2,3]";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
         assertEquals(1.1, jsonRoot.getArrayNode().getDouble(0), 0.001);
@@ -574,7 +576,7 @@ class JsonParserTest {
 
     @Test
     void testSimpleNullFromArray() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "[null,2,null]";
         final RootNode jsonRoot = toRootNode(json);
         NullNode nullNode = jsonRoot.getArrayNode().getNullNode(0);
@@ -586,7 +588,7 @@ class JsonParserTest {
 
     @Test
     void testSimpleArrayFromArray() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "[[1,2,3],2,3]";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
         assertEquals(1L, jsonRoot.getArrayNode().getArray(0).getLong(0));
@@ -618,7 +620,7 @@ class JsonParserTest {
 
     @Test
     void testGeFloatFromMap() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "{'a':1.1}";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
         assertEquals(1.1, jsonRoot.getObjectNode().getDouble("a"), 0.001);
@@ -629,7 +631,7 @@ class JsonParserTest {
 
     @Test
     void testGetIntFromMap() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         //...................0123
         final String json = "{'a':1}";
         final RootNode jsonRoot = nodeRoot(json);
@@ -640,7 +642,7 @@ class JsonParserTest {
 
     @Test
     void testGetItemFromMap() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "{'a':1}";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
         assertNotNull(jsonRoot.getObjectNode().getNumberNode("a"));
@@ -651,7 +653,7 @@ class JsonParserTest {
 
     @Test
     void testSimpleList() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "['h','a',true,false]";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
         String s = jsonRoot.getArrayNode().getStringNode(0).toString();
@@ -664,7 +666,7 @@ class JsonParserTest {
 
     @Test
     void testSimpleListWithInts() {
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "[1,3]";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
         assertEquals(1L, jsonRoot.getArrayNode().getLong(0));
@@ -674,7 +676,7 @@ class JsonParserTest {
     @Test
     void testObjectGetOperation() {
 
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         //...................012345678
         final String json = "{'h':'a'}";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
@@ -687,7 +689,7 @@ class JsonParserTest {
     @Test
     void testSingletonListWithOneObject() {
 
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "[ { 'h' : 'a' } ]";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
 
@@ -699,7 +701,7 @@ class JsonParserTest {
     @Test
     void testSingletonListWithOneObjectNoSpaces() {
 
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         final String json = "[{'h':'a'}]";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
 

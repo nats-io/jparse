@@ -1,47 +1,16 @@
 package com.cloudurable.jparse;
 
-import com.cloudurable.jparse.node.*;
+import com.cloudurable.jparse.node.ArrayNode;
+import com.cloudurable.jparse.node.Node;
+import com.cloudurable.jparse.node.ObjectNode;
 import com.cloudurable.jparse.path.PathElement;
 import com.cloudurable.jparse.path.PathNode;
 import com.cloudurable.jparse.path.PathParser;
 import com.cloudurable.jparse.source.support.PathException;
-import com.cloudurable.jparse.source.support.UnexpectedCharacterException;
 
 import java.util.Iterator;
 
 public class Path {
-
-    public static int intAtPath(final String path, final Node rootNode) {
-        return numberNodeAtPath(path, rootNode).intValue();
-    }
-
-    public static float floatAtPath(final String path, final Node rootNode) {
-        return numberNodeAtPath(path, rootNode).floatValue();
-    }
-
-    public static double doubleAtPath(final String path, final Node rootNode) {
-        return numberNodeAtPath(path, rootNode).doubleValue();
-    }
-
-    public static long longAtPath(final String path, final Node rootNode) {
-        return numberNodeAtPath(path, rootNode).longValue();
-    }
-
-    public static CharSequence charSequenceAtPath(final String path, final Node rootNode) {
-        return stringNodeAtPath(path, rootNode).charSequence();
-    }
-
-    public static CharSequence stringAtPath(final String path, final Node rootNode) {
-        return stringNodeAtPath(path, rootNode).toString();
-    }
-
-    private static NumberNode numberNodeAtPath(String path, Node rootNode) {
-        return (NumberNode) atPath(path, rootNode);
-    }
-
-    private static StringNode stringNodeAtPath(String path, Node rootNode) {
-        return (StringNode) atPath(path, rootNode);
-    }
 
     public static Node atPath(final String path, final String json) {
         return atPath(path, Json.toRootNode(json));

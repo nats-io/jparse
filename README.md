@@ -60,14 +60,14 @@ Boon is 90,000 lines of code (just Java main not including test classes).
 Boon does too many things that no one uses. It was due for a complete redesign. 
 It also uses Unsafe which you can't do in later version of Java. 
 
-JParse is feature complete now done and is only 4,570 lines long vs. 90,000 LoC of Boon. 
+JParse is feature complete now done and is only 5,098 lines long vs. 90,000 LoC of Boon. 
 Jackson core is 55,000 LOC and there are other libs needed for various data types and mappings if you use Jackson. 
 
 
 ## What is JParse?
 
 JParse is a *JSON parser* plus a small subset of *JSONPath*.
-It is small (just 4,200 lines long). It uses an index overlay from the ground up which lays the foundation for quick JSONPath lookups 
+It is small (just 5,098 lines long). It uses an index overlay from the ground up which lays the foundation for quick JSONPath lookups 
 as well as very fast mapping. It will not grow in feature set. Any other features will be part of other libs. 
 
 
