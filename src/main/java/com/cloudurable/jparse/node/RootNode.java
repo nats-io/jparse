@@ -6,12 +6,14 @@ import com.cloudurable.jparse.node.support.TokenSubList;
 import com.cloudurable.jparse.path.PathNode;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.token.Token;
-import static com.cloudurable.jparse.token.TokenTypes.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+
+import static com.cloudurable.jparse.token.TokenTypes.ARRAY_TOKEN;
+import static com.cloudurable.jparse.token.TokenTypes.OBJECT_TOKEN;
 
 
 public class RootNode implements CollectionNode {
@@ -76,6 +78,16 @@ public class RootNode implements CollectionNode {
 
     public ObjectNode getObjectNode() {
         return (ObjectNode) getNode();
+    }
+
+    @Override
+    public ArrayNode asArray() {
+        return getArrayNode();
+    }
+
+    @Override
+    public ObjectNode asObject() {
+        return getObjectNode();
     }
 
     public Map<String, Object> getMap() {

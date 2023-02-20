@@ -1,7 +1,7 @@
 package com.cloudurable.jparse.node.support;
 
-import com.cloudurable.jparse.JsonParser;
-import com.cloudurable.jparse.Parser;
+import com.cloudurable.jparse.parser.JsonParser;
+import com.cloudurable.jparse.parser.IndexOverlayParser;
 import com.cloudurable.jparse.node.NodeType;
 import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.source.Sources;
@@ -158,7 +158,7 @@ class ElementUtilTest {
     @Test
     void testObject() {
 
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         //...................0123456789
         final String json = "{'a':'b'}";
         final TokenList list = (TokenList) parser.scan(Sources.stringSource(json.replace("'", "\"")));
@@ -174,7 +174,7 @@ class ElementUtilTest {
     @Test
     void testObject2() {
 
-        final Parser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonParser();
         //...................0123456789
         final String json = "{'a':'b'}";
         RootNode parse = parser.parse(niceJson(json));

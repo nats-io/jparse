@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.cloudurable.jparse.token.TokenTypes.ARRAY_ITEM_TOKEN;
+
 public class NodeUtils {
 
 
@@ -26,7 +28,7 @@ public class NodeUtils {
                 break;
             }
 
-            if (token.type <= 3) {
+            if (token.type <= ARRAY_ITEM_TOKEN) {
 
                 int childCount = tokens.countChildren(index, token);
                 int endIndex = index + childCount;

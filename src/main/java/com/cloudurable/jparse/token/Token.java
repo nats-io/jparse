@@ -25,4 +25,13 @@ public class Token {
     public int length() {
         return endIndex - startIndex;
     }
+
+    @Override
+    public String toString() {
+        return "Token{" +
+                "startIndex=" + startIndex +
+                ", endIndex=" + endIndex +
+                ", type=" + TokenTypes.getTypeName(type) + " " + type +
+                '}';
+    }
 }

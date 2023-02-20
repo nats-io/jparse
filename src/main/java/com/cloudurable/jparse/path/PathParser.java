@@ -1,15 +1,15 @@
 package com.cloudurable.jparse.path;
 
-import com.cloudurable.jparse.Parser;
 import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.node.support.TokenList;
+import com.cloudurable.jparse.parser.IndexOverlayParser;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.token.Token;
 import com.cloudurable.jparse.token.TokenTypes;
 
 import java.util.List;
 
-public class PathParser implements Parser {
+public class PathParser implements IndexOverlayParser {
 
 
     @Override

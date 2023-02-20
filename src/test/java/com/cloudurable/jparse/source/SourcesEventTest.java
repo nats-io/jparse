@@ -1,6 +1,6 @@
 package com.cloudurable.jparse.source;
 
-import com.cloudurable.jparse.parser.JsonParser;
+import com.cloudurable.jparse.parser.JsonEventParser;
 import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.node.support.PathUtils;
 import com.cloudurable.jparse.token.Token;
@@ -18,7 +18,7 @@ import static com.cloudurable.jparse.node.support.PathUtils.walkFull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SourcesTest {
+public class SourcesEventTest {
 
     final static String glossaryJson;
 
@@ -120,9 +120,8 @@ public class SourcesTest {
     private void doTest(CharSource charSource, File file) {
 
         try {
-            JsonParser jsonParser = new JsonParser();
-
-            RootNode jsonRoot = jsonParser.parse(charSource);
+            final var jsonParser = new JsonEventParser();
+            final var jsonRoot = jsonParser.parse(charSource);
 
             walkFull(jsonRoot.getNode());
             jsonRoot.getNode().rootElementToken();
@@ -132,7 +131,7 @@ public class SourcesTest {
     }
 
     private void doTest(CharSource charSource) {
-        JsonParser jsonParser = new JsonParser();
+        final var jsonParser = new JsonEventParser();
 
         RootNode jsonRoot = jsonParser.parse(charSource);
         Token token = jsonRoot.getNode().rootElementToken();
