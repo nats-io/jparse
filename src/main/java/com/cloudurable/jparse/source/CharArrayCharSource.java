@@ -95,6 +95,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         final var data = this.data;
         final var length = data.length;
         int ch = ETX;
+        int finalCh = ETX;
 
         loop:
         for (; index < length; index++) {
@@ -105,11 +106,13 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case TAB_WS:
                 case SPACE_WS:
                     continue;
-                default: break loop;
+                default:
+                    finalCh = ch;
+                    break loop;
             }
         }
         this.index = index ;
-        return ch;
+        return finalCh;
     }
 
     //
@@ -450,6 +453,52 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
             throw new UnexpectedCharacterException("Parsing JSON True Boolean", "Unexpected character", this);
         }
+    }
+
+    @Override
+    public boolean findObjectEndOrAttributeSep() {
+        int i = index;
+        char ch = 0;
+        final var data = this.data;
+        final var length = data.length;
+
+        for (; i < length; i++) {
+            ch = data[i];
+            switch (ch) {
+                case OBJECT_END_TOKEN:
+                    this.index = i + 1;
+                    return true;
+                case ATTRIBUTE_SEP:
+                    this.index = i ;
+                    return false;
+            }
+        }
+
+
+        throw new UnexpectedCharacterException("Parsing Object Key", "Finding object end or separator", this);
+    }
+
+    @Override
+    public boolean findCommaOrEnd() {
+        int i = index;
+        char ch = 0;
+        final var data = this.data;
+        final var length = data.length;
+
+        for (; i < length; i++) {
+            ch = data[i];
+            switch (ch) {
+                case LIST_END_TOKEN:
+                    this.index = i + 1;
+                    return true;
+                case LIST_SEP:
+                    this.index = i ;
+                    return false;
+            }
+        }
+
+
+        throw new UnexpectedCharacterException("Parsing Array", "Finding list end or separator", this);
     }
 
     @Override

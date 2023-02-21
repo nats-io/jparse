@@ -50,6 +50,7 @@ public class EqualityTest {
         doAssert(v1, v2);
     }
 
+
     @Test
     void testSimpleArray() {
         final IndexOverlayParser parser = new JsonParser();

@@ -17,11 +17,8 @@ import java.util.stream.Collectors;
 
 import static com.cloudurable.jparse.Json.niceJson;
 import static com.cloudurable.jparse.Json.toRootNode;
-import static com.cloudurable.jparse.node.JsonTestUtils.nodeObject;
-import static com.cloudurable.jparse.node.JsonTestUtils.nodeRoot;
-import static org.junit.jupiter.api.Assertions.*;
-
 import static com.cloudurable.jparse.node.JsonTestUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class JsonParserTest {
 
@@ -49,6 +46,24 @@ class JsonParserTest {
         //................012345678901234567890123
         final var json = "[1, 1.1, 1.2, 1.3, 1e+9, 1e9, 1e-9]";
         final float[] array = {1, 1.1f, 1.2f, 1.3f, 1e+9f, 1e9f, 1e-9f};
+        float[] values = Json.toArrayNode(niceJson(json)).getFloatArray();
+        assertArrayEquals(array, values);
+    }
+
+    @Test
+    public void testSimpleArray() {
+        //................012345678901234567890123
+        final var json = "[1]";
+        final float[] array = {1};
+        float[] values = Json.toArrayNode(niceJson(json)).getFloatArray();
+        assertArrayEquals(array, values);
+    }
+
+    @Test
+    public void testSimpleArray2() {
+        //................012345678901234567890123
+        final var json = "[1,2]";
+        final float[] array = {1,2};
         float[] values = Json.toArrayNode(niceJson(json)).getFloatArray();
         assertArrayEquals(array, values);
     }
@@ -407,6 +422,66 @@ class JsonParserTest {
         assertEquals(NodeType.FLOAT, jsonRoot.getType());
     }
 
+
+    @Test
+    void test_empty_object() {
+
+        final IndexOverlayParser parser = new JsonParser();
+        final String json = "{}";
+        final RootNode jsonRoot = parser.parse(Json.niceJson(json));
+
+        System.out.println(jsonRoot.tokens());
+        assertEquals(0, jsonRoot.asObject().size());
+
+    }
+
+    @Test
+    void test_n_object_with_single_string() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................0123456789012345678901234
+        final String json = "{'foo' :  'bar',  'a' }";
+        try {
+            final RootNode jsonRoot = parser.parse(Json.niceJson(json));
+            System.out.println(jsonRoot.tokens());
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
+
+    }
+
+    @Test
+    void test_n_structure_double_array() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................0123456789012345678901234
+        final String json = "[][]";
+        try {
+            final RootNode jsonRoot = parser.parse(Json.niceJson(json));
+            System.out.println(jsonRoot.tokens());
+            assertTrue(false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    @Test
+    void test_n_array_missing_value() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................0123456789012345678901234
+        final String json = "[   , \"\"]";
+        try {
+            final RootNode jsonRoot = parser.parse(Json.niceJson(json));
+            System.out.println(jsonRoot.tokens());
+            assertTrue(false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+
+
     @Test
     void testGetNumInt() {
         final IndexOverlayParser parser = new JsonParser();
@@ -597,6 +672,15 @@ class JsonParserTest {
     }
 
     @Test
+    void testSimpleArrayFromArray_easy() {
+        final IndexOverlayParser parser = new JsonParser();
+        final String json = "[[1],2]";
+        final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
+        assertEquals(1L, jsonRoot.getArrayNode().getArray(0).getLong(0));
+        assertEquals(1, jsonRoot.getArrayNode().getArray(0).getNumberNode(0).intValue());
+        assertEquals(3, jsonRoot.getArrayNode().getArray(0).length());
+    }
+    @Test
     void testSimpleArrayFromArray2() {
 
         final var json = "[[1,2,3],7,13]";
@@ -635,6 +719,7 @@ class JsonParserTest {
         //...................0123
         final String json = "{'a':1}";
         final RootNode jsonRoot = nodeRoot(json);
+        System.out.println(jsonRoot.tokens());
         assertEquals(1, jsonRoot.getObjectNode().getLong("a"));
         assertEquals(1, jsonRoot.getObjectNode().getNumberNode("a").intValue());
         assertEquals(NodeType.OBJECT, jsonRoot.getType());

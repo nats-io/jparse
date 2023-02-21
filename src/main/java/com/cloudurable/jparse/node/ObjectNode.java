@@ -26,7 +26,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
 
     public ObjectNode(TokenSubList tokens, CharSource source, boolean objectsKeysCanBeEncoded) {
 
-        this.tokens = tokens;
+        this.tokens =  tokens;
         this.source = source;
         this.rootToken = tokens.get(0);
         this.objectsKeysCanBeEncoded = objectsKeysCanBeEncoded;

@@ -558,6 +558,17 @@ class JsonEventParserTest {
     }
 
     @Test
+    void testSimpleNullFromArray2() {
+        final IndexOverlayParser parser = new JsonEventParser();
+        final String json = "[null,null,null]";
+        final RootNode jsonRoot = toRootNode(json);
+        NullNode nullNode = jsonRoot.getArrayNode().getNullNode(0);
+        assertEquals("null", nullNode.toString());
+
+        assertNull(jsonRoot.getArrayNode().get(0));
+
+    }
+    @Test
     void testSimpleArrayFromArray() {
         final IndexOverlayParser parser = new JsonEventParser();
         //...................012345678901234

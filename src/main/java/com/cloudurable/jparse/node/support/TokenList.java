@@ -81,4 +81,8 @@ public class TokenList extends AbstractList<Token> {
         System.arraycopy(tokens, 0, newTokens, 0, length);
         return new TokenList(newTokens);
     }
+
+    public void undoPlaceholder() {
+        index--;
+    }
 }
