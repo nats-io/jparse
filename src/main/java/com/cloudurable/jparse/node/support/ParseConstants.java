@@ -12,14 +12,14 @@ public interface ParseConstants {
     int FALSE_BOOLEAN_START = 'f';
     int OBJECT_START_TOKEN = '{';
     int OBJECT_END_TOKEN = '}';
-    int LIST_START_TOKEN = '[';
-    int LIST_END_TOKEN = ']';
+    int ARRAY_START_TOKEN = '[';
+    int ARRAY_END_TOKEN = ']';
     int ATTRIBUTE_SEP = ':';
     int LIST_SEP = ',';
-    int MAP_SEP = ',';
+    int OBJECT_ATTRIBUTE_SEP = ',';
 
-    int INDEX_BRACKET_START_TOKEN = LIST_START_TOKEN;
-    int INDEX_BRACKET_END_TOKEN = LIST_END_TOKEN;
+    int INDEX_BRACKET_START_TOKEN = ARRAY_START_TOKEN;
+    int INDEX_BRACKET_END_TOKEN = ARRAY_END_TOKEN;
 
     int STRING_START_TOKEN = '"';
     int STRING_END_TOKEN = '"';

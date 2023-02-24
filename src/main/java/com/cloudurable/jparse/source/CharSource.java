@@ -18,6 +18,8 @@ public interface CharSource {
 
     char getCurrentCharSafe();
 
+    void skipWhiteSpace();
+
     char getChartAt(int index);
 
     String getString(int startIndex, int endIndex);

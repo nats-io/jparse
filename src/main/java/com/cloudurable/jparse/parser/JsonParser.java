@@ -41,7 +41,7 @@ public class JsonParser implements IndexOverlayParser {
                 parseObject(source, tokens);
                 break;
 
-            case LIST_START_TOKEN:
+            case ARRAY_START_TOKEN:
                 parseArray(source, tokens);
                 break;
 
@@ -112,7 +112,6 @@ public class JsonParser implements IndexOverlayParser {
         tokens.placeHolder();
 
         boolean done = false;
-        loop:
         while (!done) {
             done = parseArrayItem(source, tokens);
 
@@ -142,7 +141,7 @@ public class JsonParser implements IndexOverlayParser {
                     parseObject(source, tokens);
                     break;
 
-                case LIST_START_TOKEN:
+                case ARRAY_START_TOKEN:
                     parseArray(source, tokens);
                     break;
 
@@ -176,8 +175,9 @@ public class JsonParser implements IndexOverlayParser {
                 case MINUS:
                 case PLUS:
                     parseNumber(source, tokens);
-                    if (source.getCurrentChar() == LIST_END_TOKEN || source.getCurrentChar() == LIST_SEP) {
-                        if (source.getCurrentChar() == LIST_END_TOKEN) {
+                    if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == LIST_SEP) {
+                        if (source.getCurrentChar() == ARRAY_END_TOKEN) {
+                            source.next();
                             return true;
                         }
                     }
@@ -199,9 +199,11 @@ public class JsonParser implements IndexOverlayParser {
 
 
     private boolean parseKey(final CharSource source, final TokenList tokens) {
+
+
         int ch = source.nextSkipWhiteSpace();
 
-        final int startIndex = source.getIndex();
+        final int startIndex = source.getIndex() - 1;
         final int tokenListIndex = tokens.getIndex();
         tokens.placeHolder();
         boolean found = false;
@@ -226,17 +228,23 @@ public class JsonParser implements IndexOverlayParser {
         }
 
 
-        boolean done = source.findObjectEndOrAttributeSep();
+        try {
+            boolean done = source.findObjectEndOrAttributeSep();
 
-        if (!done && found) {
-            tokens.set(tokenListIndex, new Token(startIndex + 1, source.getIndex(), TokenTypes.ATTRIBUTE_KEY_TOKEN));
-        } else if (found && done){
+            if (!done && found) {
+                tokens.set(tokenListIndex, new Token(startIndex + 1, source.getIndex(), TokenTypes.ATTRIBUTE_KEY_TOKEN));
+            } else if (found && done) {
 
-            throw new UnexpectedCharacterException("Parsing key", "Not found", source);
+                throw new UnexpectedCharacterException("Parsing key", "Not found", source);
 
+            }
+
+            return done;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            tokens.forEach(t -> System.out.println(t));
+            throw new IllegalStateException(ex);
         }
-
-        return done;
     }
 
 
@@ -246,77 +254,72 @@ public class JsonParser implements IndexOverlayParser {
         final int tokenListIndex = tokens.getIndex();
         tokens.placeHolder();
 
-        forLoop:
-        for (; ch != ETX; ch = source.nextSkipWhiteSpace()) {
+        switch (ch) {
+            case OBJECT_START_TOKEN:
+                parseObject(source, tokens);
+                break;
 
-            switch (ch) {
-                case OBJECT_START_TOKEN:
-                    parseObject(source, tokens);
-                    break;
+            case ARRAY_START_TOKEN:
+                parseArray(source, tokens);
+                break;
 
-                case LIST_START_TOKEN:
-                    parseArray(source, tokens);
-                    break;
+            case TRUE_BOOLEAN_START:
+                parseTrue(source, tokens);
+                break;
 
-                case NEW_LINE_WS:
-                case CARRIAGE_RETURN_WS:
-                case TAB_WS:
-                case SPACE_WS:
-                    continue;
+            case FALSE_BOOLEAN_START:
+                parseFalse(source, tokens);
+                break;
 
-                case TRUE_BOOLEAN_START:
-                    parseTrue(source, tokens);
-                    break;
+            case NULL_START:
+                parseNull(source, tokens);
+                break;
 
-                case FALSE_BOOLEAN_START:
-                    parseFalse(source, tokens);
-                    break;
+            case STRING_START_TOKEN:
+                parseString(source, tokens);
+                break;
 
-                case NULL_START:
-                    parseNull(source, tokens);
-                    break;
+            case NUM_0:
+            case NUM_1:
+            case NUM_2:
+            case NUM_3:
+            case NUM_4:
+            case NUM_5:
+            case NUM_6:
+            case NUM_7:
+            case NUM_8:
+            case NUM_9:
+            case MINUS:
+            case PLUS:
+                parseNumber(source, tokens);
+                break;
 
-                case STRING_START_TOKEN:
-                    parseString(source, tokens);
-                    break;
-
-                case NUM_0:
-                case NUM_1:
-                case NUM_2:
-                case NUM_3:
-                case NUM_4:
-                case NUM_5:
-                case NUM_6:
-                case NUM_7:
-                case NUM_8:
-                case NUM_9:
-                case MINUS:
-                case PLUS:
-                    parseNumber(source, tokens);
-                    tokens.set(tokenListIndex, new Token(startIndex, source.getIndex(), TokenTypes.ATTRIBUTE_VALUE_TOKEN));
-                    if (source.getCurrentChar() == MAP_SEP) {
-                        return false;
-                    }
-                    if (source.getCurrentChar() == OBJECT_END_TOKEN) {
-                        return true;
-                    } else {
-                        break;
-                    }
-
-                case OBJECT_END_TOKEN:
-                case MAP_SEP:
-                    if (source.getIndex() == tokenListIndex) {
-                        throw new UnexpectedCharacterException("Parsing Value", "Key separator before value", source);
-                    }
-                    tokens.set(tokenListIndex, new Token(startIndex, source.getIndex(), TokenTypes.ATTRIBUTE_VALUE_TOKEN));
-                    break forLoop;
-
-                default:
-                    throw new UnexpectedCharacterException("Parsing Value", "Unexpected character", source, ch);
-
-            }
+            default:
+                throw new UnexpectedCharacterException("Parsing Value", "Unexpected character", source, ch);
         }
-        return ch == OBJECT_END_TOKEN;
+
+        source.skipWhiteSpace();
+
+        switch (source.getCurrentChar()) {
+            case OBJECT_END_TOKEN:
+                if (source.getIndex() == tokenListIndex) {
+                    throw new UnexpectedCharacterException("Parsing Value", "Key separator before value", source);
+                }
+                tokens.set(tokenListIndex, new Token(startIndex, source.getIndex(), TokenTypes.ATTRIBUTE_VALUE_TOKEN));
+                return true;
+            case OBJECT_ATTRIBUTE_SEP:
+                if (source.getIndex() == tokenListIndex) {
+                    throw new UnexpectedCharacterException("Parsing Value", "Key separator before value", source);
+                }
+                tokens.set(tokenListIndex, new Token(startIndex, source.getIndex(), TokenTypes.ATTRIBUTE_VALUE_TOKEN));
+                return false;
+
+            default:
+                tokens.forEach(System.out::println);
+                throw new UnexpectedCharacterException("Parsing Value", "Unexpected character", source, source.getCurrentChar());
+
+        }
+
     }
 
     private void parseString(final CharSource source, TokenList tokens) {
@@ -337,7 +340,8 @@ public class JsonParser implements IndexOverlayParser {
             if (!done)
               done = parseValue(source, tokens);
         }
-        tokens.set(tokenListIndex, new Token(startSourceIndex, source.getIndex() + 1, TokenTypes.OBJECT_TOKEN));
+        source.next();
+        tokens.set(tokenListIndex, new Token(startSourceIndex, source.getIndex(), TokenTypes.OBJECT_TOKEN));
     }
 
 

@@ -305,7 +305,6 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
 
     private List<CharSequence> keys() {
         if (keys == null) {
-
             List<List<Token>> childrenTokens = childrenTokens();
             keys = new ArrayList<>(childrenTokens.size() / 2);
             for (int index = 0; index < childrenTokens.size(); index += 2) {
@@ -314,7 +313,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
                 Token keyToken = itemKey.get(1);
                 element = switch (keyToken.type) {
                     case TokenTypes.STRING_TOKEN -> new StringNode(keyToken, source, objectsKeysCanBeEncoded).toString();
-                    default -> throw new IllegalStateException("Only String are allowed for keys");
+                    default -> throw new IllegalStateException("Only String are allowed for keys " + TokenTypes.getTypeName(keyToken.type));
                 };
                 keys.add(element);
             }

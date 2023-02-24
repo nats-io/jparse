@@ -100,7 +100,7 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
                     parseObject(source, event);
                     break;
 
-                case LIST_START_TOKEN:
+                case ARRAY_START_TOKEN:
                     parseArray(source, event);
                     break;
 
@@ -185,7 +185,7 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
                     event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
                     break;
 
-                case LIST_START_TOKEN:
+                case ARRAY_START_TOKEN:
                     event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
                     parseArray(source, event);
                     event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
@@ -230,14 +230,14 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
                     event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
                     parseNumber(source, event);
                     event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    if (source.getCurrentChar() == LIST_END_TOKEN || source.getCurrentChar() == LIST_SEP) {
-                        if (source.getCurrentChar() == LIST_END_TOKEN) {
+                    if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == LIST_SEP) {
+                        if (source.getCurrentChar() == ARRAY_END_TOKEN) {
                             return true;
                         }
                     }
                     break;
 
-                case LIST_END_TOKEN:
+                case ARRAY_END_TOKEN:
                 case LIST_SEP:
                     break forLoop;
 
@@ -252,7 +252,7 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
 
             }
         }
-        return ch == LIST_END_TOKEN;
+        return ch == ARRAY_END_TOKEN;
     }
 
     private void parseNumber(final CharSource source, final TokenEventListener event) {
@@ -316,7 +316,7 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
                     parseObject(source, event);
                     break;
 
-                case LIST_START_TOKEN:
+                case ARRAY_START_TOKEN:
                     parseArray(source, event);
                     break;
 
@@ -355,7 +355,7 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
                 case MINUS:
                 case PLUS:
                     parseNumber(source, event);
-                    if (source.getCurrentChar() == MAP_SEP) {
+                    if (source.getCurrentChar() == OBJECT_ATTRIBUTE_SEP) {
                         event.end(TokenTypes.ATTRIBUTE_VALUE_TOKEN, source.getIndex(), source);
                         return false;
                     }
@@ -367,7 +367,7 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
                     }
 
                 case OBJECT_END_TOKEN:
-                case MAP_SEP:
+                case OBJECT_ATTRIBUTE_SEP:
                     event.end(TokenTypes.ATTRIBUTE_VALUE_TOKEN, source.getIndex(), source);
                     break forLoop;
 
