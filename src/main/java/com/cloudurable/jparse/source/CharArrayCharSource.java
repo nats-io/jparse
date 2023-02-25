@@ -95,6 +95,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         final var data = this.data;
         final var length = data.length;
         int ch = ETX;
+        int finalCh = ETX;
 
         loop:
         for (; index < length; index++) {
@@ -105,11 +106,50 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case TAB_WS:
                 case SPACE_WS:
                     continue;
-                default: break loop;
+                default:
+                    finalCh = ch;
+                    break loop;
             }
         }
         this.index = index ;
-        return ch;
+        return finalCh;
+    }
+
+    @Override
+    public void skipWhiteSpace() {
+        int index = this.index;
+        final var data = this.data;
+        final var length = data.length;
+
+        if (index >= length) {
+            return;
+        }
+        int ch = data[index];
+
+        if (switch (ch) {
+            case NEW_LINE_WS -> false;
+            case CARRIAGE_RETURN_WS -> false;
+            case TAB_WS -> false;
+            case SPACE_WS -> false;
+            default -> true;
+        }) {
+            return;
+        }
+
+        loop:
+        for (; index < length; index++) {
+            ch = data[index];
+            switch (ch) {
+                case NEW_LINE_WS:
+                case CARRIAGE_RETURN_WS:
+                case TAB_WS:
+                case SPACE_WS:
+                    continue;
+                default:
+                    break loop;
+            }
+        }
+        this.index = index ;
     }
 
     //
@@ -233,18 +273,68 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                     continue;
                 case STRING_END_TOKEN:
                     if (!controlChar) {
-                        index = i;
+                        index = i + 1;
                         return i;
                     }
                     controlChar = false;
                     break;
+//TODO FIXME
+//                case 'u':
+//                    if (controlChar) {
+//                        i = findEndOfHexEncoding(i);
+//                        return i;
+//                    }
+//                    continue;
                 default:
                     controlChar = false;
-                    break;
+                    if (ch >= SPACE_WS) {
+                        continue;
+                    }
+                    throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this,  ch, i);
 
             }
         }
         throw new UnexpectedCharacterException("Parsing JSON Encoded String", "Unable to find closing for String", this, (int) ch, i);
+    }
+
+    private int findEndOfHexEncoding(int index) {
+        final var data = this.data;
+        final var length = data.length;
+
+        if (isHex(data[++index]) && isHex(data[++index])  && isHex(data[++index])  && isHex(data[++index]) ) {
+            return ++index;
+        } else {
+            throw new UnexpectedCharacterException("Parsing hex encoding in a string", "Unexpected character", this);
+        }
+
+    }
+
+    private boolean isHex(char datum) {
+        return switch (datum) {
+            case 'A'-> true;
+            case 'B'-> true;
+            case 'C'-> true;
+            case 'D'-> true;
+            case 'E'-> true;
+            case 'F'-> true;
+            case 'a'-> true;
+            case 'b'-> true;
+            case 'c'-> true;
+            case 'd'-> true;
+            case 'e'-> true;
+            case 'f'-> true;
+            case '0'-> true;
+            case '1'-> true;
+            case '2'-> true;
+            case '3'-> true;
+            case '4'-> true;
+            case '5'-> true;
+            case '6'-> true;
+            case '7'-> true;
+            case '8'-> true;
+            case '9'-> true;
+            default -> false;
+        };
     }
 
     @Override
@@ -261,6 +351,11 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case STRING_END_TOKEN:
                     index = i;
                     return i;
+                default:
+                    if (ch >= SPACE_WS) {
+                        continue;
+                    }
+                    throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this,  ch, i);
             }
         }
         throw new UnexpectedCharacterException("Parsing JSON String", "Unable to find closing for String", this,  ch, i);
@@ -286,7 +381,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case ATTRIBUTE_SEP:
                 case LIST_SEP:
                 case OBJECT_END_TOKEN:
-                case LIST_END_TOKEN:
+                case ARRAY_END_TOKEN:
                     index = i;
                     return new NumberParseResult(i, false);
 
@@ -341,7 +436,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case ATTRIBUTE_SEP:
                 case LIST_SEP:
                 case OBJECT_END_TOKEN:
-                case LIST_END_TOKEN:
+                case ARRAY_END_TOKEN:
                     index = i;
                     return new NumberParseResult(i, true);
 
@@ -393,7 +488,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case ATTRIBUTE_SEP:
                 case LIST_SEP:
                 case OBJECT_END_TOKEN:
-                case LIST_END_TOKEN:
+                case ARRAY_END_TOKEN:
                     index = i;
                     return new NumberParseResult(i, true);
 
@@ -435,7 +530,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     public int findFalseEnd() {
 
         if (this.data[++index] == 'a' && this.data[++index] == 'l' && this.data[++index] == 's' && this.data[++index] == 'e') {
-            return index;
+            return ++index;
         } else {
             throw new UnexpectedCharacterException("Parsing JSON False Boolean", "Unexpected character", this);
 
@@ -445,7 +540,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public int findTrueEnd() {
         if (this.data[++index] == 'r' && this.data[++index] == 'u' && this.data[++index] == 'e') {
-            return index;
+            return ++index;
         } else {
 
             throw new UnexpectedCharacterException("Parsing JSON True Boolean", "Unexpected character", this);
@@ -453,9 +548,56 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     }
 
     @Override
+    public boolean findObjectEndOrAttributeSep() {
+        int i = index;
+        char ch = 0;
+        final var data = this.data;
+        final var length = data.length;
+
+        for (; i < length; i++) {
+            ch = data[i];
+            switch (ch) {
+                case OBJECT_END_TOKEN:
+                    this.index = i + 1;
+                    return true;
+                case ATTRIBUTE_SEP:
+                    this.index = i ;
+                    return false;
+            }
+        }
+
+
+
+        throw new UnexpectedCharacterException("Parsing Object Key", "Finding object end or separator", this);
+    }
+
+    @Override
+    public boolean findCommaOrEnd() {
+        int i = index;
+        char ch = 0;
+        final var data = this.data;
+        final var length = data.length;
+
+        for (; i < length; i++) {
+            ch = data[i];
+            switch (ch) {
+                case ARRAY_END_TOKEN:
+                    this.index = i + 1;
+                    return true;
+                case LIST_SEP:
+                    this.index = i ;
+                    return false;
+            }
+        }
+
+
+        throw new UnexpectedCharacterException("Parsing Array", "Finding list end or separator", this);
+    }
+
+    @Override
     public int findNullEnd() {
         if (this.data[++index] == 'u' && this.data[++index] == 'l' && this.data[++index] == 'l') {
-            return index;
+            return ++index;
         } else {
             throw new UnexpectedCharacterException("Parsing JSON Null", "Unexpected character", this);
         }
@@ -868,11 +1010,11 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
             charString = "[SPACE]";
         } else if ( c == '\t' ) {
             charString = "[TAB]";
-
         } else if ( c == '\n' ) {
             charString = "[NEWLINE]";
-
-        } else {
+        } else if ( c == ETX) {
+            charString = "ETX";
+        } else{
             charString = "'" + (char)c + "'";
         }
 

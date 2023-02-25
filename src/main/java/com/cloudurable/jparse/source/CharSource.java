@@ -18,6 +18,8 @@ public interface CharSource {
 
     char getCurrentCharSafe();
 
+    void skipWhiteSpace();
+
     char getChartAt(int index);
 
     String getString(int startIndex, int endIndex);
@@ -63,4 +65,8 @@ public interface CharSource {
 
     String errorDetails( String message, int index, int ch );
 
+
+    boolean findCommaOrEnd();
+
+    boolean findObjectEndOrAttributeSep();
 }

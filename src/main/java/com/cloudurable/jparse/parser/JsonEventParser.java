@@ -93,22 +93,15 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
 
         int ch = source.nextSkipWhiteSpace();
 
-        for (; ch != ETX; ch = source.nextSkipWhiteSpace()) {
 
             switch (ch) {
                 case OBJECT_START_TOKEN:
                     parseObject(source, event);
                     break;
 
-                case LIST_START_TOKEN:
+                case ARRAY_START_TOKEN:
                     parseArray(source, event);
                     break;
-
-                case NEW_LINE_WS:
-                case CARRIAGE_RETURN_WS:
-                case TAB_WS:
-                case SPACE_WS:
-                    continue;
 
                 case TRUE_BOOLEAN_START:
                     parseTrue(source, event);
@@ -145,7 +138,12 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
                     throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character", source, (char) ch);
             }
 
+        ch = source.nextSkipWhiteSpace();
+        if (ch != ETX) {
+            throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character after reading root object", source, (char) ch);
         }
+
+
     }
 
     private void parseFalse(final CharSource source, final TokenEventListener event) {
@@ -168,27 +166,28 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
         boolean done = false;
         while (!done) {
             done = parseArrayItem(source, event);
+
+            if (!done) {
+                done = source.findCommaOrEnd();
+            }
         }
-        event.end(TokenTypes.ARRAY_TOKEN, source.getIndex() + 1, source);
+        event.end(TokenTypes.ARRAY_TOKEN, source.getIndex(), source);
     }
 
     private boolean parseArrayItem(CharSource source, final TokenEventListener event) {
         int ch = source.nextSkipWhiteSpace();
 
-        forLoop:
-        for (; ch != ETX; ch = source.nextSkipWhiteSpace()) {
+        switch (ch) {
+            case OBJECT_START_TOKEN:
+                event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                parseObject(source, event);
+                event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                break;
 
-            switch (ch) {
-                case OBJECT_START_TOKEN:
-                    event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    parseObject(source, event);
-                    event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    break;
-
-                case LIST_START_TOKEN:
-                    event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    parseArray(source, event);
-                    event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+            case ARRAY_START_TOKEN:
+                event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                parseArray(source, event);
+                event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
                     break;
 
                 case TRUE_BOOLEAN_START:
@@ -230,152 +229,138 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
                     event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
                     parseNumber(source, event);
                     event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    if (source.getCurrentChar() == LIST_END_TOKEN || source.getCurrentChar() == LIST_SEP) {
-                        if (source.getCurrentChar() == LIST_END_TOKEN) {
+                    if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == LIST_SEP) {
+                        if (source.getCurrentChar() == ARRAY_END_TOKEN) {
+                            source.next();
                             return true;
                         }
                     }
                     break;
 
-                case LIST_END_TOKEN:
-                case LIST_SEP:
-                    break forLoop;
+            case ARRAY_END_TOKEN:
+                source.next();
+                return true;
 
-                case NEW_LINE_WS:
-                case CARRIAGE_RETURN_WS:
-                case TAB_WS:
-                case SPACE_WS:
-                    continue;
 
-                default:
-                    throw new UnexpectedCharacterException("Parsing Array Item", "Unexpected character", source, (char) ch);
+            default:
+                throw new UnexpectedCharacterException("Parsing Array Item", "Unexpected character", source, (char) ch);
 
-            }
         }
-        return ch == LIST_END_TOKEN;
+
+        return false;
     }
 
     private void parseNumber(final CharSource source, final TokenEventListener event) {
         final int startIndex = source.getIndex();
         final var numberParse = source.findEndOfNumber();
-        final int token = numberParse.wasFloat() ? TokenTypes.FLOAT_TOKEN : TokenTypes.INT_TOKEN;
-        event.start(token, startIndex, source);
-        event.end(token, numberParse.endIndex(), source);
+        final int tokenType = numberParse.wasFloat() ? TokenTypes.FLOAT_TOKEN : TokenTypes.INT_TOKEN;
+        event.start(tokenType, startIndex, source);
+        event.end(tokenType, numberParse.endIndex(), source);
     }
 
-    private void parseKey(final CharSource source, final TokenEventListener event) {
+    private boolean parseKey(final CharSource source, final TokenEventListener event) {
         int ch = source.nextSkipWhiteSpace();
         event.start(TokenTypes.ATTRIBUTE_KEY_TOKEN, source.getIndex(), source);
-        boolean done = false;
+        boolean found = false;
 
-        forLoop:
-        for (; ch != ETX; ch = source.nextSkipWhiteSpace()) {
-            switch (ch) {
 
-                case NEW_LINE_WS:
-                case CARRIAGE_RETURN_WS:
-                case TAB_WS:
-                case SPACE_WS:
-                    continue;
+        switch (ch) {
 
-                case STRING_START_TOKEN:
-                    final int strStartIndex = source.getIndex();
-                    event.start(TokenTypes.STRING_TOKEN, strStartIndex + 1, source);
-                    final int strEndIndex;
-                    if (objectsKeysCanBeEncoded) {
-                        strEndIndex = source.findEndOfEncodedString();
-                    } else {
-                        strEndIndex = source.findEndString();
-                    }
-                    event.end(TokenTypes.STRING_TOKEN, strEndIndex, source);
-                    break;
 
-                case ATTRIBUTE_SEP:
-                    event.end(TokenTypes.ATTRIBUTE_KEY_TOKEN, source.getIndex(), source);
-                    done = true;
-                    break forLoop;
+            case STRING_START_TOKEN:
+                final int strStartIndex = source.getIndex();
+                event.start(TokenTypes.STRING_TOKEN, strStartIndex + 1, source);
+                final int strEndIndex;
+                if (objectsKeysCanBeEncoded) {
+                    strEndIndex = source.findEndOfEncodedString();
+                } else {
+                    strEndIndex = source.findEndString();
+                }
+                found = true;
+                event.end(TokenTypes.STRING_TOKEN, strEndIndex, source);
+                break;
 
-                default:
-                    throw new UnexpectedCharacterException("Parsing Object Key", "Unexpected character", source, (char) ch);
-            }
+            case OBJECT_END_TOKEN:
+                return true;
+
+            default:
+                throw new UnexpectedCharacterException("Parsing key", "Unexpected character found", source);
         }
 
-        if (!done) {
-            throw new UnexpectedCharacterException("Parsing Object Key", "Should be done but not", source);
+
+        boolean done = source.findObjectEndOrAttributeSep();
+
+        if (!done && found) {
+            event.end(TokenTypes.ATTRIBUTE_KEY_TOKEN, source.getIndex(), source);
+        } else if (found && done) {
+            throw new UnexpectedCharacterException("Parsing key", "Not found", source);
         }
+        return done;
     }
 
     private boolean parseValue(final CharSource source, final TokenEventListener event) {
         int ch = source.nextSkipWhiteSpace();
         event.start(TokenTypes.ATTRIBUTE_VALUE_TOKEN, source.getIndex(), source);
 
-        forLoop:
-        for (; ch != ETX; ch = source.nextSkipWhiteSpace()) {
-            switch (ch) {
-                case OBJECT_START_TOKEN:
-                    parseObject(source, event);
-                    break;
+        switch (ch) {
+            case OBJECT_START_TOKEN:
+                parseObject(source, event);
+                break;
 
-                case LIST_START_TOKEN:
-                    parseArray(source, event);
-                    break;
+            case ARRAY_START_TOKEN:
+                parseArray(source, event);
+                break;
 
-                case NEW_LINE_WS:
-                case CARRIAGE_RETURN_WS:
-                case TAB_WS:
-                case SPACE_WS:
-                    continue;
+            case TRUE_BOOLEAN_START:
+                parseTrue(source, event);
+                break;
 
-                case TRUE_BOOLEAN_START:
-                    parseTrue(source, event);
-                    break;
+            case FALSE_BOOLEAN_START:
+                parseFalse(source, event);
+                break;
 
-                case FALSE_BOOLEAN_START:
-                    parseFalse(source, event);
-                    break;
+            case NULL_START:
+                parseNull(source, event);
+                break;
 
-                case NULL_START:
-                    parseNull(source, event);
-                    break;
+            case STRING_START_TOKEN:
+                parseString(source, event);
+                break;
 
-                case STRING_START_TOKEN:
-                    parseString(source, event);
-                    break;
+            case NUM_0:
+            case NUM_1:
+            case NUM_2:
+            case NUM_3:
+            case NUM_4:
+            case NUM_5:
+            case NUM_6:
+            case NUM_7:
+            case NUM_8:
+            case NUM_9:
+            case MINUS:
+            case PLUS:
+                parseNumber(source, event);
+                break;
 
-                case NUM_0:
-                case NUM_1:
-                case NUM_2:
-                case NUM_3:
-                case NUM_4:
-                case NUM_5:
-                case NUM_6:
-                case NUM_7:
-                case NUM_8:
-                case NUM_9:
-                case MINUS:
-                case PLUS:
-                    parseNumber(source, event);
-                    if (source.getCurrentChar() == MAP_SEP) {
-                        event.end(TokenTypes.ATTRIBUTE_VALUE_TOKEN, source.getIndex(), source);
-                        return false;
-                    }
-                    if (source.getCurrentChar() == OBJECT_END_TOKEN) {
-                        event.end(TokenTypes.ATTRIBUTE_VALUE_TOKEN, source.getIndex(), source);
-                        return true;
-                    } else {
-                        break;
-                    }
-
-                case OBJECT_END_TOKEN:
-                case MAP_SEP:
-                    event.end(TokenTypes.ATTRIBUTE_VALUE_TOKEN, source.getIndex(), source);
-                    break forLoop;
-
-                default:
-                    throw new UnexpectedCharacterException("Parsing Value", "Unexpected character", source, ch);
-            }
+            default:
+                throw new UnexpectedCharacterException("Parsing Value", "Unexpected character", source, ch);
         }
-        return ch == OBJECT_END_TOKEN;
+
+        source.skipWhiteSpace();
+
+        switch (source.getCurrentChar()) {
+            case OBJECT_END_TOKEN:
+
+                event.end(TokenTypes.ATTRIBUTE_VALUE_TOKEN, source.getIndex(), source);
+                return true;
+            case OBJECT_ATTRIBUTE_SEP:
+                event.end(TokenTypes.ATTRIBUTE_VALUE_TOKEN, source.getIndex(), source);
+                return false;
+
+            default:
+                throw new UnexpectedCharacterException("Parsing Value", "Unexpected character", source, source.getCurrentChar());
+
+        }
     }
 
     private void parseString(final CharSource source, final TokenEventListener event) {
@@ -385,12 +370,15 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
 
     private void parseObject(final CharSource source, final TokenEventListener event) {
         event.start(TokenTypes.OBJECT_TOKEN, source.getIndex(), source);
+
         boolean done = false;
         while (!done) {
-            parseKey(source, event);
-            done = parseValue(source, event);
+            done = parseKey(source, event);
+            if (!done)
+                done = parseValue(source, event);
         }
-        event.end(TokenTypes.OBJECT_TOKEN, source.getIndex() + 1, source);
+        source.next();
+        event.end(TokenTypes.OBJECT_TOKEN, source.getIndex(), source);
     }
 
     @Override
