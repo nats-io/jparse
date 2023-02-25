@@ -538,14 +538,14 @@ class JsonParserTest {
     void test3ItemMap() {
         final IndexOverlayParser parser = new JsonParser();
         //...................012345678901234567890
-        final String json = "{'a':'abc','b':'def', 'c': 1234 }";
+        final String json = "{'a':'abc','b':'def', 'c': true }";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
         assertEquals(3, jsonRoot.getObjectNode().length());
         assertEquals(NodeType.OBJECT, jsonRoot.getType());
         assertEquals("abc", jsonRoot.getObjectNode().getNode("a").toString());
         assertEquals("def", jsonRoot.getObjectNode().getStringNode("b").toString());
-        assertEquals(1234, jsonRoot.getObjectNode().getNumberNode("c").intValue());
-        assertEquals(1234, jsonRoot.getObjectNode().getInt("c"));
+        assertEquals(true, jsonRoot.getObjectNode().getBooleanNode("c").booleanValue());
+        assertEquals(true, jsonRoot.getObjectNode().getBoolean("c"));
     }
 
     @Test
