@@ -83,7 +83,7 @@ public class JsonParser implements IndexOverlayParser {
 
         ch = source.nextSkipWhiteSpace();
         if (ch != ETX) {
-            throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character after reading object", source, (char) ch);
+            throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character after reading root object", source, (char) ch);
         }
         return tokens;
     }
@@ -120,9 +120,7 @@ public class JsonParser implements IndexOverlayParser {
             }
         }
 
-        final int endSourceIndex = source.getIndex();
-
-        final Token arrayToken = new Token(startSourceIndex, endSourceIndex, TokenTypes.ARRAY_TOKEN);
+        final Token arrayToken = new Token(startSourceIndex, source.getIndex(), TokenTypes.ARRAY_TOKEN);
         tokens.set(tokenListIndex, arrayToken);
     }
 
@@ -132,21 +130,17 @@ public class JsonParser implements IndexOverlayParser {
     private boolean parseArrayItem(CharSource source, TokenList tokens) {
         int ch  = source.nextSkipWhiteSpace();
 
+        switch (ch) {
+            case OBJECT_START_TOKEN:
+                parseObject(source, tokens);
+                break;
 
-       // forLoop:
-//        for (; ch != ETX; ch = source.nextSkipWhiteSpace()) {
+            case ARRAY_START_TOKEN:
+                parseArray(source, tokens);
+                break;
 
-            switch (ch) {
-                case OBJECT_START_TOKEN:
-                    parseObject(source, tokens);
-                    break;
-
-                case ARRAY_START_TOKEN:
-                    parseArray(source, tokens);
-                    break;
-
-                case TRUE_BOOLEAN_START:
-                    parseTrue(source, tokens);
+            case TRUE_BOOLEAN_START:
+                parseTrue(source, tokens);
                     break;
 
                 case FALSE_BOOLEAN_START:
@@ -183,10 +177,14 @@ public class JsonParser implements IndexOverlayParser {
                     }
                     break;
 
+                 case ARRAY_END_TOKEN:
+                    source.next();
+                    return true;
+
                 default:
                     throw new UnexpectedCharacterException("Parsing Array Item", "Unexpected character", source, (char) ch);
 
-            }
+        }
 
         return false;
     }
@@ -199,10 +197,7 @@ public class JsonParser implements IndexOverlayParser {
 
 
     private boolean parseKey(final CharSource source, final TokenList tokens) {
-
-
         int ch = source.nextSkipWhiteSpace();
-
         final int startIndex = source.getIndex() - 1;
         final int tokenListIndex = tokens.getIndex();
         tokens.placeHolder();
@@ -225,10 +220,13 @@ public class JsonParser implements IndexOverlayParser {
             case OBJECT_END_TOKEN:
                 tokens.undoPlaceholder();
                 return true;
+
+            default:
+                throw new UnexpectedCharacterException("Parsing key", "Unexpected character found", source);
         }
 
 
-        try {
+
             boolean done = source.findObjectEndOrAttributeSep();
 
             if (!done && found) {
@@ -240,11 +238,7 @@ public class JsonParser implements IndexOverlayParser {
             }
 
             return done;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            tokens.forEach(t -> System.out.println(t));
-            throw new IllegalStateException(ex);
-        }
+
     }
 
 
@@ -315,7 +309,6 @@ public class JsonParser implements IndexOverlayParser {
                 return false;
 
             default:
-                tokens.forEach(System.out::println);
                 throw new UnexpectedCharacterException("Parsing Value", "Unexpected character", source, source.getCurrentChar());
 
         }

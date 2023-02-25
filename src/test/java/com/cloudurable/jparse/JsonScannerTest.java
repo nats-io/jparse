@@ -910,8 +910,7 @@ class JsonScannerTest {
 
     }
 
-    //TODO
-    //@Test
+    @Test
     void testUnexpectedKey() {
         final IndexOverlayParser parser = new JsonParser();
 
@@ -925,8 +924,8 @@ class JsonScannerTest {
 
     }
 
-    //TODO
-    //@Test
+
+    @Test
     void testUnexpectedEndKeyKey() {
         final IndexOverlayParser parser = new JsonParser();
 
@@ -980,6 +979,18 @@ class JsonScannerTest {
         assertEquals(TokenTypes.FLOAT_TOKEN, tokens.get(1).type);
 
         assertEquals("123.1e-9", tokens.get(1).asString(json));
+
+    }
+
+    @Test
+    void encoding() {
+        final IndexOverlayParser parser = new JsonParser();
+
+        final String json = "'`u0003'";
+        final List<Token> tokens = parser.scan(Json.niceJson(json));
+
+        assertEquals(TokenTypes.STRING_TOKEN, tokens.get(0).type);
+
 
     }
 }

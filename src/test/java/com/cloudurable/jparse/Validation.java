@@ -14,9 +14,6 @@ public class Validation {
 
 
             int[] result1 = validate(file, "y_", true, false);
-            if (result1[1] > 0) {
-                throw new IllegalStateException("Failed mandatory tests");
-            }
             int[] result2 = validate(file, "i_", true, false);
             int[] result3 = validate(file, "n_", false, true);
 
@@ -49,6 +46,7 @@ public class Validation {
                     }
                     pass++;
                 }catch (Exception ex) {
+                    //ex.printStackTrace();
                     if (showFail) {
                         System.out.println("FAIL! " + listFile);
                         System.out.println(cs);

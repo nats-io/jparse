@@ -392,6 +392,7 @@ class JsonParserTest {
         assertEquals("bc", jsonRoot.getStringNode().subSequence(1, 3).toString());
     }
 
+
     @Test
     void testSimpleEncodedString() {
         final IndexOverlayParser parser = new JsonParser();
@@ -497,19 +498,12 @@ class JsonParserTest {
         final IndexOverlayParser parser = new JsonParser();
         final String json = "{'a':'abc'}";
         final RootNode jsonRoot = parser.parse(json.replace("'", "\""));
-
         StringNode aStringValue = jsonRoot.getObjectNode().getStringNode("a");
-        //assertEquals("abc", jsonRoot.getObject().getValue("a").toString());
         assertEquals("abc", aStringValue.toString());
         assertEquals("abc", jsonRoot.getObjectNode().getString("a"));
-
         assertEquals(NodeType.OBJECT, jsonRoot.getType());
-
         assertEquals(1, jsonRoot.getObjectNode().length());
-        //assertEquals(List.of(new StringNode("a", 0, 1)), jsonRoot.getObjectNode().getKeys());
-
         assertEquals(niceJson("abc"), jsonRoot.getObjectNode().getString("a"));
-
         assertEquals(niceJson(json), jsonRoot.originalString());
     }
 
@@ -581,13 +575,12 @@ class JsonParserTest {
         jsonRoot.tokens().forEach(System.out::println);
         assertEquals(1, jsonRoot.getObjectNode().size());
 
-        //.getObjectNode("a").getStringNode("a").toString());
-//        assertEquals(NodeType.OBJECT, jsonRoot.getType());
-//        assertEquals(NodeType.OBJECT, jsonRoot.getObjectNode().type());
-//
-//
-//        assertEquals(niceJson("{'a':'abc'}"), jsonRoot.getObjectNode().getObjectNode("a").originalString());
-//        assertEquals(niceJson("{'a':'abc'}"), jsonRoot.getObjectNode().getObjectNode("a").originalCharSequence().toString());
+        assertEquals(NodeType.OBJECT, jsonRoot.getType());
+        assertEquals(NodeType.OBJECT, jsonRoot.getObjectNode().type());
+
+
+        assertEquals(niceJson("{'a':1}"), jsonRoot.getObjectNode().getObjectNode("a").originalString());
+        assertEquals(niceJson("{'a':1}"), jsonRoot.getObjectNode().getObjectNode("a").originalCharSequence().toString());
 
     }
 

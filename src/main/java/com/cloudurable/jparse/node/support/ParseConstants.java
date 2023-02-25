@@ -28,6 +28,7 @@ public interface ParseConstants {
     int TAB_WS = '\t';
     int CARRIAGE_RETURN_WS = '\r';
     int SPACE_WS = ' ';
+    int DEL = 127;
     int CONTROL_ESCAPE_TOKEN = '\\';
 
     int NUM_0 = '0';

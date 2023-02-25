@@ -278,13 +278,63 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                     }
                     controlChar = false;
                     break;
+//TODO FIXME
+//                case 'u':
+//                    if (controlChar) {
+//                        i = findEndOfHexEncoding(i);
+//                        return i;
+//                    }
+//                    continue;
                 default:
                     controlChar = false;
-                    break;
+                    if (ch >= SPACE_WS) {
+                        continue;
+                    }
+                    throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this,  ch, i);
 
             }
         }
         throw new UnexpectedCharacterException("Parsing JSON Encoded String", "Unable to find closing for String", this, (int) ch, i);
+    }
+
+    private int findEndOfHexEncoding(int index) {
+        final var data = this.data;
+        final var length = data.length;
+
+        if (isHex(data[++index]) && isHex(data[++index])  && isHex(data[++index])  && isHex(data[++index]) ) {
+            return ++index;
+        } else {
+            throw new UnexpectedCharacterException("Parsing hex encoding in a string", "Unexpected character", this);
+        }
+
+    }
+
+    private boolean isHex(char datum) {
+        return switch (datum) {
+            case 'A'-> true;
+            case 'B'-> true;
+            case 'C'-> true;
+            case 'D'-> true;
+            case 'E'-> true;
+            case 'F'-> true;
+            case 'a'-> true;
+            case 'b'-> true;
+            case 'c'-> true;
+            case 'd'-> true;
+            case 'e'-> true;
+            case 'f'-> true;
+            case '0'-> true;
+            case '1'-> true;
+            case '2'-> true;
+            case '3'-> true;
+            case '4'-> true;
+            case '5'-> true;
+            case '6'-> true;
+            case '7'-> true;
+            case '8'-> true;
+            case '9'-> true;
+            default -> false;
+        };
     }
 
     @Override
@@ -301,6 +351,11 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case STRING_END_TOKEN:
                     index = i;
                     return i;
+                default:
+                    if (ch >= SPACE_WS) {
+                        continue;
+                    }
+                    throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this,  ch, i);
             }
         }
         throw new UnexpectedCharacterException("Parsing JSON String", "Unable to find closing for String", this,  ch, i);
