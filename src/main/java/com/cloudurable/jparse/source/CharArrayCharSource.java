@@ -366,9 +366,17 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     public NumberParseResult findEndOfNumber() {
 
 
+        final char startCh = getCurrentChar();
+        final int startIndex = index;
+        char ch = startCh;
+
+
         int i = index + 1;
-        char ch = 0;
-        for (; i < data.length; i++) {
+        final var data = this.data;
+        final var length = data.length;
+
+        loop:
+        for (; i < length; i++) {
 
             ch = data[i];
 
@@ -382,8 +390,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case LIST_SEP:
                 case OBJECT_END_TOKEN:
                 case ARRAY_END_TOKEN:
-                    index = i;
-                    return new NumberParseResult(i, false);
+                   break loop;
 
                 case NUM_0:
                 case NUM_1:
@@ -416,16 +423,49 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         }
 
         index = i;
-        return new NumberParseResult(i, false);
+        final var numLength = i - startIndex;
 
+        switch (startCh) {
+            case NUM_0:
+                if (numLength != 1) {
+                    throw new UnexpectedCharacterException("Parsing JSON Int Number",
+                            "Int can't start with a 0 ", this, startCh, startIndex);
+                }
+                break;
+            case PLUS:
+                throw new UnexpectedCharacterException("Parsing JSON Int Number",
+                        "Int can't start with a plus ", this, startCh, startIndex);
+
+            case MINUS:
+                switch (numLength) {
+                    case 1:
+                        throw new UnexpectedCharacterException("Parsing JSON Int Number",
+                                "Int can't be only a minus, number is missing", this, startCh, startIndex);
+                    case 2:
+                        break;
+                    default:
+                        if (data[startIndex + 1] == NUM_0) {
+
+                            throw new UnexpectedCharacterException("Parsing JSON Int Number",
+                                    "0 can't be after minus sign", this, startCh, startIndex);
+                        }
+                }
+        }
+        return new NumberParseResult(i, false);
     }
 
     private NumberParseResult findEndOfFloat() {
 
-
         int i = index + 1;
-        char ch = 0;
-        for (; i < data.length; i++) {
+        char ch =  (char) next();
+
+        if (!isNumber(ch)) {
+            throw new UnexpectedCharacterException("Parsing float part of number", "After decimal point expecting number but got", this, (int) ch, this.index);
+        }
+        final var data = this.data;
+        final var length = data.length;
+
+        for (; i < length; i++) {
             ch = data[i];
             switch (ch) {
 
@@ -471,12 +511,31 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
     }
 
+    private boolean isNumber(final char ch) {
+        return switch (ch) {
+            case NUM_0, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9 -> true;
+            default -> false;
+        };
+    }
+
     private NumberParseResult parseFloatWithExponent() {
+        char ch =  (char) next();
+        if (!isNumberOrSign(ch)) {
+            throw new UnexpectedCharacterException("Parsing exponent part of float", "After exponent expecting number or sign but got", this, (int) ch, this.index);
+        }
+
+        if (isSign(ch)) {
+            ch =  (char) next();
+            if (!isNumber(ch)) {
+                throw new UnexpectedCharacterException("Parsing exponent part of float after sign", "After sign expecting number but got", this, (int) ch, this.index);
+            }
+        }
 
         int i = index + 1;
-        char ch = 0;
-        int signOperator = 0;
-        for (; i < data.length; i++) {
+        final var data = this.data;
+        final var length = data.length;
+
+        for (; i < length; i++) {
             ch = data[i];
 
             switch (ch) {
@@ -492,14 +551,6 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                     index = i;
                     return new NumberParseResult(i, true);
 
-                case MINUS:
-                case PLUS:
-                    signOperator++;
-                    if (signOperator > 1) {
-                        throw new UnexpectedCharacterException("Parsing JSON String", "Unable to find closing for String", this,  ch, i);
-                    }
-                    break;
-
                 case NUM_0:
                 case NUM_1:
                 case NUM_2:
@@ -512,18 +563,27 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case NUM_9:
                     break;
 
-
                 default:
-                    throw new UnexpectedCharacterException("Parsing JSON String", "Unable to find closing for String", this,  ch, i);
+                    throw new UnexpectedCharacterException("Parsing Float with exponent", "Unable to find closing for Number", this,  ch, i);
 
             }
-
         }
-
-
         index = i;
         return new NumberParseResult(i, true);
+    }
 
+    private boolean isNumberOrSign(char ch) {
+        return switch (ch) {
+            case NUM_0, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, MINUS, PLUS -> true;
+            default -> false;
+        };
+    }
+
+    private boolean isSign(char ch) {
+        return switch (ch) {
+            case MINUS, PLUS -> true;
+            default -> false;
+        };
     }
 
     @Override
