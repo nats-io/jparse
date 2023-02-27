@@ -534,6 +534,14 @@ class JsonParserTest {
     }
 
 
+
+    @Test
+    void y_object_empty_key() {
+        final var parser = new JsonParser();
+        final String json = "{\"\":0}";
+        final RootNode jsonRoot = parser.parse(niceJson(json));
+    }
+
     @Test
     void test3ItemMap() {
         final IndexOverlayParser parser = new JsonParser();
