@@ -116,12 +116,7 @@ class JsonValidationTest {
         final IndexOverlayParser parser = new JsonParser();
 
         final String json = "['a\u0000a']";
-        try {
-            final List<Token> tokens = parser.scan(Json.niceJson(json));
-            assertTrue(false);
-        } catch (Exception ex) {
-
-        }
+        final List<Token> tokens = parser.scan(Json.niceJson(json));
 
     }
 

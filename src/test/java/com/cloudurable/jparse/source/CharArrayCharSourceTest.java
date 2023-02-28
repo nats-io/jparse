@@ -54,7 +54,7 @@ class CharArrayCharSourceTest {
     @Test
     void encoding2() {
         final IndexOverlayParser parser = new JsonParser();
-        //.................0123456789
+        //.................0123456789012
         final var  json = "'abc`n`u0003'";
         final var source = Sources.stringSource(Json.niceJson(json));
         source.next();
