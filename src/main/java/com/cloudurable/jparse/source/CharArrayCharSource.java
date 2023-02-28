@@ -242,6 +242,85 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     public String toString() {
         return new String(data);
     }
+//
+//    @Override
+//    public int findEndOfEncodedString() {
+//        int i = ++index;
+//        final var data = this.data;
+//        final var length = data.length;
+//        char ch = 0;
+//        boolean controlChar = false;
+//        for (; i < length; i++) {
+//            ch = data[i];
+//            switch (ch) {
+//                case CONTROL_ESCAPE_TOKEN:
+//                    controlChar = !controlChar;
+//                    continue;
+//                case STRING_END_TOKEN:
+//                    if (!controlChar) {
+//                        index = i + 1;
+//                        return i;
+//                    }
+//                    controlChar = false;
+//                    break;
+//                case 'u':
+//                    if (controlChar) {
+//                        i = findEndOfHexEncoding(i);
+//                        controlChar = false;
+//                    }
+//                    continue;
+//
+//                default:
+//                    if (controlChar) {
+//                        switch (ch) {
+//                            case 'n':
+//                            case 'b':
+//                            case '/':
+//                            case 'r':
+//                            case 't':
+//                                controlChar = false;
+//                            default:
+//                                if (ch >= SPACE_WS) {
+//                                    continue;
+//                                }
+//                                throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this,  ch, i);
+//
+//                        }
+//                    }
+//            }
+//        }
+//        throw new UnexpectedCharacterException("Parsing JSON Encoded String", "Unable to find closing for String", this, (int) ch, i);
+//    }
+
+
+    private int findEndOfStringControlEncode(int i) {
+        final var data = this.data;
+        final var length = data.length;
+        char ch = 0;
+
+        for (; i < length; i++) {
+            ch = data[i];
+            switch (ch) {
+                case CONTROL_ESCAPE_TOKEN:
+                case STRING_END_TOKEN:
+                case 'n':
+                case 'b':
+                case '/':
+                case 'r':
+                case 't':
+                case 'f':
+                    return i;
+
+                case 'u':
+                    return findEndOfHexEncoding(i);
+
+                default:
+                    throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this, ch, i);
+
+            }
+        }
+        throw new UnexpectedCharacterException("Parsing JSON Encoded String", "Unable to find closing for String", this, (int) ch, i);
+    }
 
     @Override
     public int findEndOfEncodedString() {
@@ -249,29 +328,16 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         final var data = this.data;
         final var length = data.length;
         char ch = 0;
-        boolean controlChar = false;
         for (; i < length; i++) {
             ch = data[i];
             switch (ch) {
                 case CONTROL_ESCAPE_TOKEN:
-                    controlChar = true;
+                    i = findEndOfStringControlEncode(i + 1);
                     continue;
                 case STRING_END_TOKEN:
-                    if (!controlChar) {
-                        index = i + 1;
-                        return i;
-                    }
-                    controlChar = false;
-                    break;
-//TODO FIXME
-//                case 'u':
-//                    if (controlChar) {
-//                        i = findEndOfHexEncoding(i);
-//                        return i;
-//                    }
-//                    continue;
+                    index = i +1;
+                    return i;
                 default:
-                    controlChar = false;
                     if (ch >= SPACE_WS) {
                         continue;
                     }
@@ -279,15 +345,17 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
             }
         }
+
         throw new UnexpectedCharacterException("Parsing JSON Encoded String", "Unable to find closing for String", this, (int) ch, i);
     }
+
 
     private int findEndOfHexEncoding(int index) {
         final var data = this.data;
         final var length = data.length;
 
         if (isHex(data[++index]) && isHex(data[++index])  && isHex(data[++index])  && isHex(data[++index]) ) {
-            return ++index;
+            return index;
         } else {
             throw new UnexpectedCharacterException("Parsing hex encoding in a string", "Unexpected character", this);
         }

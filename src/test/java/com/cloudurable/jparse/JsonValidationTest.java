@@ -122,7 +122,14 @@ class JsonValidationTest {
         } catch (Exception ex) {
 
         }
+    }
 
+    @Test
+    void allowedEscapes() {
+        final IndexOverlayParser parser = new JsonParser();
+        final String json =   "['```/`'`b`f`n`r`t``']";
+        final var root = parser.parse(Json.niceJson(json));
+        assertEquals("\\/\"\b\f\n\r\t\\", root.asArray().get(0).asScalar().toString());
     }
 
     @Test

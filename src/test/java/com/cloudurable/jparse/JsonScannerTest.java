@@ -646,14 +646,15 @@ class JsonScannerTest {
     @Test
     void testSimpleString() {
         final IndexOverlayParser parser = new JsonParser();
-        final String str = "h";
-        final String json = String.format("\"%s\"", str);
-        final List<Token> tokens = parser.scan(Sources.stringSource(json));
+        //...................0123
+        final String json = "'h'";
+
+        final List<Token> tokens = parser.scan(Json.niceJson(json));
         assertEquals(1, tokens.size());
         final Token token = tokens.get(0);
         assertEquals(1, token.startIndex);
         assertEquals(2, token.endIndex);
-        assertEquals(str, json.substring(token.startIndex, token.endIndex));
+        assertEquals("h", json.substring(token.startIndex, token.endIndex));
     }
 
     @Test
@@ -985,12 +986,179 @@ class JsonScannerTest {
     @Test
     void encoding() {
         final IndexOverlayParser parser = new JsonParser();
-
-        final String json = "'`u0003'";
+        //...................012345678
+        final String json = "'`u0004'";
         final List<Token> tokens = parser.scan(Json.niceJson(json));
 
         assertEquals(TokenTypes.STRING_TOKEN, tokens.get(0).type);
 
+    }
 
+    @Test
+    void badEncoding1() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................012345678
+        final String json = "['`x00']";
+
+        try {
+            final List<Token> tokens = parser.scan(Json.niceJson(json));
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Test
+    void badEncoding2() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................012345678
+        final String json = "['`uqqqq']";
+
+        try {
+            final List<Token> tokens = parser.scan(Json.niceJson(json));
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Test
+    void badEncoding3() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................012345678
+        final String json = "[`uD834`uDd']";
+
+        try {
+            final List<Token> tokens = parser.scan(Json.niceJson(json));
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Test
+    void badEncoding4() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................012345678
+        final String json = "['`�']";
+
+        try {
+            final List<Token> tokens = parser.scan(Json.niceJson(json));
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Test
+    void badEncoding5() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................012345678
+        final String json = "'`UA66D'";
+
+        try {
+            final List<Token> tokens = parser.scan(Json.niceJson(json));
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Test
+    void badEncoding6() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................012345678
+        final String json = "'`uD800`uD800`x'";
+
+        try {
+            final List<Token> tokens = parser.scan(Json.niceJson(json));
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Test
+    void badEncoding7() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................012345678
+        final String json = "'`uD800`u'";
+
+        try {
+            final List<Token> tokens = parser.scan(Json.niceJson(json));
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Test
+    void badEncoding8() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................01234567890
+        final String json = "'`uD800`u1'";
+
+        try {
+            final List<Token> tokens = parser.scan(Json.niceJson(json));
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Test
+    void badEncoding9() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................01234567890
+        final String json = "'`uD800`u1x'";
+
+        try {
+            final List<Token> tokens = parser.scan(Json.niceJson(json));
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Test
+    void badEncoding10() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................01234567890
+        final String json = "'`u00A'";
+
+        try {
+            final List<Token> tokens = parser.scan(Json.niceJson(json));
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Test
+    void badEncoding11() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................01234567890
+        final String json = "'`u\uD83C\uDF00'";
+
+        try {
+            final List<Token> tokens = parser.scan(Json.niceJson(json));
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Test
+    void badEncoding12() {
+        final IndexOverlayParser parser = new JsonParser();
+        //...................012345678
+        final String json = "['`u�']";
+
+        try {
+            final List<Token> tokens = parser.scan(Json.niceJson(json));
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
     }
 }
