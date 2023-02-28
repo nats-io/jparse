@@ -114,7 +114,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         final var data = this.data;
         final var length = data.length;
         int ch = ETX;
-        int finalCh = ETX;
+        //int finalCh = ETX;
 
         loop:
         for (; index < length; index++) {
@@ -126,12 +126,12 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case SPACE_WS:
                     continue;
                 default:
-                    finalCh = ch;
+                    //finalCh = ch;
                     break loop;
             }
         }
         this.index = index ;
-        return finalCh;
+        return index == length ? ETX : ch;
     }
 
     @Override
@@ -140,20 +140,20 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         final var data = this.data;
         final var length = data.length;
 
-        if (index >= length) {
-            return;
-        }
-        int ch = data[index];
+//        if (index >= length) {
+//            return;
+//        }
+        char ch; //= 0; // = data[index];
 
-        if (switch (ch) {
-            case NEW_LINE_WS -> false;
-            case CARRIAGE_RETURN_WS -> false;
-            case TAB_WS -> false;
-            case SPACE_WS -> false;
-            default -> true;
-        }) {
-            return;
-        }
+//        if (switch (ch) {
+//            case NEW_LINE_WS -> false;
+//            case CARRIAGE_RETURN_WS -> false;
+//            case TAB_WS -> false;
+//            case SPACE_WS -> false;
+//            default -> true;
+//        }) {
+//            return;
+//        }
 
         loop:
         for (; index < length; index++) {
