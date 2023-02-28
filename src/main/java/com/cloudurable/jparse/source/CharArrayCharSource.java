@@ -350,13 +350,13 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public NumberParseResult findEndOfNumber() {
 
-
         final char startCh = getCurrentChar();
         final int startIndex = index;
         char ch = startCh;
 
 
         int i = index + 1;
+
         final var data = this.data;
         final var length = data.length;
 
@@ -390,6 +390,13 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                     break;
 
                 case DECIMAL_POINT:
+
+                    if (startCh == MINUS) {
+                        final int numLenSoFar = i - startIndex;
+                        if (numLenSoFar == 1) {
+                            throw new UnexpectedCharacterException("Parsing JSON Number", "Unexpected character", this,  ch, i);
+                        }
+                    }
                     index = i;
                     return findEndOfFloat();
 
