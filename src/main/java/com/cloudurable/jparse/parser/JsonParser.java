@@ -212,7 +212,7 @@ public class JsonParser implements IndexOverlayParser {
         switch (ch) {
 
             case STRING_START_TOKEN:
-                final int strStartIndex = source.getIndex();
+                final int strStartIndex = startIndex + 1;
                 final int strEndIndex;
                 if (objectsKeysCanBeEncoded) {
                     strEndIndex = source.findEndOfEncodedString();

@@ -93,7 +93,7 @@ public class BenchMark {
 //                final RootNode root = new JsonParser().parse(webXmlJsonData);
 //                final var result = Path.atPath(webXmlObjectPath, root);
 
-                final var result = new JsonEventParser().parse(glossaryJsonData);
+                final var result = new JsonParser().parse(webXmlJsonData);
 
                 //PathNode pathElements = Path.toPath("foo.bar.baz[99][0][10][11]['hi mom']");
 
