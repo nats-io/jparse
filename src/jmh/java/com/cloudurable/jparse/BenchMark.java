@@ -177,15 +177,15 @@ public class BenchMark {
 //        bh.consume(mapper.readValue(glossaryJsonData, mapTypeRef));
 //    }
 //
-//    @Benchmark
-//    public void readGlossaryJParse(Blackhole bh) {
-//        bh.consume(new JsonParser().parse(glossaryJsonData));
-//    }
-//
-//    @Benchmark
-//    public void readGlossaryJParseWithEvents(Blackhole bh) {
-//        bh.consume(new JsonEventParser().parse(glossaryJsonData));
-//    }
+    @Benchmark
+    public void readGlossaryJParse(Blackhole bh) {
+        bh.consume(new JsonParser().parse(glossaryJsonData));
+    }
+
+    @Benchmark
+    public void readGlossaryJParseWithEvents(Blackhole bh) {
+        bh.consume(new JsonEventParser().parse(glossaryJsonData));
+    }
 
 //    @Benchmark
 //    public void readGlossaryNoggitEvent(Blackhole bh) throws Exception {
@@ -201,27 +201,27 @@ public class BenchMark {
 //    }
 
 
-//    @Benchmark
-//    public void readGlossaryEventJParse(Blackhole bh) throws Exception {
-//
-//        final var jsonParser =  new JsonEventParser();
-//        final int [] token = new int[1];
-//        final var events = new TokenEventListener() {
-//            @Override
-//            public void start(int tokenId, int index, CharSource source) {
-//                token[0] = tokenId;
-//            }
-//
-//            @Override
-//            public void end(int tokenId, int index, CharSource source) {
-//                token[0] = tokenId;
-//            }
-//        };
-//
-//        jsonParser.parse(glossaryJsonData, events);
-//
-//        bh.consume(token);
-//    }
+    @Benchmark
+    public void readGlossaryEventJParse(Blackhole bh) throws Exception {
+
+        final var jsonParser =  new JsonEventParser();
+        final int [] token = new int[1];
+        final var events = new TokenEventListener() {
+            @Override
+            public void start(int tokenId, int index, CharSource source) {
+                token[0] = tokenId;
+            }
+
+            @Override
+            public void end(int tokenId, int index, CharSource source) {
+                token[0] = tokenId;
+            }
+        };
+
+        jsonParser.parse(glossaryJsonData, events);
+
+        bh.consume(token);
+    }
 
 
 //
@@ -235,15 +235,15 @@ public class BenchMark {
 //        bh.consume(Json.toArrayNode(doublesJsonData).getFloatArrayFast());
 //    }
 //
-    @Benchmark
-    public void jParseDoubleArray(Blackhole bh) {
-        bh.consume(Json.toArrayNode(doublesJsonData).getDoubleArray());
-    }
-
-    @Benchmark
-    public void jParseDoubleArrayFast(Blackhole bh) {
-        bh.consume(Json.toArrayNode(doublesJsonData).getDoubleArrayFast());
-    }
+//    @Benchmark
+//    public void jParseDoubleArray(Blackhole bh) {
+//        bh.consume(Json.toArrayNode(doublesJsonData).getDoubleArray());
+//    }
+//
+//    @Benchmark
+//    public void jParseDoubleArrayFast(Blackhole bh) {
+//        bh.consume(Json.toArrayNode(doublesJsonData).getDoubleArrayFast());
+//    }
 //    @Benchmark
 //    public void readWebGlossaryNoggitObjectBuilder(Blackhole bh) throws Exception {
 //
