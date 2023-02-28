@@ -116,8 +116,20 @@ class JsonValidationTest {
         final IndexOverlayParser parser = new JsonParser();
 
         final String json = "['a\u0000a']";
-        final List<Token> tokens = parser.scan(Json.niceJson(json));
+        try {
+            final List<Token> tokens = parser.scan(Json.niceJson(json));
+            assertTrue(false);
+        } catch (Exception ex) {
 
+        }
+    }
+
+    @Test
+    void allowedEscapes() {
+        final IndexOverlayParser parser = new JsonParser();
+        final String json =   "['```/`'`b`f`n`r`t``']";
+        final var root = parser.parse(Json.niceJson(json));
+        assertEquals("\\/\"\b\f\n\r\t\\", root.asArray().get(0).asScalar().toString());
     }
 
     @Test

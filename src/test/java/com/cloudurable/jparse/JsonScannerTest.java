@@ -646,14 +646,15 @@ class JsonScannerTest {
     @Test
     void testSimpleString() {
         final IndexOverlayParser parser = new JsonParser();
-        final String str = "h";
-        final String json = String.format("\"%s\"", str);
-        final List<Token> tokens = parser.scan(Sources.stringSource(json));
+        //...................0123
+        final String json = "'h'";
+
+        final List<Token> tokens = parser.scan(Json.niceJson(json));
         assertEquals(1, tokens.size());
         final Token token = tokens.get(0);
         assertEquals(1, token.startIndex);
         assertEquals(2, token.endIndex);
-        assertEquals(str, json.substring(token.startIndex, token.endIndex));
+        assertEquals("h", json.substring(token.startIndex, token.endIndex));
     }
 
     @Test
