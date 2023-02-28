@@ -69,4 +69,6 @@ public interface CharSource {
     boolean findCommaOrEnd();
 
     boolean findObjectEndOrAttributeSep();
+
+    void checkForJunk();
 }

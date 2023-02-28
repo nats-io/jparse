@@ -1,6 +1,7 @@
 package com.cloudurable.jparse.source;
 
 import com.cloudurable.jparse.Json;
+import com.cloudurable.jparse.node.support.NumberParseResult;
 import com.cloudurable.jparse.parser.IndexOverlayParser;
 import com.cloudurable.jparse.parser.JsonParser;
 import com.cloudurable.jparse.token.Token;
@@ -12,6 +13,32 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CharArrayCharSourceTest {
+
+    @Test
+    void readNumberWithNothingBeforeDecimal() {
+        //.................0123456789
+        final var  json = "-.123";
+        final var source = Sources.stringSource(Json.niceJson(json));
+        source.next();
+        try {
+            final var result = source.findEndOfNumber();
+            assertTrue(false);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Test
+    void readNumberNormalNegativeFloat() {
+        //.................0123456789
+        final var  json = "-0.123";
+        final var source = Sources.stringSource(Json.niceJson(json));
+        source.next();
+        final var result = source.findEndOfNumber();
+        assertTrue(result.wasFloat());
+        assertEquals(6, result.endIndex());
+    }
+
 
     @Test
     void encoding() {

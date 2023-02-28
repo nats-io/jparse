@@ -81,10 +81,8 @@ public class JsonParser implements IndexOverlayParser {
 
         }
 
-        ch = source.nextSkipWhiteSpace();
-        if (ch != ETX) {
-            throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character after reading root object", source, (char) ch);
-        }
+        source.checkForJunk();
+
         return tokens;
     }
 
@@ -128,6 +126,7 @@ public class JsonParser implements IndexOverlayParser {
 
 
     private boolean parseArrayItem(CharSource source, TokenList tokens) {
+        char startChar = source.getCurrentChar();
         int ch  = source.nextSkipWhiteSpace();
 
         switch (ch) {
@@ -178,10 +177,15 @@ public class JsonParser implements IndexOverlayParser {
                     break;
 
                  case ARRAY_END_TOKEN:
+                     if (startChar == LIST_SEP) {
+                         throw new UnexpectedCharacterException("Parsing Array Item", "Trailing comma", source, (char) ch);
+                     }
                     source.next();
                     return true;
 
-                default:
+
+
+            default:
                     throw new UnexpectedCharacterException("Parsing Array Item", "Unexpected character", source, (char) ch);
 
         }
@@ -197,6 +201,8 @@ public class JsonParser implements IndexOverlayParser {
 
 
     private boolean parseKey(final CharSource source, final TokenList tokens) {
+        final char startChar = source.getCurrentChar();
+
         int ch = source.nextSkipWhiteSpace();
         final int startIndex = source.getIndex() - 1;
         final int tokenListIndex = tokens.getIndex();
@@ -218,6 +224,10 @@ public class JsonParser implements IndexOverlayParser {
                 break;
 
             case OBJECT_END_TOKEN:
+
+                if (startChar == OBJECT_ATTRIBUTE_SEP) {
+                    throw new UnexpectedCharacterException("Parsing key", "Unexpected character found", source);
+                }
                 tokens.undoPlaceholder();
                 return true;
 

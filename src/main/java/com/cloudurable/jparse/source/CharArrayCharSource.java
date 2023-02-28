@@ -11,7 +11,6 @@ import java.math.BigInteger;
 
 public class CharArrayCharSource implements CharSource, ParseConstants {
 
-
     private final static char[] MIN_INT_CHARS = MIN_INT_STR.toCharArray();
     private final static char[] MAX_INT_CHARS = MAX_INT_STR.toCharArray();
     private static final double[] powersOf10 = {
@@ -73,7 +72,6 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         data = chars;
     }
 
-
     public CharArrayCharSource(final String str) {
         index = -1;
         data = str.toCharArray();
@@ -88,6 +86,27 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         return data[++index];
     }
 
+    @Override
+    public void checkForJunk() {
+        int index = this.index;
+        final var data = this.data;
+        final var length = data.length;
+        int ch = ETX;
+
+        for (; index < length; index++) {
+            ch = data[index];
+            switch (ch) {
+                case NEW_LINE_WS:
+                case CARRIAGE_RETURN_WS:
+                case TAB_WS:
+                case SPACE_WS:
+                    continue;
+                default:
+                    throw new UnexpectedCharacterException("Junk", "Unexpected extra characters", this);
+
+            }
+        }
+    }
 
     @Override
     public int nextSkipWhiteSpace() {
@@ -151,40 +170,6 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         }
         this.index = index ;
     }
-
-    //
-//    @Override
-//    public int nextSkipWhiteSpace() {
-//        int index = this.index + 1;
-//        final var data = this.data;
-//        final var length = data.length;
-//        int ch = ETX;
-//
-//        //loop:
-//        while (index < length) {
-//            ch = data[index];
-//            if (ch < 33) {
-//                index++;
-//                continue;
-//            }
-//                break;
-//
-////            switch (ch) {
-////
-////                case NEW_LINE_WS:
-////                case CARRIAGE_RETURN_WS:
-////                case TAB_WS:
-////                case SPACE_WS:
-////                    continue;
-////                default: break loop;
-////            }
-//        }
-//
-//        this.index = index ;
-//
-//        return ch;
-//    }
-
 
     @Override
     public int getIndex() {
@@ -365,13 +350,13 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public NumberParseResult findEndOfNumber() {
 
-
         final char startCh = getCurrentChar();
         final int startIndex = index;
         char ch = startCh;
 
 
         int i = index + 1;
+
         final var data = this.data;
         final var length = data.length;
 
@@ -405,6 +390,13 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                     break;
 
                 case DECIMAL_POINT:
+
+                    if (startCh == MINUS) {
+                        final int numLenSoFar = i - startIndex;
+                        if (numLenSoFar == 1) {
+                            throw new UnexpectedCharacterException("Parsing JSON Number", "Unexpected character", this,  ch, i);
+                        }
+                    }
                     index = i;
                     return findEndOfFloat();
 
@@ -647,6 +639,15 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case LIST_SEP:
                     this.index = i ;
                     return false;
+
+                case NEW_LINE_WS:
+                case CARRIAGE_RETURN_WS:
+                case TAB_WS:
+                case SPACE_WS:
+                    continue;
+
+                default:
+                    throw new UnexpectedCharacterException("Parsing Object Key", "Finding object end or separator", this, ch, i);
             }
         }
 

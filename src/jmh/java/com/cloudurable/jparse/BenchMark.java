@@ -200,7 +200,7 @@ public class BenchMark {
 //        bh.consume(event);
 //    }
 
-
+//
 //    @Benchmark
 //    public void readGlossaryEventJParse(Blackhole bh) throws Exception {
 //
@@ -234,7 +234,7 @@ public class BenchMark {
 //    public void jParseFloatArrayFast(Blackhole bh) {
 //        bh.consume(Json.toArrayNode(doublesJsonData).getFloatArrayFast());
 //    }
-//
+
     @Benchmark
     public void jParseDoubleArray(Blackhole bh) {
         bh.consume(Json.toArrayNode(doublesJsonData).getDoubleArray());
