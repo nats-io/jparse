@@ -138,10 +138,7 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
                     throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character", source, (char) ch);
             }
 
-        ch = source.nextSkipWhiteSpace();
-        if (ch != ETX) {
-            throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character after reading root object", source, (char) ch);
-        }
+            source.checkForJunk();
 
 
     }
@@ -175,6 +172,8 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
     }
 
     private boolean parseArrayItem(CharSource source, final TokenEventListener event) {
+
+        char startChar = source.getCurrentChar();
         int ch = source.nextSkipWhiteSpace();
 
         switch (ch) {
@@ -238,6 +237,9 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
                     break;
 
             case ARRAY_END_TOKEN:
+                if (startChar == LIST_SEP) {
+                    throw new UnexpectedCharacterException("Parsing Array Item", "Trailing comma", source, (char) ch);
+                }
                 source.next();
                 return true;
 
@@ -259,6 +261,8 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
     }
 
     private boolean parseKey(final CharSource source, final TokenEventListener event) {
+
+        final char startChar = source.getCurrentChar();
         int ch = source.nextSkipWhiteSpace();
         event.start(TokenTypes.ATTRIBUTE_KEY_TOKEN, source.getIndex(), source);
         boolean found = false;
@@ -281,6 +285,9 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
                 break;
 
             case OBJECT_END_TOKEN:
+                if (startChar == OBJECT_ATTRIBUTE_SEP) {
+                    throw new UnexpectedCharacterException("Parsing key", "Unexpected character found", source);
+                }
                 return true;
 
             default:
@@ -350,7 +357,6 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
 
         switch (source.getCurrentChar()) {
             case OBJECT_END_TOKEN:
-
                 event.end(TokenTypes.ATTRIBUTE_VALUE_TOKEN, source.getIndex(), source);
                 return true;
             case OBJECT_ATTRIBUTE_SEP:
@@ -376,6 +382,10 @@ public class JsonEventParser implements EventParser, IndexOverlayParser {
             done = parseKey(source, event);
             if (!done)
                 done = parseValue(source, event);
+        }
+
+        if (source.getCurrentChar() != OBJECT_END_TOKEN) {
+            throw new UnexpectedCharacterException("Parsing Object", "Unexpected character", source, source.getCurrentCharSafe());
         }
         source.next();
         event.end(TokenTypes.OBJECT_TOKEN, source.getIndex(), source);

@@ -29,7 +29,7 @@ class JsonValidationTest {
         assertEquals(TokenTypes.STRING_TOKEN, token.type);
         assertEquals(1, token.startIndex);
         assertEquals(3, token.endIndex);
-        assertEquals(5, source.getIndex());
+        assertEquals(4, source.getIndex());
     }
 
     @Test

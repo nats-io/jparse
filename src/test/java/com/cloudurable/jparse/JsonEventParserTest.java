@@ -222,9 +222,10 @@ class JsonEventParserTest {
 
     @Test
     public void testComplexMap() {
+        final IndexOverlayParser parser = new JsonEventParser();
         //................012345678901234567890123
         final var json = "{'1':2,'2':7,'3':[1,2,3]}";
-        final RootNode root = nodeRoot(json);
+        final RootNode root = parser.parse(Json.niceJson(json));
 
         final var jsonObject = root.getMap();
         assertEquals(2, asInt(jsonObject, "1"));
@@ -235,7 +236,7 @@ class JsonEventParserTest {
 
     @Test
     void testParseNumberJsonElement() {
-        final IndexOverlayParser parser = new JsonParser();
+        final IndexOverlayParser parser = new JsonEventParser();
         final String json = "1";
         RootNode jsonRoot = parser.parse(Sources.stringSource(json));
         assertEquals(1, jsonRoot.getInt());

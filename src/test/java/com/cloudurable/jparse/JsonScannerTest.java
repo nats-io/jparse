@@ -492,7 +492,7 @@ class JsonScannerTest {
         assertEquals(TokenTypes.BOOLEAN_TOKEN, token.type);
         assertEquals(0, token.startIndex);
         assertEquals(5, token.endIndex);
-        assertEquals(6, source.getIndex());
+        assertEquals(5, source.getIndex());
     }
 
     @Test
@@ -506,7 +506,7 @@ class JsonScannerTest {
         assertEquals(TokenTypes.STRING_TOKEN, token.type);
         assertEquals(1, token.startIndex);
         assertEquals(3, token.endIndex);
-        assertEquals(5, source.getIndex());
+        assertEquals(4, source.getIndex());
     }
 
     @Test
