@@ -1,22 +1,17 @@
 package com.cloudurable.jparse.parser;
 
-import com.cloudurable.jparse.node.RootNode;
-import com.cloudurable.jparse.node.support.TokenList;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.source.support.UnexpectedCharacterException;
-import com.cloudurable.jparse.token.Token;
 import com.cloudurable.jparse.token.TokenEventListener;
 import com.cloudurable.jparse.token.TokenTypes;
 
-import java.util.List;
 
-
-public class JsonEventStrictParser extends JsonEventAbstractParser {
+public class JsonEventFastParser extends JsonEventAbstractParser {
 
 
 
 
-    public JsonEventStrictParser(boolean objectsKeysCanBeEncoded, TokenEventListener tokenEventListener) {
+    public JsonEventFastParser(boolean objectsKeysCanBeEncoded, TokenEventListener tokenEventListener) {
         super(objectsKeysCanBeEncoded, tokenEventListener);
     }
 
@@ -69,9 +64,6 @@ public class JsonEventStrictParser extends JsonEventAbstractParser {
                 default:
                     throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character", source, (char) ch);
             }
-
-            source.checkForJunk();
-
 
     }
 
@@ -194,7 +186,6 @@ public class JsonEventStrictParser extends JsonEventAbstractParser {
 
     private boolean parseKey(final CharSource source, final TokenEventListener event) {
 
-        final char startChar = source.getCurrentChar();
         int ch = source.nextSkipWhiteSpace();
         event.start(TokenTypes.ATTRIBUTE_KEY_TOKEN, source.getIndex(), source);
         boolean found = false;
@@ -217,9 +208,6 @@ public class JsonEventStrictParser extends JsonEventAbstractParser {
                 break;
 
             case OBJECT_END_TOKEN:
-                if (startChar == OBJECT_ATTRIBUTE_SEP) {
-                    throw new UnexpectedCharacterException("Parsing key", "Unexpected character found", source);
-                }
                 return true;
 
             default:
@@ -303,7 +291,7 @@ public class JsonEventStrictParser extends JsonEventAbstractParser {
 
     private void parseString(final CharSource source, final TokenEventListener event) {
         event.start(TokenTypes.STRING_TOKEN, source.getIndex() + 1, source);
-        event.end(TokenTypes.STRING_TOKEN, source.findEndOfEncodedString(), source);
+        event.end(TokenTypes.STRING_TOKEN, source.findEndOfEncodedStringFast(), source);
     }
 
     private void parseObject(final CharSource source, final TokenEventListener event) {

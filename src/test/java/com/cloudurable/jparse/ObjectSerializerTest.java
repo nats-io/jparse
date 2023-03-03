@@ -2,8 +2,8 @@ package com.cloudurable.jparse;
 
 import com.cloudurable.jparse.node.ArrayNode;
 import com.cloudurable.jparse.node.RootNode;
-import com.cloudurable.jparse.parser.IndexOverlayParser;
-import com.cloudurable.jparse.parser.JsonParser;
+import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
+import com.cloudurable.jparse.parser.JsonStrictParser;
 import com.cloudurable.jparse.source.Sources;
 import org.junit.jupiter.api.Test;
 
@@ -14,10 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ObjectSerializerTest {
 
+    public JsonIndexOverlayParser jsonParser() {
+        return Json.builder().setStrict(true).build();
+    }
 
     @Test
     public void testMap() {
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         final String json = "{'1':2,'2':7}";
         var elementMap = getJsonRoot(parser, json).getObjectNode().asObject();
         assertEquals(2L, elementMap.get("1").asScalar().longValue());
@@ -27,7 +30,7 @@ public class ObjectSerializerTest {
 
     @Test
     public void testMapBig() {
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         final String json = "{'1':2,'2':7}";
         var elementMap = getJsonRoot(parser, json).getObjectNode().asObject();
         assertEquals(new BigInteger("2"), elementMap.get("1").asScalar().bigIntegerValue());
@@ -35,7 +38,7 @@ public class ObjectSerializerTest {
 
     @Test
     public void testJsonObjectIsAMap() {
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         final String json = "{'1':2.2,'2':7}";
         var elementMap = getJsonRoot(parser, json).getMap();
         assertEquals(2.2f, asFloat(elementMap, "1"));
@@ -46,7 +49,7 @@ public class ObjectSerializerTest {
 
     @Test
     public void testList() {
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         final String json = "['1',2,2.2]";
         var elementList = getJsonRoot(parser, json).getArrayNode().asArray();
         var list = getJsonRoot(parser, json).getArrayNode();
@@ -57,7 +60,7 @@ public class ObjectSerializerTest {
 
     @Test
     public void testComplexList() {
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         final String json = "['1',2,2.2,[1,2,3]]";
         var elementList = getJsonRoot(parser, json).getArrayNode().asArray();
         var list = getJsonRoot(parser, json).getArrayNode();
@@ -70,7 +73,7 @@ public class ObjectSerializerTest {
 
     @Test
     public void testComplexMap() {
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         final String json = "{'1':2,'2':7,'abc':[1,2,3]}";
         var elementMap = getJsonRoot(parser, json).getObjectNode();
         var map = getJsonRoot(parser, json).getObjectNode();
@@ -81,7 +84,7 @@ public class ObjectSerializerTest {
     }
 
 
-    private RootNode getJsonRoot(IndexOverlayParser parser, String json1) {
+    private RootNode getJsonRoot(JsonIndexOverlayParser parser, String json1) {
         return parser.parse(Sources.stringSource(json1.replace("'", "\"")));
     }
 

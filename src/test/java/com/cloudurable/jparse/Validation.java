@@ -1,6 +1,7 @@
 package com.cloudurable.jparse;
 
 import com.cloudurable.jparse.node.RootNode;
+import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.source.Sources;
 
@@ -27,6 +28,8 @@ public class Validation {
     }
 
     private static int [] validate(File file, String match, boolean showFail, boolean showPass) {
+
+        final var jsonParser = Json.builder().setStrict(true).build();
         int pass = 0;
         int error = 0;
         for (File listFile : file.listFiles()) {
@@ -38,7 +41,7 @@ public class Validation {
                 //System.out.println("TESTING " + listFile);
                 try {
 
-                    RootNode root = Json.toRootNode(jsonString);
+                    RootNode root = jsonParser.parse(jsonString);
                     if (showPass) {
                         System.out.println("PASS! " + listFile);
                         System.out.println(cs);

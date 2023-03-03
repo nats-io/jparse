@@ -7,8 +7,17 @@ import com.cloudurable.jparse.source.Sources;
 import com.cloudurable.jparse.token.TokenEventListener;
 
 public interface JsonEventParser extends ParseConstants {
-    void parse(final CharSource source, final TokenEventListener tokenEvent);
-    default void parse(final String source, final TokenEventListener tokenEvent) {
-        parse(Sources.stringSource(source), tokenEvent);
+
+    TokenEventListener tokenEvents();
+
+    void parseWithEvents(final CharSource source, TokenEventListener tokenEvents);
+    default void parseWithEvents(final String source, TokenEventListener tokenEvents) {
+        parseWithEvents(Sources.stringSource(source),tokenEvents);
+    }
+    default void parseWithEvents(final CharSource source) {
+        parseWithEvents(source, tokenEvents());
+    }
+    default void parseWithEvents(final String source) {
+        parseWithEvents(Sources.stringSource(source), tokenEvents());
     }
 }

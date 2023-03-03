@@ -9,12 +9,12 @@ import com.cloudurable.jparse.token.TokenTypes;
 
 import java.util.List;
 
-public class JsonStrictParser implements JsonIndexOverlayParser {
+public class JsonFastParser implements JsonIndexOverlayParser {
 
     private final boolean objectsKeysCanBeEncoded;
 
 
-    public JsonStrictParser(boolean objectsKeysCanBeEncoded) {
+    public JsonFastParser(boolean objectsKeysCanBeEncoded) {
         this.objectsKeysCanBeEncoded = objectsKeysCanBeEncoded;
     }
 
@@ -76,8 +76,6 @@ public class JsonStrictParser implements JsonIndexOverlayParser {
                 throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character", source, (char) ch);
 
         }
-
-        source.checkForJunk();
 
         return tokens;
     }
@@ -197,7 +195,6 @@ public class JsonStrictParser implements JsonIndexOverlayParser {
 
 
     private boolean parseKey(final CharSource source, final TokenList tokens) {
-        final char startChar = source.getCurrentChar();
 
         int ch = source.nextSkipWhiteSpace();
         final int startIndex = source.getIndex() - 1;
@@ -220,10 +217,6 @@ public class JsonStrictParser implements JsonIndexOverlayParser {
                 break;
 
             case OBJECT_END_TOKEN:
-
-                if (startChar == OBJECT_ATTRIBUTE_SEP) {
-                    throw new UnexpectedCharacterException("Parsing key", "Unexpected character found", source);
-                }
                 tokens.undoPlaceholder();
                 return true;
 
@@ -323,7 +316,7 @@ public class JsonStrictParser implements JsonIndexOverlayParser {
 
     private void parseString(final CharSource source, TokenList tokens) {
         final int startIndex = source.getIndex();
-        final int endIndex = source.findEndOfEncodedString();
+        final int endIndex = source.findEndOfEncodedStringFast();
         tokens.add(new Token(startIndex + 1, endIndex, TokenTypes.STRING_TOKEN));
     }
 

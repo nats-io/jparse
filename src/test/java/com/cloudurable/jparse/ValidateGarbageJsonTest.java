@@ -1,8 +1,10 @@
 package com.cloudurable.jparse;
 
-import com.cloudurable.jparse.parser.JsonEventParser;
-import com.cloudurable.jparse.parser.JsonParser;
+import com.cloudurable.jparse.node.RootNode;
+import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
+import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.token.Token;
+import com.cloudurable.jparse.token.TokenEventListener;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,6 +13,25 @@ import static com.cloudurable.jparse.Json.niceJson;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ValidateGarbageJsonTest {
+
+    public JsonIndexOverlayParser jsonParser() {
+        return Json.builder().setStrict(true).build();
+    }
+
+    public JsonIndexOverlayParser jsonEventParser() {
+        return Json.builder().setStrict(true).setTokenEventListener(new TokenEventListener() {
+            @Override
+            public void start(int tokenId, int index, CharSource source) {
+
+            }
+
+            @Override
+            public void end(int tokenId, int index, CharSource source) {
+
+            }
+        }).setStrict(true).build();
+    }
+
     /*
      *
      PASS! ./src/test/resources/validation/n_string_with_trailing_garbage.json
@@ -18,7 +39,7 @@ public class ValidateGarbageJsonTest {
      */
     @Test
     void letterAfterCloseString() {
-        final var parser = new JsonParser();
+        final var parser = jsonParser();
 
         //...................0123
         final String json = "''x";
@@ -34,7 +55,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void letterAfterCloseStringEvent() {
-        final var parser = new JsonEventParser();
+        final var parser = jsonEventParser();
 
         //...................0123
         final String json = "''x";
@@ -55,7 +76,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void junkAfterMapEvents() {
-        final var parser = new JsonEventParser();
+        final var parser = jsonEventParser();
 
         //...................01234567890
         final String json = "{'a':'b'}#";
@@ -70,7 +91,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void junkAfterMap() {
-        final var parser = new JsonParser();
+        final var parser = jsonParser();
 
         //...................01234567890
         final String json = "{'a':'b'}#";
@@ -88,7 +109,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void extraBracketAfterArrayEvents() {
-        final var parser = new JsonEventParser();
+        final var parser = jsonEventParser();
 
         //...................01234567890
         final String json = "[1]]";
@@ -103,7 +124,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void extraBracketAfterArray() {
-        final var parser = new JsonParser();
+        final var parser = jsonParser();
 
         //...................01234567890
         final String json = "[1]]";
@@ -123,7 +144,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void extraBracketAfterNumberEvents() {
-        final var parser = new JsonEventParser();
+        final var parser = jsonEventParser();
 
         //...................01234567890
         final String json = "1]";
@@ -138,7 +159,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void extraBracketAfterNumber() {
-        final var parser = new JsonParser();
+        final var parser = jsonParser();
 
         //...................01234567890
         final String json = "1]";
@@ -153,7 +174,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void trailingCommaInObject() {
-        final var parser = new JsonParser();
+        final var parser = jsonParser();
 
         //...................01234567890
         final String json = "{'id':0,}";
@@ -168,7 +189,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void trailingCommaInObjectEvents() {
-        final var parser = new JsonEventParser();
+        final var parser = jsonEventParser();
 
         //...................01234567890
         final String json = "{'id':0, }";
@@ -185,7 +206,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void arrayNoCommaEvents() {
-        final var parser = new JsonEventParser();
+        final var parser = jsonEventParser();
 
         //...................01234567890
         final String json = "[1 true]";
@@ -200,7 +221,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void arrayNoComma() {
-        final var parser = new JsonParser();
+        final var parser = jsonParser();
 
         //...................01234567890
         final String json = "[1 true]";
@@ -215,7 +236,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void arrayTrailingCommaEvent() {
-        final var parser = new JsonEventParser();
+        final var parser = jsonEventParser();
 
         //...................01234567890
         final String json = "[1,]";
@@ -230,7 +251,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void arrayTrailingComma() {
-        final var parser = new JsonParser();
+        final var parser = jsonParser();
 
         //...................01234567890
         final String json = "[1,]";
@@ -245,7 +266,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void arrayTrailingCommaAfterStringEvent() {
-        final var parser = new JsonEventParser();
+        final var parser = jsonEventParser();
 
         //...................01234567890
         final String json = "['',]";
@@ -260,7 +281,7 @@ public class ValidateGarbageJsonTest {
 
     @Test
     void arrayTrailingCommaAfterString() {
-        final var parser = new JsonParser();
+        final var parser = jsonParser();
 
         //...................01234567890
         final String json = "['',]";
@@ -272,6 +293,23 @@ public class ValidateGarbageJsonTest {
 
         }
     }
+
+
+    @Test
+    void test_n_structure_double_array() {
+        final JsonIndexOverlayParser parser = jsonParser();
+        //...................0123456789012345678901234
+        final String json = "[][]";
+        try {
+            final RootNode jsonRoot = parser.parse(niceJson(json));
+            System.out.println(jsonRoot.tokens());
+            assertTrue(false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
     //[1,]
  /*
 

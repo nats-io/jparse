@@ -11,85 +11,17 @@ import com.cloudurable.jparse.token.TokenTypes;
 import java.util.List;
 
 
-public class JsonEventParserStrict implements JsonEventParser, JsonIndexOverlayParser {
-    final TokenEventListener arrayItemListener = new TokenEventListener() {
-        @Override
-        public void start(int tokenId, int index, CharSource source) {
-        }
-
-        @Override
-        public void end(int tokenId, int index, CharSource source) {
-        }
-    };
-    final TokenEventListener exceptionListener = new TokenEventListener() {
-        @Override
-        public void start(int tokenId, int index, CharSource source) {
-            throw new UnexpectedCharacterException("while doing event parsing", "Unknown token id " + tokenId, source);
-        }
-
-        @Override
-        public void end(int tokenId, int index, CharSource source) {
-
-        }
-    };
-    private final boolean objectsKeysCanBeEncoded;
-    private final TokenEventListener stringListener = new ScalarListener(TokenTypes.STRING_TOKEN);
-    private final TokenEventListener floatListener = new ScalarListener(TokenTypes.FLOAT_TOKEN);
-    private final TokenEventListener intListener = new ScalarListener(TokenTypes.INT_TOKEN);
-    private final TokenEventListener booleanListener = new ScalarListener(TokenTypes.BOOLEAN_TOKEN);
-    private final TokenEventListener nullListener = new ScalarListener(TokenTypes.NULL_TOKEN);
-    final TokenEventListener base = new TokenEventListener() {
-
-        private int stackIndex = -1;
-        private TokenEventListener[] stack = new TokenEventListener[8];
-
-        @Override
-        public void start(final int tokenId, final int index, final CharSource source) {
-
-            final var listener = switch (tokenId) {
-                case TokenTypes.OBJECT_TOKEN -> new ComplexListener(TokenTypes.OBJECT_TOKEN);
-                case TokenTypes.ARRAY_TOKEN -> new ComplexListener(TokenTypes.ARRAY_TOKEN);
-                case TokenTypes.ARRAY_ITEM_TOKEN -> arrayItemListener;
-                case TokenTypes.ATTRIBUTE_KEY_TOKEN -> new ComplexListener(TokenTypes.ATTRIBUTE_KEY_TOKEN);
-                case TokenTypes.ATTRIBUTE_VALUE_TOKEN -> new ComplexListener(TokenTypes.ATTRIBUTE_VALUE_TOKEN);
-                case TokenTypes.STRING_TOKEN -> stringListener;
-                case TokenTypes.FLOAT_TOKEN -> floatListener;
-                case TokenTypes.INT_TOKEN -> intListener;
-                case TokenTypes.BOOLEAN_TOKEN -> booleanListener;
-                case TokenTypes.NULL_TOKEN -> nullListener;
-                default -> exceptionListener;
-            };
-
-            listener.start(tokenId, index, source);
-            stackIndex++;
-            if (stackIndex >= stack.length) {
-                TokenEventListener[] stackNew = new TokenEventListener[stack.length * 2];
-                System.arraycopy(stack, 0, stackNew, 0, stack.length);
-                stack = stackNew;
-            }
-            stack[stackIndex] = listener;
-        }
-
-        @Override
-        public void end(int tokenId, int index, CharSource source) {
-            stack[stackIndex].end(tokenId, index, source);
-            stack[stackIndex] = null;
-            stackIndex--;
-        }
-    };
-    private TokenList tokenList;
+public class JsonEventStrictParser extends JsonEventAbstractParser {
 
 
-    public JsonEventParserStrict(boolean objectsKeysCanBeEncoded) {
-        this.objectsKeysCanBeEncoded = objectsKeysCanBeEncoded;
-    }
 
-    public JsonEventParserStrict() {
-        this(false);
+
+    public JsonEventStrictParser(boolean objectsKeysCanBeEncoded, TokenEventListener tokenEventListener) {
+        super(objectsKeysCanBeEncoded, tokenEventListener);
     }
 
     @Override
-    public void parse(CharSource source, final TokenEventListener event) {
+    public void parseWithEvents(CharSource source, final TokenEventListener event) {
 
         int ch = source.nextSkipWhiteSpace();
 
@@ -391,72 +323,5 @@ public class JsonEventParserStrict implements JsonEventParser, JsonIndexOverlayP
         event.end(TokenTypes.OBJECT_TOKEN, source.getIndex(), source);
     }
 
-    @Override
-    public List<Token> scan(final CharSource source) {
-        tokenList = new TokenList();
-        this.parse(source, base);
-        return tokenList;
-    }
 
-    @Override
-    public RootNode parse(CharSource source) {
-        return new RootNode((TokenList) scan(source), source, objectsKeysCanBeEncoded);
-    }
-
-    class ScalarListener implements TokenEventListener {
-        final int tokenType;
-        int startIndex;
-        ScalarListener(final int tokenType) {
-            this.tokenType = tokenType;
-        }
-
-        @Override
-        public void start(int tokenId, int index, CharSource source) {
-            startIndex = index;
-        }
-
-        @Override
-        public void end(int tokenId, int index, CharSource source) {
-            tokenList.add(new Token(startIndex, index, tokenType));
-        }
-
-        @Override
-        public String toString() {
-            return "ScalarListener{" +
-                    "tokenType=" + TokenTypes.getTypeName(tokenType) +
-                    ", startIndex=" + startIndex +
-                    '}';
-        }
-    }
-
-    class ComplexListener implements TokenEventListener {
-        final int tokenType;
-        int startIndex;
-        int tokenListIndex;
-
-        ComplexListener(final int tokenType) {
-            this.tokenType = tokenType;
-        }
-
-        @Override
-        public void start(int tokenId, int index, CharSource source) {
-            startIndex = index;
-            tokenListIndex = tokenList.getIndex();
-            tokenList.placeHolder();
-        }
-
-        @Override
-        public void end(int tokenId, int index, CharSource source) {
-            tokenList.set(tokenListIndex, new Token(startIndex, index, tokenType));
-        }
-
-        @Override
-        public String toString() {
-            return "ComplexListener{" +
-                    "tokenType=" + TokenTypes.getTypeName(tokenType) +
-                    ", startIndex=" + startIndex +
-                    ", tokenListIndex=" + tokenListIndex +
-                    '}';
-        }
-    }
 }

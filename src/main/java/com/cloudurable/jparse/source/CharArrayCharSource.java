@@ -292,6 +292,33 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 //        throw new UnexpectedCharacterException("Parsing JSON Encoded String", "Unable to find closing for String", this, (int) ch, i);
 //    }
 
+    @Override
+    public int findEndOfEncodedStringFast() {
+        int i = ++index;
+        final var data = this.data;
+        final var length = data.length;
+        boolean controlChar = false;
+        for (; i < length; i++) {
+            char ch = data[i];
+            switch (ch) {
+                case CONTROL_ESCAPE_TOKEN:
+                    controlChar = !controlChar;
+                    continue;
+                case STRING_END_TOKEN:
+                    if (!controlChar) {
+                        index = i + 1;
+                        return i;
+                    }
+                    controlChar = false;
+                    break;
+                default:
+                    controlChar = false;
+                    break;
+
+            }
+        }
+        throw new IllegalStateException("Unable to find closing for String");
+    }
 
     private int findEndOfStringControlEncode(int i) {
         final var data = this.data;

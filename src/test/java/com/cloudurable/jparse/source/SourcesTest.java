@@ -1,6 +1,8 @@
 package com.cloudurable.jparse.source;
 
-import com.cloudurable.jparse.parser.JsonParser;
+import com.cloudurable.jparse.Json;
+import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
+import com.cloudurable.jparse.parser.JsonStrictParser;
 import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.node.support.PathUtils;
 import com.cloudurable.jparse.token.Token;
@@ -21,6 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SourcesTest {
 
     final static String glossaryJson;
+
+    public JsonIndexOverlayParser jsonParser() {
+        return Json.builder().setStrict(true).build();
+    }
+
 
     static {
         try {
@@ -71,13 +78,13 @@ public class SourcesTest {
     }
 
     @Test
-    void testBytes() throws Exception {
+    void testBytes()  {
         final CharSource charSource = Sources.byteSource(glossaryJson.getBytes(StandardCharsets.UTF_8));
         doTest(charSource);
     }
 
     @Test
-    void testCharBuffer() throws Exception {
+    void testCharBuffer()  {
         CharBuffer charBuffer = CharBuffer.allocate(glossaryJson.length());
         charBuffer.put(glossaryJson);
         charBuffer.flip();
@@ -86,7 +93,7 @@ public class SourcesTest {
     }
 
     @Test
-    void testCharBufferSimple() throws Exception {
+    void testCharBufferSimple() {
         final var testString = "0123456789";
         CharBuffer charBuffer = CharBuffer.allocate(testString.length());
         charBuffer.put(testString);
@@ -98,7 +105,7 @@ public class SourcesTest {
     }
 
     @Test
-    void testCharSeq() throws Exception {
+    void testCharSeq()  {
         final CharSource charSource = Sources.charSeqSource(glossaryJson);
         doTest(charSource);
     }
@@ -120,7 +127,7 @@ public class SourcesTest {
     private void doTest(CharSource charSource, File file) {
 
         try {
-            JsonParser jsonParser = new JsonParser();
+            final var jsonParser = jsonParser();
 
             RootNode jsonRoot = jsonParser.parse(charSource);
 
@@ -132,7 +139,7 @@ public class SourcesTest {
     }
 
     private void doTest(CharSource charSource) {
-        JsonParser jsonParser = new JsonParser();
+        final var jsonParser = jsonParser();
 
         RootNode jsonRoot = jsonParser.parse(charSource);
         Token token = jsonRoot.getNode().rootElementToken();

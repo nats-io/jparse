@@ -14,9 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class JsonTestUtils {
 
 
-    public static List<Token> tokens(final String niceJson) {
-        return Json.toTokens(Json.niceJson(niceJson));
-    }
+
 
     public static void showTokens(final List<Token> tokens) {
         tokens.forEach(token -> out.println(token));

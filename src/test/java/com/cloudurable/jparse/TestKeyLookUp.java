@@ -2,8 +2,8 @@ package com.cloudurable.jparse;
 
 import com.cloudurable.jparse.node.ObjectNode;
 import com.cloudurable.jparse.node.RootNode;
-import com.cloudurable.jparse.parser.IndexOverlayParser;
-import com.cloudurable.jparse.parser.JsonParser;
+import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
+import com.cloudurable.jparse.parser.JsonStrictParser;
 import com.cloudurable.jparse.source.Sources;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ public class TestKeyLookUp {
 
     @Test
     void testStringKey() {
-        final var parser = new JsonParser();
+        final var parser = Json.builder().build();
         final var json1 = "'1'";
         final var json2 = "{'1':{'2':1}}";
         final var key = getJsonRoot(parser, json1).getNode();
@@ -30,7 +30,7 @@ public class TestKeyLookUp {
     }
 
 
-    private RootNode getJsonRoot(IndexOverlayParser parser, String json1) {
+    private RootNode getJsonRoot(JsonIndexOverlayParser parser, String json1) {
         return parser.parse(Sources.stringSource(json1.replace("'", "\"")));
     }
 }

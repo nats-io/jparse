@@ -9,17 +9,13 @@ import com.cloudurable.jparse.token.TokenTypes;
 
 import java.util.List;
 
-public class JsonParser implements JsonIndexOverlayParser {
+public class JsonStrictParser implements JsonIndexOverlayParser {
 
     private final boolean objectsKeysCanBeEncoded;
 
-    public JsonParser() {
-        this.objectsKeysCanBeEncoded = false;
-    }
 
-    public JsonParser(boolean objectsKeysCanBeEncoded) {
+    public JsonStrictParser(boolean objectsKeysCanBeEncoded) {
         this.objectsKeysCanBeEncoded = objectsKeysCanBeEncoded;
-
     }
 
     @Override

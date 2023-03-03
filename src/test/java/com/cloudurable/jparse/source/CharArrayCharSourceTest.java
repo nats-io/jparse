@@ -1,14 +1,9 @@
 package com.cloudurable.jparse.source;
 
 import com.cloudurable.jparse.Json;
-import com.cloudurable.jparse.node.support.NumberParseResult;
-import com.cloudurable.jparse.parser.IndexOverlayParser;
-import com.cloudurable.jparse.parser.JsonParser;
-import com.cloudurable.jparse.token.Token;
-import com.cloudurable.jparse.token.TokenTypes;
+import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
+import com.cloudurable.jparse.parser.JsonStrictParser;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,29 +37,55 @@ class CharArrayCharSourceTest {
 
     @Test
     void encoding() {
-        final IndexOverlayParser parser = new JsonParser();
+
         //.................0123456789
         final var  json = "'`u0003'";
         final var source = Sources.stringSource(Json.niceJson(json));
         source.next();
         int end = source.findEndOfEncodedString();
         assertEquals(7, end);
+        assertEquals(8, source.getIndex());
+    }
+
+    @Test
+    void encodingFast() {
+
+        //.................0123456789
+        final var  json = "'`u0003'";
+        final var source = Sources.stringSource(Json.niceJson(json));
+        source.next();
+        int end = source.findEndOfEncodedStringFast();
+        assertEquals(7, end);
+        assertEquals(8, source.getIndex());
     }
 
     @Test
     void encoding2() {
-        final IndexOverlayParser parser = new JsonParser();
+
         //.................0123456789012
         final var  json = "'abc`n`u0003'";
         final var source = Sources.stringSource(Json.niceJson(json));
         source.next();
         int end = source.findEndOfEncodedString();
         assertEquals(12, end);
+        assertEquals(13, source.getIndex());
+    }
+
+    @Test
+    void encoding2Fast() {
+
+        //.................0123456789012
+        final var  json = "'abc`n`u0003'";
+        final var source = Sources.stringSource(Json.niceJson(json));
+        source.next();
+        int end = source.findEndOfEncodedStringFast();
+        assertEquals(12, end);
+        assertEquals(13, source.getIndex());
     }
 
     @Test
     void encoding3() {
-        final IndexOverlayParser parser = new JsonParser();
+
         //.................0123456789
         final var  json =  "'abc`n`b`r`u1234'";
         final var source = Sources.stringSource(Json.niceJson(json));
@@ -112,7 +133,7 @@ class CharArrayCharSourceTest {
     }
     @Test
     void testSimpleObjectTwoItemsWeirdSpacing() {
-        final IndexOverlayParser parser = new JsonParser();
+
         //.................. 0123456789012345678901234567890123456789012345
         final String json = "   {'h':   'a',\n\t 'i':'b'\n\t } \n\t    \n";
 

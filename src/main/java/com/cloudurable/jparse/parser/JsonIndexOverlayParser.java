@@ -8,7 +8,7 @@ import com.cloudurable.jparse.token.Token;
 
 import java.util.List;
 
-public interface IndexOverlayParser extends ParseConstants {
+public interface JsonIndexOverlayParser extends ParseConstants {
     List<Token> scan(final CharSource source);
     RootNode parse(final CharSource source);
     default RootNode parse(final String source) {
