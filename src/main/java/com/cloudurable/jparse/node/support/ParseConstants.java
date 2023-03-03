@@ -2,6 +2,9 @@ package com.cloudurable.jparse.node.support;
 
 public interface ParseConstants {
 
+    int NEST_LEVEL = 2_000;
+
+
     /**
      * End of text
      */
