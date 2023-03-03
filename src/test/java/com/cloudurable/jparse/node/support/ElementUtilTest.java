@@ -1,7 +1,8 @@
 package com.cloudurable.jparse.node.support;
 
-import com.cloudurable.jparse.parser.JsonParser;
-import com.cloudurable.jparse.parser.IndexOverlayParser;
+import com.cloudurable.jparse.Json;
+import com.cloudurable.jparse.parser.JsonStrictParser;
+import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
 import com.cloudurable.jparse.node.NodeType;
 import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.source.Sources;
@@ -15,6 +16,10 @@ import static com.cloudurable.jparse.Json.niceJson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ElementUtilTest {
+
+    public JsonIndexOverlayParser jsonParser() {
+        return Json.builder().setStrict(true).build();
+    }
 
 
     @Test
@@ -158,7 +163,7 @@ class ElementUtilTest {
     @Test
     void testObject() {
 
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         //...................0123456789
         final String json = "{'a':'b'}";
         final TokenList list = (TokenList) parser.scan(Sources.stringSource(json.replace("'", "\"")));
@@ -174,7 +179,7 @@ class ElementUtilTest {
     @Test
     void testObject2() {
 
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         //...................0123456789
         final String json = "{'a':'b'}";
         RootNode parse = parser.parse(niceJson(json));

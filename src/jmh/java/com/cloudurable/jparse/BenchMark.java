@@ -1,7 +1,8 @@
 package com.cloudurable.jparse;
 
 import com.cloudurable.jparse.parser.JsonEventParser;
-import com.cloudurable.jparse.parser.JsonParser;
+import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
+import com.cloudurable.jparse.parser.JsonStrictParser;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.source.Sources;
 import com.cloudurable.jparse.token.TokenEventListener;
@@ -10,16 +11,24 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.nats.client.support.JsonParseException;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
-
-import org.noggit.*;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 
+@State(value = Scope.Benchmark)
 public class BenchMark {
+
+
+    JsonIndexOverlayParser fastParser = Json.builder().setStrict(false).build();
+    JsonIndexOverlayParser strictParser = Json.builder().setStrict(true).build();
+    JsonEventParser fastEventParser =  Json.builder().setStrict(false).buildEventParser();
+    JsonEventParser strictEventParser =  Json.builder().setStrict(true).buildEventParser();
+
 
 
     final static String jsonData;
@@ -95,7 +104,7 @@ public class BenchMark {
 //                final RootNode root = new JsonParser().parse(webXmlJsonData);
 //                final var result = Path.atPath(webXmlObjectPath, root);
 
-                final var result = new JsonParser().parse(webXmlJsonData);
+                final var result = Json.builder().setStrict(true).build().parse(webXmlJsonData);
 
                 //PathNode pathElements = Path.toPath("foo.bar.baz[99][0][10][11]['hi mom']");
 
@@ -165,28 +174,91 @@ public class BenchMark {
 //    }
 
 
+//    @Benchmark
+//    public void readWebJSONJParse(Blackhole bh) {
+//        bh.consume(Json.toRootNode(webXmlJsonData));
+//    }
+
+
+//    @Benchmark
+//    public void readWebJSONJParseFast(Blackhole bh) {
+//        bh.consume(Json.builder().setStrict(false).build().parse(webXmlJsonData));
+//    }
+
+
     @Benchmark
-    public void readWebJSONJParse(Blackhole bh) {
-        bh.consume(new JsonParser().parse(webXmlJsonData));
+    public void readGlossaryFastJParse(Blackhole bh) {
+        bh.consume(fastParser.parse(glossaryJsonData));
     }
 
     @Benchmark
-    public void readWebJSONJackson(Blackhole bh) throws JsonProcessingException {
-        bh.consume(mapper.readValue(webXmlJsonData, mapTypeRef));
+    public void readGlossaryStrictJParse(Blackhole bh) {
+        bh.consume(strictParser.parse(glossaryJsonData));
     }
 
-    @Benchmark public void readWebJsonNats(Blackhole bh) throws JsonParseException{
-        io.nats.client.support.JsonParser.parse(webXmlJsonData);
+
+    @Benchmark
+    public void readGlossaryEventStrictJParse(Blackhole bh) throws Exception {
+
+        final int [] token = new int[1];
+        final var events = new TokenEventListener() {
+            @Override
+            public void start(int tokenId, int index, CharSource source) {
+                token[0] = tokenId;
+            }
+
+            @Override
+            public void end(int tokenId, int index, CharSource source) {
+                token[0] = tokenId;
+            }
+        };
+
+        strictEventParser.parseWithEvents(glossaryJsonData, events);
+
+        bh.consume(token);
     }
+
+
+    @Benchmark
+    public void readGlossaryEventFastJParse(Blackhole bh) throws Exception {
+
+        final int [] token = new int[1];
+        final var events = new TokenEventListener() {
+            @Override
+            public void start(int tokenId, int index, CharSource source) {
+                token[0] = tokenId;
+            }
+
+            @Override
+            public void end(int tokenId, int index, CharSource source) {
+                token[0] = tokenId;
+            }
+        };
+
+
+        fastEventParser.parseWithEvents(glossaryJsonData, events);
+
+        bh.consume(token);
+    }
+
+
+//    @Benchmark
+//    public void readWebJSONJackson(Blackhole bh) throws JsonProcessingException {
+//        bh.consume(mapper.readValue(webXmlJsonData, mapTypeRef));
+//    }
+//
+//    @Benchmark public void readWebJsonNats(Blackhole bh) throws JsonParseException{
+//        io.nats.client.support.JsonParser.parse(webXmlJsonData);
+//    }
 
 //    @Benchmark
 //    public void readGlossaryJackson(Blackhole bh) throws JsonProcessingException {
 //        bh.consume(mapper.readValue(glossaryJsonData, mapTypeRef));
 //    }
 //
-//    @Benchmark public void readNatsJsonGlossary(Blackhole bh) throws JsonParseException{
-//        io.nats.client.support.JsonParser.parse(glossaryJsonData);
-//    }
+    @Benchmark public void readNatsJsonGlossary(Blackhole bh) throws JsonParseException{
+        io.nats.client.support.JsonParser.parse(glossaryJsonData);
+    }
 //
 //    @Benchmark
 //    public void readGlossaryJParse(Blackhole bh) {
@@ -211,28 +283,7 @@ public class BenchMark {
 //        bh.consume(event);
 //    }
 
-//
-//    @Benchmark
-//    public void readGlossaryEventJParse(Blackhole bh) throws Exception {
-//
-//        final var jsonParser =  new JsonEventParser();
-//        final int [] token = new int[1];
-//        final var events = new TokenEventListener() {
-//            @Override
-//            public void start(int tokenId, int index, CharSource source) {
-//                token[0] = tokenId;
-//            }
-//
-//            @Override
-//            public void end(int tokenId, int index, CharSource source) {
-//                token[0] = tokenId;
-//            }
-//        };
-//
-//        jsonParser.parse(glossaryJsonData, events);
-//
-//        bh.consume(token);
-//    }
+
 
 
 //

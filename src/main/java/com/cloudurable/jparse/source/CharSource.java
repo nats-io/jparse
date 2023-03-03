@@ -71,4 +71,6 @@ public interface CharSource {
     boolean findObjectEndOrAttributeSep();
 
     void checkForJunk();
+
+    int findEndOfEncodedStringFast();
 }

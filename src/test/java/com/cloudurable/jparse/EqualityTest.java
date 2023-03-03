@@ -4,8 +4,8 @@ import com.cloudurable.jparse.node.Node;
 import com.cloudurable.jparse.node.NodeType;
 import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.node.StringNode;
-import com.cloudurable.jparse.parser.IndexOverlayParser;
-import com.cloudurable.jparse.parser.JsonParser;
+import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
+import com.cloudurable.jparse.parser.JsonStrictParser;
 import com.cloudurable.jparse.source.Sources;
 import org.junit.jupiter.api.Test;
 
@@ -13,10 +13,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EqualityTest {
 
+    public JsonIndexOverlayParser jsonParser() {
+        return Json.builder().setStrict(true).build();
+    }
 
     @Test
     void testRoot() {
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         final String json1 = "'abc'";
         final String json2 = "'abc'";
 
@@ -27,7 +30,7 @@ public class EqualityTest {
 
     @Test
     void testSimpleString() {
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         final String json1 = "'abc'";
         final String json2 = "'abc'";
 
@@ -42,7 +45,7 @@ public class EqualityTest {
 
     @Test
     void testSimpleInt() {
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         final String json1 = "1";
         final String json2 = "1";
         var v1 = getJsonRoot(parser, json1).getNumberNode();
@@ -53,7 +56,7 @@ public class EqualityTest {
 
     @Test
     void testSimpleArray() {
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         final String json1 = "[1,2,3,true,false]";
         final String json2 = "[1,2,3,true,false]";
         var v1 = getJsonRoot(parser, json1).getArrayNode();
@@ -63,7 +66,7 @@ public class EqualityTest {
 
     @Test
     void testSimpleObject() {
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         final String json1 = "{'1':2}";
         final String json2 = "{'1':2}";
         var v1 = getJsonRoot(parser, json1).getObjectNode();
@@ -73,7 +76,7 @@ public class EqualityTest {
 
     @Test
     void testSimpleObject2() {
-        final IndexOverlayParser parser = new JsonParser();
+        final JsonIndexOverlayParser parser = jsonParser();
         final String json1 = "{'1':2,'2':1}";
         final String json2 = "{'2':1,'1':2}";
         var v1 = getJsonRoot(parser, json1).getObjectNode();
@@ -81,7 +84,7 @@ public class EqualityTest {
         doAssert(v1, v2);
     }
 
-    private RootNode getJsonRoot(IndexOverlayParser parser, String json1) {
+    private RootNode getJsonRoot(JsonIndexOverlayParser parser, String json1) {
         return parser.parse(Sources.stringSource(json1.replace("'", "\"")));
     }
 
