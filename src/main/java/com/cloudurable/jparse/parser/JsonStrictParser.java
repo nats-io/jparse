@@ -12,6 +12,7 @@ import java.util.List;
 public class JsonStrictParser implements JsonIndexOverlayParser {
 
     private final boolean objectsKeysCanBeEncoded;
+    int nestLevel;
 
 
     public JsonStrictParser(boolean objectsKeysCanBeEncoded) {
@@ -25,10 +26,12 @@ public class JsonStrictParser implements JsonIndexOverlayParser {
 
     @Override
     public RootNode parse(CharSource source) {
+
         return new RootNode((TokenList) scan(source), source, objectsKeysCanBeEncoded);
     }
 
     private List<Token> scan(final CharSource source, TokenList tokens) {
+        nestLevel = 0;
 
         int ch = source.nextSkipWhiteSpace();
 
@@ -101,6 +104,7 @@ public class JsonStrictParser implements JsonIndexOverlayParser {
     }
 
     private void parseArray(final CharSource source, final TokenList tokens) {
+        levelCheck(source);
         final int startSourceIndex = source.getIndex();
         final int tokenListIndex = tokens.getIndex();
         tokens.placeHolder();
@@ -329,6 +333,7 @@ public class JsonStrictParser implements JsonIndexOverlayParser {
 
 
     private void parseObject(final CharSource source, TokenList tokens) {
+        levelCheck(source);
         final int startSourceIndex = source.getIndex();
         final int tokenListIndex = tokens.getIndex();
         tokens.placeHolder();
@@ -337,10 +342,17 @@ public class JsonStrictParser implements JsonIndexOverlayParser {
         while (!done) {
             done = parseKey(source, tokens);
             if (!done)
-              done = parseValue(source, tokens);
+                done = parseValue(source, tokens);
         }
         source.next();
         tokens.set(tokenListIndex, new Token(startSourceIndex, source.getIndex(), TokenTypes.OBJECT_TOKEN));
+    }
+
+    private void levelCheck(CharSource source) {
+        nestLevel++;
+        if (nestLevel > NEST_LEVEL) {
+            throw new UnexpectedCharacterException("Next level violation", "Too many levels " + nestLevel, source);
+        }
     }
 
 

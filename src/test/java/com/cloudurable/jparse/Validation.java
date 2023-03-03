@@ -14,52 +14,70 @@ public class Validation {
             final File file = new File("./src/test/resources/validation/");
 
 
-            int[] result1 = validate(file, "y_", true, false);
-            int[] result2 = validate(file, "i_", true, false);
-            int[] result3 = validate(file, "n_", false, true);
+            System.out.println("Event Strict Parser");
+            final boolean showPass = false;
+            final boolean showFail = false;
+            validateParser(file, (JsonIndexOverlayParser) Json.builder().setStrict(true).buildEventParser(), showFail, showPass);
 
-            System.out.printf("Passed Mandatory %d Failed %d \n", result1[0], result1[1]);
-            System.out.printf("Passed Optional %d Failed %d \n", result2[0], result2[1]);
-            System.out.printf("Passed Garbage %d Failed %d \n", result3[0], result3[1]);
+            System.out.println("Strict Parser");
+            final var jsonParser = Json.builder().setStrict(true).build();
+            validateParser(file, jsonParser, showFail, showPass);
 
-        }catch ( Exception ex) {
+        } catch (Throwable ex) {
             ex.printStackTrace();
         }
     }
 
-    private static int [] validate(File file, String match, boolean showFail, boolean showPass) {
+    private static void validateParser(File file, JsonIndexOverlayParser jsonParser,
+                                       boolean showFail, boolean showPass) {
+        int[] result1 = validate(file, "y_", showFail, showPass, jsonParser);
+        int[] result2 = validate(file, "i_", showFail, showPass, jsonParser);
+        int[] result3 = validate(file, "n_", showFail, showPass, jsonParser);
 
-        final var jsonParser = Json.builder().setStrict(true).build();
-        int pass = 0;
-        int error = 0;
-        for (File listFile : file.listFiles()) {
-            if (listFile.getName().startsWith(match)) {
+        System.out.printf("Passed Mandatory %d Failed %d \n", result1[0], result1[1]);
+        System.out.printf("Passed Optional %d Failed %d \n", result2[0], result2[1]);
+        System.out.printf("Passed Garbage %d Failed %d \n", result3[0], result3[1]);
+    }
 
-                final CharSource cs = Sources.fileSource(listFile);
-                final var jsonString = cs.toString();
+    private static int[] validate(File file, String match, boolean showFail, boolean showPass,
+                                  JsonIndexOverlayParser jsonParser) {
 
-                //System.out.println("TESTING " + listFile);
-                try {
 
-                    RootNode root = jsonParser.parse(jsonString);
-                    if (showPass) {
-                        System.out.println("PASS! " + listFile);
-                        System.out.println(cs);
-                        System.out.println();
+        try {
+            int pass = 0;
+            int error = 0;
+            for (File listFile : file.listFiles()) {
+                if (listFile.getName().startsWith(match)) {
+
+                    final CharSource cs = Sources.fileSource(listFile);
+                    final var jsonString = cs.toString();
+
+                    //System.out.println("TESTING " + listFile);
+                    try {
+
+                        RootNode root = jsonParser.parse(jsonString);
+                        if (showPass) {
+                            System.out.println("PASS! " + listFile);
+                            System.out.println(cs);
+                            System.out.println();
+                        }
+                        pass++;
+                    } catch (Exception ex) {
+                        //ex.printStackTrace();
+                        if (showFail) {
+                            System.out.println("FAIL! " + listFile);
+                            System.out.println(cs);
+                            System.out.println();
+                        }
+                        error++;
                     }
-                    pass++;
-                }catch (Exception ex) {
-                    //ex.printStackTrace();
-                    if (showFail) {
-                        System.out.println("FAIL! " + listFile);
-                        System.out.println(cs);
-                        System.out.println();
-                    }
-                    error++;
                 }
             }
-        }
 
-        return new int[]{pass, error};
+            return new int[]{pass, error};
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+        return new int[]{-1, -1};
     }
 }

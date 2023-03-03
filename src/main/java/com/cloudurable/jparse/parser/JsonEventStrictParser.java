@@ -1,19 +1,17 @@
 package com.cloudurable.jparse.parser;
 
-import com.cloudurable.jparse.node.RootNode;
-import com.cloudurable.jparse.node.support.TokenList;
+
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.source.support.UnexpectedCharacterException;
-import com.cloudurable.jparse.token.Token;
 import com.cloudurable.jparse.token.TokenEventListener;
 import com.cloudurable.jparse.token.TokenTypes;
 
-import java.util.List;
 
 
 public class JsonEventStrictParser extends JsonEventAbstractParser {
 
 
+    int nestLevel;
 
 
     public JsonEventStrictParser(boolean objectsKeysCanBeEncoded, TokenEventListener tokenEventListener) {
@@ -91,6 +89,7 @@ public class JsonEventStrictParser extends JsonEventAbstractParser {
     }
 
     private void parseArray(final CharSource source, final TokenEventListener event) {
+        levelCheck(source);
         event.start(TokenTypes.ARRAY_TOKEN, source.getIndex(), source);
         boolean done = false;
         while (!done) {
@@ -307,6 +306,7 @@ public class JsonEventStrictParser extends JsonEventAbstractParser {
     }
 
     private void parseObject(final CharSource source, final TokenEventListener event) {
+        levelCheck(source);
         event.start(TokenTypes.OBJECT_TOKEN, source.getIndex(), source);
 
         boolean done = false;
@@ -323,5 +323,11 @@ public class JsonEventStrictParser extends JsonEventAbstractParser {
         event.end(TokenTypes.OBJECT_TOKEN, source.getIndex(), source);
     }
 
+    private void levelCheck(CharSource source) {
+        nestLevel++;
+        if (nestLevel > NEST_LEVEL) {
+            throw new UnexpectedCharacterException("Next level violation", "Too many levels " + nestLevel, source);
+        }
+    }
 
 }
