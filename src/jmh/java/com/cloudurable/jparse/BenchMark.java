@@ -8,6 +8,7 @@ import com.cloudurable.jparse.token.TokenEventListener;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.nats.client.support.JsonParseException;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.infra.Blackhole;
 
@@ -84,11 +85,12 @@ public class BenchMark {
 
 
 
+
         try {
             long startTime = System.currentTimeMillis();
 
 
-            for (int i = 0; i < 1_500_000; i++) {
+            for (int i = 0; i < 10_500_000; i++) {
 
 //                final RootNode root = new JsonParser().parse(webXmlJsonData);
 //                final var result = Path.atPath(webXmlObjectPath, root);
@@ -163,66 +165,74 @@ public class BenchMark {
 //    }
 
 
+    @Benchmark
+    public void readWebJSONJParse(Blackhole bh) {
+        bh.consume(new JsonParser().parse(webXmlJsonData));
+    }
+
+    @Benchmark
+    public void readWebJSONJackson(Blackhole bh) throws JsonProcessingException {
+        bh.consume(mapper.readValue(webXmlJsonData, mapTypeRef));
+    }
+
+    @Benchmark public void readWebJsonNats(Blackhole bh) throws JsonParseException{
+        io.nats.client.support.JsonParser.parse(webXmlJsonData);
+    }
+
 //    @Benchmark
-//    public void readWebJSONJParse(Blackhole bh) {
-//        bh.consume(new JsonParser().parse(webXmlJsonData));
+//    public void readGlossaryJackson(Blackhole bh) throws JsonProcessingException {
+//        bh.consume(mapper.readValue(glossaryJsonData, mapTypeRef));
+//    }
+//
+//    @Benchmark public void readNatsJsonGlossary(Blackhole bh) throws JsonParseException{
+//        io.nats.client.support.JsonParser.parse(glossaryJsonData);
 //    }
 //
 //    @Benchmark
-//    public void readWebJSONJackson(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(webXmlJsonData, mapTypeRef));
+//    public void readGlossaryJParse(Blackhole bh) {
+//        bh.consume(new JsonParser().parse(glossaryJsonData));
 //    }
 
-    @Benchmark
-    public void readGlossaryJackson(Blackhole bh) throws JsonProcessingException {
-        bh.consume(mapper.readValue(glossaryJsonData, mapTypeRef));
-    }
+//    @Benchmark
+//    public void readGlossaryJParseWithEvents(Blackhole bh) {
+//        bh.consume(new JsonEventParser().parse(glossaryJsonData));
+//    }
 
-    @Benchmark
-    public void readGlossaryJParse(Blackhole bh) {
-        bh.consume(new JsonParser().parse(glossaryJsonData));
-    }
+//    @Benchmark
+//    public void readGlossaryNoggitEvent(Blackhole bh) throws Exception {
+//
+//        final var jsonParser =  new JSONParser(glossaryJsonData);
+//
+//        int event = -1;
+//        while (event!=JSONParser.EOF) {
+//            event = jsonParser.nextEvent();
+//        }
+//
+//        bh.consume(event);
+//    }
 
-    @Benchmark
-    public void readGlossaryJParseWithEvents(Blackhole bh) {
-        bh.consume(new JsonEventParser().parse(glossaryJsonData));
-    }
-
-    @Benchmark
-    public void readGlossaryNoggitEvent(Blackhole bh) throws Exception {
-
-        final var jsonParser =  new JSONParser(glossaryJsonData);
-
-        int event = -1;
-        while (event!=JSONParser.EOF) {
-            event = jsonParser.nextEvent();
-        }
-
-        bh.consume(event);
-    }
-
-
-    @Benchmark
-    public void readGlossaryEventJParse(Blackhole bh) throws Exception {
-
-        final var jsonParser =  new JsonEventParser();
-        final int [] token = new int[1];
-        final var events = new TokenEventListener() {
-            @Override
-            public void start(int tokenId, int index, CharSource source) {
-                token[0] = tokenId;
-            }
-
-            @Override
-            public void end(int tokenId, int index, CharSource source) {
-                token[0] = tokenId;
-            }
-        };
-
-        jsonParser.parse(glossaryJsonData, events);
-
-        bh.consume(token);
-    }
+//
+//    @Benchmark
+//    public void readGlossaryEventJParse(Blackhole bh) throws Exception {
+//
+//        final var jsonParser =  new JsonEventParser();
+//        final int [] token = new int[1];
+//        final var events = new TokenEventListener() {
+//            @Override
+//            public void start(int tokenId, int index, CharSource source) {
+//                token[0] = tokenId;
+//            }
+//
+//            @Override
+//            public void end(int tokenId, int index, CharSource source) {
+//                token[0] = tokenId;
+//            }
+//        };
+//
+//        jsonParser.parse(glossaryJsonData, events);
+//
+//        bh.consume(token);
+//    }
 
 
 //
