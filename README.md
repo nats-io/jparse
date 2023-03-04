@@ -5,7 +5,11 @@ JParse, the most efficient JSON parser for the JVM yet.
 
 # Goals 
 
-Fastest, most compliant and smallest JSON parser lib for the JVM. 
+Fastest, most compliant and smallest JSON parser lib for the JVM, and it is developer friendly.
+
+# License 
+
+Apache 2. 
 
 
 # Why JParse 
