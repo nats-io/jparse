@@ -24,7 +24,7 @@ import com.cloudurable.jparse.source.support.UnexpectedCharacterException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class CharArrayCharSource implements CharSource, ParseConstants {
+public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
     private final static char[] MIN_INT_CHARS = MIN_INT_STR.toCharArray();
     private final static char[] MAX_INT_CHARS = MAX_INT_STR.toCharArray();
@@ -81,21 +81,22 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     };
     private final char[] data;
     private int index;
+    private final int  sourceStartIndex;
+    private final int  sourceEndIndex;
+    private final int length;
 
-    public CharArrayCharSource(final char[] chars) {
-        index = -1;
+    public CharArrayOffsetCharSource(final int startIndex, final int endIndex, final char[] chars) {
+        index =  startIndex -1;
         data = chars;
-    }
-
-    public CharArrayCharSource(final String str) {
-        index = -1;
-        data = str.toCharArray();
+        sourceStartIndex = startIndex;
+        sourceEndIndex = endIndex;
+        length = endIndex - startIndex;
     }
 
     @Override
     public int next() {
-        if (index + 1 >= data.length) {
-            index = data.length;
+        if (index + 1 >= sourceEndIndex) {
+            index = sourceEndIndex;
             return ETX;
         }
         return data[++index];
@@ -127,11 +128,11 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     public int nextSkipWhiteSpace() {
         int index = this.index + 1;
         final var data = this.data;
-        final var length = data.length;
+        final var endIndex = sourceEndIndex;
         int ch = ETX;
 
         loop:
-        for (; index < length; index++) {
+        for (; index < endIndex; index++) {
             ch = data[index];
             switch (ch) {
                 case NEW_LINE_WS:
@@ -144,19 +145,19 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
             }
         }
         this.index = index ;
-        return index == length ? ETX : ch;
+        return index == endIndex ? ETX : ch;
     }
 
     @Override
     public char skipWhiteSpace() {
         int index = this.index;
         final var data = this.data;
-        final var length = data.length;
+        final var endIndex = sourceEndIndex;
 
         char ch;
 
         loop:
-        for (; index < length; index++) {
+        for (; index < endIndex; index++) {
             ch = data[index];
             switch (ch) {
                 case NEW_LINE_WS:
@@ -174,7 +175,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
     @Override
     public int getIndex() {
-        return index;
+        return index - sourceStartIndex;
     }
 
 
@@ -185,7 +186,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
     @Override
     public char getCurrentCharSafe() {
-        if (index  >= data.length) {
+        if (index  >= sourceEndIndex) {
             return ETX;
         }
         return data[index];
@@ -193,8 +194,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
 
     @Override
-    public char getChartAt(int index) {
-        return data[index];
+    public char getChartAt(final int index) {
+        return data[index + sourceStartIndex];
     }
 
     @Override
@@ -241,7 +242,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
     @Override
     public String toString() {
-        return new String(data);
+        return new String(data, sourceStartIndex, length);
     }
 
 
@@ -252,8 +253,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         int i = index + 1;
         char ch = 0;
         final var data = this.data;
-        final var length = data.length;
-        for (; i < length; i++) {
+        final var endIndex = this.sourceEndIndex;
+        for (; i < endIndex; i++) {
 
             ch = data[i];
 
@@ -268,7 +269,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case OBJECT_END_TOKEN:
                 case ARRAY_END_TOKEN:
                     index = i;
-                    return new NumberParseResult(i, false);
+                    return new NumberParseResult(i - sourceStartIndex, false);
 
                 case NUM_0:
                 case NUM_1:
@@ -301,7 +302,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         }
 
         index = i;
-        return new NumberParseResult(i, false);
+        return new NumberParseResult(i - sourceStartIndex, false);
 
     }
 
@@ -311,9 +312,9 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         int i = index + 1;
         char ch =  0;
         final var data = this.data;
-        final var length = data.length;
+        final var endIndex = this.sourceEndIndex;
 
-        for (; i < length; i++) {
+        for (; i < endIndex; i++) {
             ch = data[i];
             switch (ch) {
 
@@ -326,7 +327,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case OBJECT_END_TOKEN:
                 case ARRAY_END_TOKEN:
                     index = i;
-                    return new NumberParseResult(i, true);
+                    return new NumberParseResult(i - sourceStartIndex, true);
 
                 case NUM_0:
                 case NUM_1:
@@ -355,7 +356,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
 
         index = i;
-        return new NumberParseResult(i, true);
+        return new NumberParseResult(i - sourceStartIndex, true);
 
     }
 
@@ -365,8 +366,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         char ch = 0;
         int signOperator = 0;
         final var data = this.data;
-        final var length = data.length;
-        for (; i < length; i++) {
+        final var end = sourceEndIndex;
+        for (; i < end; i++) {
             ch = data[i];
 
             switch (ch) {
@@ -380,7 +381,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case OBJECT_END_TOKEN:
                 case ARRAY_END_TOKEN:
                     index = i;
-                    return new NumberParseResult(i, true);
+                    return new NumberParseResult(i - sourceStartIndex, true);
 
                 case MINUS:
                 case PLUS:
@@ -412,7 +413,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
 
         index = i;
-        return new NumberParseResult(i, true);
+        return new NumberParseResult(i - sourceStartIndex, true);
 
     }
 
@@ -576,10 +577,10 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         int i = index + 1;
 
         final var data = this.data;
-        final var length = data.length;
+        final var endIndex = this.sourceEndIndex;
 
         loop:
-        for (; i < length; i++) {
+        for (; i < endIndex; i++) {
 
             ch = data[i];
 
@@ -661,7 +662,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                         }
                 }
         }
-        return new NumberParseResult(i, false);
+        return new NumberParseResult(i - this.sourceStartIndex, false);
     }
 
     private NumberParseResult findEndOfFloat() {
@@ -673,9 +674,10 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
             throw new UnexpectedCharacterException("Parsing float part of number", "After decimal point expecting number but got", this, (int) ch, this.index);
         }
         final var data = this.data;
-        final var length = data.length;
 
-        for (; i < length; i++) {
+        final var endIndex = this.sourceEndIndex;
+
+        for (; i < endIndex; i++) {
             ch = data[i];
             switch (ch) {
 
@@ -688,7 +690,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case OBJECT_END_TOKEN:
                 case ARRAY_END_TOKEN:
                     index = i;
-                    return new NumberParseResult(i, true);
+                    return new NumberParseResult(i - sourceStartIndex, true);
 
                 case NUM_0:
                 case NUM_1:
@@ -717,7 +719,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
 
         index = i;
-        return new NumberParseResult(i, true);
+        return new NumberParseResult(i - sourceStartIndex, true);
 
     }
 
@@ -729,6 +731,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     }
 
     private NumberParseResult parseFloatWithExponent() {
+
+
         char ch =  (char) next();
         if (!isNumberOrSign(ch)) {
             throw new UnexpectedCharacterException("Parsing exponent part of float", "After exponent expecting number or sign but got", this, (int) ch, this.index);
@@ -743,9 +747,10 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
         int i = index + 1;
         final var data = this.data;
-        final var length = data.length;
 
-        for (; i < length; i++) {
+        final var endIndex = this.sourceEndIndex;
+
+        for (; i < endIndex; i++) {
             ch = data[i];
 
             switch (ch) {
@@ -759,7 +764,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case OBJECT_END_TOKEN:
                 case ARRAY_END_TOKEN:
                     index = i;
-                    return new NumberParseResult(i, true);
+                    return new NumberParseResult(i - sourceStartIndex, true);
 
                 case NUM_0:
                 case NUM_1:
@@ -779,7 +784,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
             }
         }
         index = i;
-        return new NumberParseResult(i, true);
+        return new NumberParseResult(i - sourceStartIndex, true);
     }
 
     private boolean isNumberOrSign(char ch) {
@@ -800,7 +805,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     public int findFalseEnd() {
 
         if (this.data[++index] == 'a' && this.data[++index] == 'l' && this.data[++index] == 's' && this.data[++index] == 'e') {
-            return ++index;
+            return ++index - sourceStartIndex;
         } else {
             throw new UnexpectedCharacterException("Parsing JSON False Boolean", "Unexpected character", this);
 
@@ -810,9 +815,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public int findTrueEnd() {
         if (this.data[++index] == 'r' && this.data[++index] == 'u' && this.data[++index] == 'e') {
-            return ++index;
+            return ++index - sourceStartIndex;
         } else {
-
             throw new UnexpectedCharacterException("Parsing JSON True Boolean", "Unexpected character", this);
         }
     }
@@ -822,9 +826,9 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         int i = index;
         char ch = 0;
         final var data = this.data;
-        final var length = data.length;
+        final var end = sourceEndIndex;
 
-        for (; i < length; i++) {
+        for (; i < end; i++) {
             ch = data[i];
             switch (ch) {
                 case OBJECT_END_TOKEN:
@@ -846,7 +850,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         int i = index;
         char ch = 0;
         final var data = this.data;
-        final var length = data.length;
+        final var end = sourceEndIndex;
 
         for (; i < length; i++) {
             ch = data[i];
@@ -876,7 +880,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public int findNullEnd() {
         if (this.data[++index] == 'u' && this.data[++index] == 'l' && this.data[++index] == 'l') {
-            return ++index;
+            return ++index - sourceStartIndex;
         } else {
             throw new UnexpectedCharacterException("Parsing JSON Null", "Unexpected character", this);
         }

@@ -33,7 +33,7 @@ public interface CharSource {
 
     char getCurrentCharSafe();
 
-    void skipWhiteSpace();
+    char skipWhiteSpace();
 
     char getChartAt(int index);
 

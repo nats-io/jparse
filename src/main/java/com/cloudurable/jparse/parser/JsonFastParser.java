@@ -307,9 +307,9 @@ public class JsonFastParser implements JsonIndexOverlayParser {
                 throw new UnexpectedCharacterException("Parsing Value", "Unexpected character", source, ch);
         }
 
-        source.skipWhiteSpace();
+        ch = source.skipWhiteSpace();
 
-        switch (source.getCurrentChar()) {
+        switch (ch) {
             case OBJECT_END_TOKEN:
                 if (source.getIndex() == tokenListIndex) {
                     throw new UnexpectedCharacterException("Parsing Value", "Key separator before value", source);
