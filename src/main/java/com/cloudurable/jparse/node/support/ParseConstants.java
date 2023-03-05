@@ -33,7 +33,7 @@ public interface ParseConstants {
     int ARRAY_START_TOKEN = '[';
     int ARRAY_END_TOKEN = ']';
     int ATTRIBUTE_SEP = ':';
-    int LIST_SEP = ',';
+    int ARRAY_SEP = ',';
     int OBJECT_ATTRIBUTE_SEP = ',';
 
     int INDEX_BRACKET_START_TOKEN = ARRAY_START_TOKEN;

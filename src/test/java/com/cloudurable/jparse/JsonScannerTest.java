@@ -32,7 +32,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class JsonScannerTest {
 
     public JsonIndexOverlayParser jsonParser() {
-        return Json.builder().setStrict(true).build();
+
+        JsonIndexOverlayParser build = Json.builder().setStrict(true).build();
+        System.out.println("########## CLASSNAME OF JSON PARSER " + build.getClass().getName());
+        return build;
     }
 
     public List<Token> tokens(final String niceJson) {

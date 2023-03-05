@@ -22,7 +22,7 @@ import com.cloudurable.jparse.token.TokenEventListener;
 public class JsonParserFastEventsTest extends JsonParserTest{
     @Override
     public JsonIndexOverlayParser jsonParser() {
-        return Json.builder().setStrict(false).setTokenEventListener(new TokenEventListener() {
+        final var parser =  Json.builder().setStrict(false).setTokenEventListener(new TokenEventListener() {
             @Override
             public void start(int tokenId, int index, CharSource source) {
 
@@ -32,6 +32,9 @@ public class JsonParserFastEventsTest extends JsonParserTest{
             public void end(int tokenId, int index, CharSource source) {
 
             }
-        }).build();
+        }).buildEventParser();
+
+        System.out.println("JsonParserFastEventsTest " + parser.getClass().getName());
+        return (JsonIndexOverlayParser) parser;
     }
 }

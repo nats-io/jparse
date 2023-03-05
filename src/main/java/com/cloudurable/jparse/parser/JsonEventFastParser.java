@@ -167,7 +167,7 @@ public class JsonEventFastParser extends JsonEventAbstractParser {
                     event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
                     parseNumber(source, event);
                     event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == LIST_SEP) {
+                    if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == ARRAY_SEP) {
                         if (source.getCurrentChar() == ARRAY_END_TOKEN) {
                             source.next();
                             return true;
@@ -176,7 +176,7 @@ public class JsonEventFastParser extends JsonEventAbstractParser {
                     break;
 
             case ARRAY_END_TOKEN:
-                if (startChar == LIST_SEP) {
+                if (startChar == ARRAY_SEP) {
                     throw new UnexpectedCharacterException("Parsing Array Item", "Trailing comma", source, (char) ch);
                 }
                 source.next();

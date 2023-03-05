@@ -87,5 +87,7 @@ public interface CharSource {
 
     void checkForJunk();
 
+    NumberParseResult findEndOfNumberFast();
+
     int findEndOfEncodedStringFast();
 }

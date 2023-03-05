@@ -122,47 +122,42 @@ public class JsonFastParser implements JsonIndexOverlayParser {
         while (!done) {
             done = parseArrayItem(source, tokens);
 
-            if (!done) {
-                done = source.findCommaOrEnd();
-            }
         }
-
         final Token arrayToken = new Token(startSourceIndex, source.getIndex(), TokenTypes.ARRAY_TOKEN);
         tokens.set(tokenListIndex, arrayToken);
     }
 
-
-
-
     private boolean parseArrayItem(CharSource source, TokenList tokens) {
-        char startChar = source.getCurrentChar();
-        int ch  = source.nextSkipWhiteSpace();
+        char ch = (char) source.nextSkipWhiteSpace();
 
-        switch (ch) {
-            case OBJECT_START_TOKEN:
-                parseObject(source, tokens);
-                break;
+        forLoop:
+        for (; ch != ETX; ch = (char) source.nextSkipWhiteSpace()) {
 
-            case ARRAY_START_TOKEN:
-                parseArray(source, tokens);
-                break;
+            switch (ch) {
+                case OBJECT_START_TOKEN:
+                    parseObject(source, tokens);
+                    break forLoop;
 
-            case TRUE_BOOLEAN_START:
-                parseTrue(source, tokens);
-                    break;
+                case ARRAY_START_TOKEN:
+                    parseArray(source, tokens);
+                    break forLoop;
+
+                case TRUE_BOOLEAN_START:
+                    parseTrue(source, tokens);
+                    break forLoop;
 
                 case FALSE_BOOLEAN_START:
                     parseFalse(source, tokens);
-                    break;
+                    break forLoop;
 
 
                 case NULL_START:
                     parseNull(source, tokens);
-                    break;
+                    break forLoop;
 
                 case STRING_START_TOKEN:
                     parseString(source, tokens);
-                    break;
+                    break forLoop;
 
                 case NUM_0:
                 case NUM_1:
@@ -177,7 +172,7 @@ public class JsonFastParser implements JsonIndexOverlayParser {
                 case MINUS:
                 case PLUS:
                     parseNumber(source, tokens);
-                    if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == LIST_SEP) {
+                    if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == ARRAY_SEP) {
                         if (source.getCurrentChar() == ARRAY_END_TOKEN) {
                             source.next();
                             return true;
@@ -185,26 +180,32 @@ public class JsonFastParser implements JsonIndexOverlayParser {
                     }
                     break;
 
-                 case ARRAY_END_TOKEN:
-                     if (startChar == LIST_SEP) {
-                         throw new UnexpectedCharacterException("Parsing Array Item", "Trailing comma", source, (char) ch);
-                     }
+                case ARRAY_END_TOKEN:
                     source.next();
                     return true;
 
+                case ARRAY_SEP:
+                    source.next();
+                    return false;
 
-
-            default:
+                default:
                     throw new UnexpectedCharacterException("Parsing Array Item", "Unexpected character", source, (char) ch);
 
+
+            }
         }
 
+        if (source.getCurrentChar() == ARRAY_END_TOKEN) {
+            source.next();
+            return true;
+        }
         return false;
     }
 
+
     private void parseNumber(final CharSource source, TokenList tokens) {
         final int startIndex = source.getIndex();
-        final var numberParse = source.findEndOfNumber();
+        final var numberParse = source.findEndOfNumberFast();
         tokens.add(new Token(startIndex, numberParse.endIndex(), numberParse.wasFloat() ? TokenTypes.FLOAT_TOKEN : TokenTypes.INT_TOKEN));
     }
 
