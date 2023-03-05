@@ -252,7 +252,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         char ch = 0;
         final var data = this.data;
         final var length = data.length;
-        for (; i < data.length; i++) {
+        for (; i < length; i++) {
 
             ch = data[i];
 
@@ -448,7 +448,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         final var length = data.length;
         char ch = 0;
 
-        for (; i < length; i++) {
+
             ch = data[i];
             switch (ch) {
                 case CONTROL_ESCAPE_TOKEN:
@@ -468,8 +468,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                     throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this, ch, i);
 
             }
-        }
-        throw new UnexpectedCharacterException("Parsing JSON Encoded String", "Unable to find closing for String", this, (int) ch, i);
+
     }
 
     @Override
