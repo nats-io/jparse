@@ -16,6 +16,7 @@
 package com.cloudurable.jparse;
 
 
+import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.source.Sources;
@@ -117,8 +118,23 @@ class JsonValidationTest {
 
     }
 
-    ////TODO FIXME
-    //@Test
+
+    @Test
+    void test_n_array_missing_value() {
+        final JsonIndexOverlayParser parser = jsonParser();
+        //...................0123456789012345678901234
+        final String json = "[   , \"\"]";
+        try {
+            final RootNode jsonRoot = parser.parse(Json.niceJson(json));
+            System.out.println(jsonRoot.tokens());
+            assertTrue(false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    @Test
     void n_string_invalid_utf_8_in_escape_json() {
 
         final File file =  new File("./src/test/resources/validation/n_string_invalid-utf-8-in-escape.json");

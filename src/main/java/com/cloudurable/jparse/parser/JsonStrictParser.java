@@ -183,7 +183,7 @@ public class JsonStrictParser implements JsonIndexOverlayParser {
                 case MINUS:
                 case PLUS:
                     parseNumber(source, tokens);
-                    if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == LIST_SEP) {
+                    if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == ARRAY_SEP) {
                         if (source.getCurrentChar() == ARRAY_END_TOKEN) {
                             source.next();
                             return true;
@@ -192,7 +192,7 @@ public class JsonStrictParser implements JsonIndexOverlayParser {
                     break;
 
                  case ARRAY_END_TOKEN:
-                     if (startChar == LIST_SEP) {
+                     if (startChar == ARRAY_SEP) {
                          throw new UnexpectedCharacterException("Parsing Array Item", "Trailing comma", source, (char) ch);
                      }
                     source.next();

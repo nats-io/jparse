@@ -15,14 +15,23 @@
  */
 package com.cloudurable.jparse;
 
+import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.token.TokenEventListener;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.cloudurable.jparse.node.JsonTestUtils.asArray;
+import static com.cloudurable.jparse.node.JsonTestUtils.asInt;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JsonParserEventsTest extends JsonParserTest{
     @Override
     public JsonIndexOverlayParser jsonParser() {
-        return (JsonIndexOverlayParser) Json.builder().setStrict(true).setTokenEventListener(new TokenEventListener() {
+        final var parser =  (JsonIndexOverlayParser) Json.builder().setStrict(true).setTokenEventListener(new TokenEventListener() {
             @Override
             public void start(int tokenId, int index, CharSource source) {
 
@@ -33,5 +42,10 @@ public class JsonParserEventsTest extends JsonParserTest{
 
             }
         }).buildEventParser();
+
+        System.out.println("JsonParserEventsTest " + parser.getClass().getName());
+        return parser;
     }
+
+
 }

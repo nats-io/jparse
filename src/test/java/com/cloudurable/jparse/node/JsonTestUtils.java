@@ -42,18 +42,6 @@ public class JsonTestUtils {
     }
 
 
-    public static RootNode nodeRoot(String niceJson) {
-        return Json.toRootNode(Json.niceJson(niceJson));
-    }
-
-    public static ObjectNode nodeObject(String niceJson) {
-        return Json.toObjectNode(Json.niceJson(niceJson));
-    }
-
-    public static ArrayNode jsonArray(String niceJson) {
-        return Json.toArrayNode(Json.niceJson(niceJson));
-    }
-
 
     public static NumberNode asNumberNode(Map<String, Object> map, Object key) {
         return (NumberNode) map.get(key);

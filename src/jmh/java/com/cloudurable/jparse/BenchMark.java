@@ -32,6 +32,7 @@ import org.openjdk.jmh.infra.Blackhole;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 
@@ -200,61 +201,61 @@ public class BenchMark {
 //        bh.consume(Json.builder().setStrict(false).build().parse(webXmlJsonData));
 //    }
 
-
-    @Benchmark
-    public void readGlossaryFastJParse(Blackhole bh) {
-        bh.consume(fastParser.parse(glossaryJsonData));
-    }
-
-    @Benchmark
-    public void readGlossaryStrictJParse(Blackhole bh) {
-        bh.consume(strictParser.parse(glossaryJsonData));
-    }
-
-
-    @Benchmark
-    public void readGlossaryEventStrictJParse(Blackhole bh) throws Exception {
-
-        final int [] token = new int[1];
-        final var events = new TokenEventListener() {
-            @Override
-            public void start(int tokenId, int index, CharSource source) {
-                token[0] = tokenId;
-            }
-
-            @Override
-            public void end(int tokenId, int index, CharSource source) {
-                token[0] = tokenId;
-            }
-        };
-
-        strictEventParser.parseWithEvents(glossaryJsonData, events);
-
-        bh.consume(token);
-    }
-
-
-    @Benchmark
-    public void readGlossaryEventFastJParse(Blackhole bh) throws Exception {
-
-        final int [] token = new int[1];
-        final var events = new TokenEventListener() {
-            @Override
-            public void start(int tokenId, int index, CharSource source) {
-                token[0] = tokenId;
-            }
-
-            @Override
-            public void end(int tokenId, int index, CharSource source) {
-                token[0] = tokenId;
-            }
-        };
-
-
-        fastEventParser.parseWithEvents(glossaryJsonData, events);
-
-        bh.consume(token);
-    }
+//
+//    @Benchmark
+//    public void readGlossaryFastJParse(Blackhole bh) {
+//        bh.consume(fastParser.parse(glossaryJsonData));
+//    }
+//
+//    @Benchmark
+//    public void readGlossaryStrictJParse(Blackhole bh) {
+//        bh.consume(strictParser.parse(glossaryJsonData));
+//    }
+//
+//
+//    @Benchmark
+//    public void readGlossaryEventStrictJParse(Blackhole bh) throws Exception {
+//
+//        final int [] token = new int[1];
+//        final var events = new TokenEventListener() {
+//            @Override
+//            public void start(int tokenId, int index, CharSource source) {
+//                token[0] = tokenId;
+//            }
+//
+//            @Override
+//            public void end(int tokenId, int index, CharSource source) {
+//                token[0] = tokenId;
+//            }
+//        };
+//
+//        strictEventParser.parseWithEvents(glossaryJsonData, events);
+//
+//        bh.consume(token);
+//    }
+//
+//
+//    @Benchmark
+//    public void readGlossaryEventFastJParse(Blackhole bh) throws Exception {
+//
+//        final int [] token = new int[1];
+//        final var events = new TokenEventListener() {
+//            @Override
+//            public void start(int tokenId, int index, CharSource source) {
+//                token[0] = tokenId;
+//            }
+//
+//            @Override
+//            public void end(int tokenId, int index, CharSource source) {
+//                token[0] = tokenId;
+//            }
+//        };
+//
+//
+//        fastEventParser.parseWithEvents(glossaryJsonData, events);
+//
+//        bh.consume(token);
+//    }
 
 
 //    @Benchmark
@@ -271,9 +272,9 @@ public class BenchMark {
 //        bh.consume(mapper.readValue(glossaryJsonData, mapTypeRef));
 //    }
 //
-    @Benchmark public void readNatsJsonGlossary(Blackhole bh) throws JsonParseException{
-        io.nats.client.support.JsonParser.parse(glossaryJsonData);
-    }
+//    @Benchmark public void readNatsJsonGlossary(Blackhole bh) throws JsonParseException{
+//        io.nats.client.support.JsonParser.parse(glossaryJsonData);
+//    }
 //
 //    @Benchmark
 //    public void readGlossaryJParse(Blackhole bh) {
@@ -301,26 +302,6 @@ public class BenchMark {
 
 
 
-//
-//    @Benchmark
-//    public void jParseFloatArray(Blackhole bh) {
-//        bh.consume(Json.toArrayNode(doublesJsonData).getFloatArray());
-//    }
-//
-//    @Benchmark
-//    public void jParseFloatArrayFast(Blackhole bh) {
-//        bh.consume(Json.toArrayNode(doublesJsonData).getFloatArrayFast());
-//    }
-
-//    @Benchmark
-//    public void jParseDoubleArray(Blackhole bh) {
-//        bh.consume(Json.toArrayNode(doublesJsonData).getDoubleArray());
-//    }
-//
-//    @Benchmark
-//    public void jParseDoubleArrayFast(Blackhole bh) {
-//        bh.consume(Json.toArrayNode(doublesJsonData).getDoubleArrayFast());
-//    }
 //    @Benchmark
 //    public void readWebGlossaryNoggitObjectBuilder(Blackhole bh) throws Exception {
 //
@@ -362,77 +343,147 @@ public class BenchMark {
 //      bh.consume(Path.toPath("foo.bar.baz[99][0][10][11]['hi mom']"));
 //    }
 //
-//    @Benchmark
-//    public void jParseLongArrayFast(Blackhole bh) {
-//        bh.consume(Json.toArrayNode(intsJsonData).getLongArrayFast());
-//    }
-//
-//
-//    @Benchmark
-//    public void jParseLongArray(Blackhole bh) {
-//        bh.consume(Json.toArrayNode(intsJsonData).getLongArray());
-//    }
-//
-//    @Benchmark
-//    public void jacksonLongArray(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(intsJsonData, long[].class));
-//    }
-//
-//    @Benchmark
-//    public void jParseIntArray(Blackhole bh) {
-//        bh.consume(Json.toArrayNode(intsJsonData).getIntArray());
-//    }
-//
-//    @Benchmark
-//    public void jParseIntArrayFast(Blackhole bh) {
-//        bh.consume(Json.toArrayNode(intsJsonData).getIntArrayFast());
-//    }
-//
-//    @Benchmark
-//    public void jacksonIntArray(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(intsJsonData, int[].class));
-//    }
-//
-//
-//    @Benchmark
-//    public void jParseBigIntArray(Blackhole bh) {
-//        bh.consume(Json.toArrayNode(intsJsonData).getBigIntegerArray());
-//
-//    }
-//
-//    @Benchmark
-//    public void jacksonBigIntArray(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(intsJsonData, BigInteger[].class));
-//    }
 
 
-//
-//
-//    @Benchmark
-//    public void jacksonFloatArray(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(doublesJsonData, float[].class));
-//    }
+    @Benchmark
+    public void jParseStrictLongArray(Blackhole bh) {
+        bh.consume(this.strictParser.parse(intsJsonData).asArray().getLongArray());
+    }
 
-//
+    @Benchmark
+    public void jParseFastLongArray(Blackhole bh) {
+        bh.consume(this.fastParser.parse(intsJsonData).asArray().getLongArray());
+    }
 
-//
-//
-//    @Benchmark
-//    public void jacksonDoubleArray(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(doublesJsonData, double[].class));
-//    }
-//
-//
-//    @Benchmark
-//    public void jParseBigDecimalArray(Blackhole bh) {
-//        bh.consume(Json.toArrayNode(doublesJsonData).getBigDecimalArray());
-//    }
-//
-//
-//    @Benchmark
-//    public void jacksonBigDecimalArray(Blackhole bh) throws JsonProcessingException {
-//        bh.consume(mapper.readValue(doublesJsonData, BigDecimal[].class));
-//    }
+    @Benchmark
+    public void jParseStrictLongArrayFast(Blackhole bh) {
+        bh.consume(this.strictParser.parse(intsJsonData).asArray().getLongArrayFast());
+    }
+
+    @Benchmark
+    public void jParseFastLongArrayFast(Blackhole bh) {
+        bh.consume(this.fastParser.parse(intsJsonData).asArray().getLongArrayFast());
+    }
+
+    @Benchmark
+    public void jacksonLongArray(Blackhole bh) throws JsonProcessingException {
+        bh.consume(mapper.readValue(intsJsonData, long[].class));
+    }
+
+
+
+
+
+    @Benchmark
+    public void jParseStrictFloatArray(Blackhole bh) {
+        bh.consume(this.strictParser.parse(doublesJsonData).asArray().getFloatArray());
+    }
+
+    @Benchmark
+    public void jParseStrictFloatArrayFast(Blackhole bh) {
+        bh.consume(this.strictParser.parse(doublesJsonData).asArray().getFloatArrayFast());
+    }
+
+    @Benchmark
+    public void jParseFastFloatArrayFast(Blackhole bh) {
+        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getFloatArrayFast());
+    }
+
+    @Benchmark
+    public void jParseFastFloatArray(Blackhole bh) {
+        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getFloatArray());
+    }
+
+
+
+    @Benchmark
+    public void jacksonFloatArray(Blackhole bh) throws JsonProcessingException {
+        bh.consume(mapper.readValue(doublesJsonData, float[].class));
+    }
+
+
+
+    @Benchmark
+    public void jParseStrictDoubleArray(Blackhole bh) {
+        bh.consume(this.strictParser.parse(doublesJsonData).asArray().getDoubleArray());
+    }
+
+    @Benchmark
+    public void jParseStrictDoubleArrayFast(Blackhole bh) {
+        bh.consume(this.strictParser.parse(doublesJsonData).asArray().getDoubleArrayFast());
+    }
+
+    @Benchmark
+    public void jParseFastDoubleArrayFast(Blackhole bh) {
+        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getDoubleArrayFast());
+    }
+
+    @Benchmark
+    public void jParseFastDoubleArray(Blackhole bh) {
+        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getDoubleArray());
+    }
+
+    @Benchmark
+    public void jacksonDoubleArray(Blackhole bh) throws JsonProcessingException {
+        bh.consume(mapper.readValue(doublesJsonData, double[].class));
+    }
+
+
+    @Benchmark
+    public void jParseStrictIntArray(Blackhole bh) {
+        bh.consume(this.strictParser.parse(intsJsonData).asArray().getIntArray());
+    }
+
+    @Benchmark
+    public void jParseFastIntArray(Blackhole bh) {
+        bh.consume(this.fastParser.parse(intsJsonData).asArray().getIntArray());
+    }
+
+    @Benchmark
+    public void jParseStrictIntArrayFast(Blackhole bh) {
+        bh.consume(this.strictParser.parse(intsJsonData).asArray().getIntArrayFast());
+    }
+
+    @Benchmark
+    public void jParseFastIntArrayFast(Blackhole bh) {
+        bh.consume(this.fastParser.parse(intsJsonData).asArray().getIntArrayFast());
+    }
+
+    @Benchmark
+    public void jacksonIntArray(Blackhole bh) throws JsonProcessingException {
+        bh.consume(mapper.readValue(intsJsonData, int[].class));
+    }
+
+    @Benchmark
+    public void jParseStrictBigIntArray(Blackhole bh) {
+        bh.consume(this.strictParser.parse(intsJsonData).asArray().getBigIntegerArray());
+    }
+
+    @Benchmark
+    public void jParseFastBigIntArray(Blackhole bh) {
+        bh.consume(this.fastParser.parse(intsJsonData).asArray().getBigIntegerArray());
+    }
+
+    @Benchmark
+    public void jacksonBigIntArray(Blackhole bh) throws JsonProcessingException {
+        bh.consume(mapper.readValue(intsJsonData, BigInteger[].class));
+    }
+
+    @Benchmark
+    public void jParseStrictBigDecimalArray(Blackhole bh) {
+        bh.consume(strictParser.parse(doublesJsonData).asArray().getBigDecimalArray());
+    }
+
+    @Benchmark
+    public void jParseFastBigDecimalArray(Blackhole bh) {
+        bh.consume(fastParser.parse(doublesJsonData).asArray().getBigDecimalArray());
+    }
+
+
+    @Benchmark
+    public void jacksonBigDecimalArray(Blackhole bh) throws JsonProcessingException {
+        bh.consume(mapper.readValue(doublesJsonData, BigDecimal[].class));
+    }
 
 
 //

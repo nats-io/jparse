@@ -263,7 +263,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case TAB_WS:
                 case SPACE_WS:
                 case ATTRIBUTE_SEP:
-                case LIST_SEP:
+                case ARRAY_SEP:
                 case OBJECT_END_TOKEN:
                 case ARRAY_END_TOKEN:
                     index = i;
@@ -321,7 +321,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case TAB_WS:
                 case SPACE_WS:
                 case ATTRIBUTE_SEP:
-                case LIST_SEP:
+                case ARRAY_SEP:
                 case OBJECT_END_TOKEN:
                 case ARRAY_END_TOKEN:
                     index = i;
@@ -375,7 +375,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case TAB_WS:
                 case SPACE_WS:
                 case ATTRIBUTE_SEP:
-                case LIST_SEP:
+                case ARRAY_SEP:
                 case OBJECT_END_TOKEN:
                 case ARRAY_END_TOKEN:
                     index = i;
@@ -590,7 +590,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case TAB_WS:
                 case SPACE_WS:
                 case ATTRIBUTE_SEP:
-                case LIST_SEP:
+                case ARRAY_SEP:
                 case OBJECT_END_TOKEN:
                 case ARRAY_END_TOKEN:
                    break loop;
@@ -684,7 +684,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case TAB_WS:
                 case SPACE_WS:
                 case ATTRIBUTE_SEP:
-                case LIST_SEP:
+                case ARRAY_SEP:
                 case OBJECT_END_TOKEN:
                 case ARRAY_END_TOKEN:
                     index = i;
@@ -755,7 +755,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case TAB_WS:
                 case SPACE_WS:
                 case ATTRIBUTE_SEP:
-                case LIST_SEP:
+                case ARRAY_SEP:
                 case OBJECT_END_TOKEN:
                 case ARRAY_END_TOKEN:
                     index = i;
@@ -854,7 +854,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case ARRAY_END_TOKEN:
                     this.index = i + 1;
                     return true;
-                case LIST_SEP:
+                case ARRAY_SEP:
                     this.index = i ;
                     return false;
 

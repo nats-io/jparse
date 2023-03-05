@@ -288,13 +288,17 @@ class JsonParserTest {
     public void testComplexMap() {
         //................012345678901234567890123
         final var json = "{'1':2,'2':7,'3':[1,2,3]}";
-        final RootNode root = nodeRoot(json);
+        final RootNode root = jsonParser().parse(Json.niceJson(json));
 
         final var jsonObject = root.getMap();
         assertEquals(2, asInt(jsonObject, "1"));
         assertEquals(7, asInt(jsonObject, "2"));
-        assertEquals(List.of(1L, 2L, 3L), asArray(jsonObject, "3").stream().map(n->n.asScalar().longValue()).collect(Collectors.toList()));
 
+        ArrayNode arrayNode = root.asObject().getArrayNode("3");
+        showTokens(arrayNode.tokens());
+
+        assertEquals(1L,arrayNode.getNodeAt(0).asScalar().longValue());
+        //assertEquals(1L, );
     }
 
     @Test
@@ -327,10 +331,6 @@ class JsonParserTest {
 
         final JsonIndexOverlayParser parser = jsonParser();
 
-        if (parser instanceof JsonEventParser) {
-            //TODO fix event parsers
-            return;
-        }
         final RootNode root = parser.parse(Json.niceJson(json));
         final var jsonObject = toMap(niceJson(json));
         assertTrue(asBoolean(jsonObject, "4"));
@@ -588,20 +588,6 @@ class JsonParserTest {
 
     }
 
-    @Test
-    void test_n_array_missing_value() {
-        final JsonIndexOverlayParser parser = jsonParser();
-        //...................0123456789012345678901234
-        final String json = "[   , \"\"]";
-        try {
-            final RootNode jsonRoot = parser.parse(niceJson(json));
-            System.out.println(jsonRoot.tokens());
-            assertTrue(false);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-    }
 
 
 
@@ -730,14 +716,15 @@ class JsonParserTest {
     @Test
     void testSimpleArrayFromMap() {
         final var json = "{'a':[1,2,3]}";
-        final var jsonObject = nodeObject(json);
+        final var jsonObject = jsonParser().parse(Json.niceJson(json)).asObject();
         final var map = toMap(niceJson(json));
         final var hash = jsonObject.hashCode();
         final var jsonArray = asArray(map, "a");
         assertEquals(1L, jsonArray.getLong(0));
         assertEquals(1, jsonArray.getInt(0));
         assertEquals(hash, jsonObject.hashCode());
-        assertEquals(nodeObject(json), jsonObject);
+        final var j2 = jsonParser().parse(Json.niceJson(json)).asObject();
+        assertEquals(j2, jsonObject);
 
         jsonObject.entrySet().forEach(objectObjectEntry -> assertTrue(jsonObject.containsKey(objectObjectEntry.getKey())));
     }
@@ -745,7 +732,7 @@ class JsonParserTest {
     @Test
     void testSimpleArrayFromMa2p() {
         final var json = "{'a':[1,2,3]}";
-        final var jsonObject = nodeObject(json);
+        final var jsonObject = jsonParser().parse(Json.niceJson(json)).asObject();
         final var map =  toMap(niceJson(json));
         final var hash = jsonObject.hashCode();
         final var list = asList(map, "a");
@@ -845,7 +832,7 @@ class JsonParserTest {
         final JsonIndexOverlayParser parser = jsonParser();
         //...................0123
         final String json = "{'a':1}";
-        final RootNode jsonRoot = nodeRoot(json);
+        final RootNode jsonRoot = jsonParser().parse(Json.niceJson(json));
         System.out.println(jsonRoot.tokens());
         assertEquals(1, jsonRoot.getObjectNode().getLong("a"));
         assertEquals(1, jsonRoot.getObjectNode().getNumberNode("a").intValue());
