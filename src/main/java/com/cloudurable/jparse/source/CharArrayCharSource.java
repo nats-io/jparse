@@ -129,7 +129,6 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         final var data = this.data;
         final var length = data.length;
         int ch = ETX;
-        //int finalCh = ETX;
 
         loop:
         for (; index < length; index++) {
@@ -141,7 +140,6 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                 case SPACE_WS:
                     continue;
                 default:
-                    //finalCh = ch;
                     break loop;
             }
         }
@@ -155,20 +153,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         final var data = this.data;
         final var length = data.length;
 
-//        if (index >= length) {
-//            return;
-//        }
-        char ch; //= 0; // = data[index];
-
-//        if (switch (ch) {
-//            case NEW_LINE_WS -> false;
-//            case CARRIAGE_RETURN_WS -> false;
-//            case TAB_WS -> false;
-//            case SPACE_WS -> false;
-//            default -> true;
-//        }) {
-//            return;
-//        }
+        char ch;
 
         loop:
         for (; index < length; index++) {
@@ -257,55 +242,178 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     public String toString() {
         return new String(data);
     }
-//
-//    @Override
-//    public int findEndOfEncodedString() {
-//        int i = ++index;
-//        final var data = this.data;
-//        final var length = data.length;
-//        char ch = 0;
-//        boolean controlChar = false;
-//        for (; i < length; i++) {
-//            ch = data[i];
-//            switch (ch) {
-//                case CONTROL_ESCAPE_TOKEN:
-//                    controlChar = !controlChar;
-//                    continue;
-//                case STRING_END_TOKEN:
-//                    if (!controlChar) {
-//                        index = i + 1;
-//                        return i;
-//                    }
-//                    controlChar = false;
-//                    break;
-//                case 'u':
-//                    if (controlChar) {
-//                        i = findEndOfHexEncoding(i);
-//                        controlChar = false;
-//                    }
-//                    continue;
-//
-//                default:
-//                    if (controlChar) {
-//                        switch (ch) {
-//                            case 'n':
-//                            case 'b':
-//                            case '/':
-//                            case 'r':
-//                            case 't':
-//                                controlChar = false;
-//                            default:
-//                                if (ch >= SPACE_WS) {
-//                                    continue;
-//                                }
-//                                throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this,  ch, i);
-//
-//                        }
-//                    }
-//            }
-//        }
-//        throw new UnexpectedCharacterException("Parsing JSON Encoded String", "Unable to find closing for String", this, (int) ch, i);
-//    }
+
+
+    @Override
+    public NumberParseResult findEndOfNumberFast() {
+
+
+        int i = index + 1;
+        char ch = 0;
+        final var data = this.data;
+        final var length = data.length;
+        for (; i < data.length; i++) {
+
+            ch = data[i];
+
+            switch (ch) {
+
+                case NEW_LINE_WS:
+                case CARRIAGE_RETURN_WS:
+                case TAB_WS:
+                case SPACE_WS:
+                case ATTRIBUTE_SEP:
+                case LIST_SEP:
+                case OBJECT_END_TOKEN:
+                case ARRAY_END_TOKEN:
+                    index = i;
+                    return new NumberParseResult(i, false);
+
+                case NUM_0:
+                case NUM_1:
+                case NUM_2:
+                case NUM_3:
+                case NUM_4:
+                case NUM_5:
+                case NUM_6:
+                case NUM_7:
+                case NUM_8:
+                case NUM_9:
+                    break;
+
+                case DECIMAL_POINT:
+                    index = i;
+                    return findEndOfFloatFast();
+
+
+                case EXPONENT_MARKER:
+                case EXPONENT_MARKER2:
+                    index = i;
+                    return parseFloatWithExponentFast();
+
+
+                default:
+                    throw new IllegalStateException("Unexpected character " + ch + " at index " + index);
+
+            }
+
+        }
+
+        index = i;
+        return new NumberParseResult(i, false);
+
+    }
+
+    private NumberParseResult findEndOfFloatFast() {
+
+
+        int i = index + 1;
+        char ch =  0;
+        final var data = this.data;
+        final var length = data.length;
+
+        for (; i < length; i++) {
+            ch = data[i];
+            switch (ch) {
+
+                case NEW_LINE_WS:
+                case CARRIAGE_RETURN_WS:
+                case TAB_WS:
+                case SPACE_WS:
+                case ATTRIBUTE_SEP:
+                case LIST_SEP:
+                case OBJECT_END_TOKEN:
+                case ARRAY_END_TOKEN:
+                    index = i;
+                    return new NumberParseResult(i, true);
+
+                case NUM_0:
+                case NUM_1:
+                case NUM_2:
+                case NUM_3:
+                case NUM_4:
+                case NUM_5:
+                case NUM_6:
+                case NUM_7:
+                case NUM_8:
+                case NUM_9:
+                    break;
+
+                case EXPONENT_MARKER:
+                case EXPONENT_MARKER2:
+                    index = i;
+                    return parseFloatWithExponent();
+
+
+                default:
+                    throw new UnexpectedCharacterException("Parsing JSON Float Number", "Unexpected character", this,  ch, i);
+
+            }
+
+        }
+
+
+        index = i;
+        return new NumberParseResult(i, true);
+
+    }
+
+    private NumberParseResult parseFloatWithExponentFast() {
+
+        int i = index + 1;
+        char ch = 0;
+        int signOperator = 0;
+        final var data = this.data;
+        final var length = data.length;
+        for (; i < length; i++) {
+            ch = data[i];
+
+            switch (ch) {
+
+                case NEW_LINE_WS:
+                case CARRIAGE_RETURN_WS:
+                case TAB_WS:
+                case SPACE_WS:
+                case ATTRIBUTE_SEP:
+                case LIST_SEP:
+                case OBJECT_END_TOKEN:
+                case ARRAY_END_TOKEN:
+                    index = i;
+                    return new NumberParseResult(i, true);
+
+                case MINUS:
+                case PLUS:
+                    signOperator++;
+                    if (signOperator > 1) {
+                        throw new IllegalStateException("Too many sign operators when parsing exponent of float");
+                    }
+                    break;
+
+                case NUM_0:
+                case NUM_1:
+                case NUM_2:
+                case NUM_3:
+                case NUM_4:
+                case NUM_5:
+                case NUM_6:
+                case NUM_7:
+                case NUM_8:
+                case NUM_9:
+                    break;
+
+
+                default:
+                    throw new IllegalStateException("Unexpected character " + ch + " at index " + index);
+
+            }
+
+        }
+
+
+        index = i;
+        return new NumberParseResult(i, true);
+
+    }
 
     @Override
     public int findEndOfEncodedStringFast() {
