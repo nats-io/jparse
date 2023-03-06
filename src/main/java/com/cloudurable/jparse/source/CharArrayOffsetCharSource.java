@@ -890,13 +890,15 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     public boolean matchChars(final int startIndex, final int endIndex, CharSequence key) {
 
         final var length = endIndex - startIndex;
-        var idx = startIndex;
+        final var offset = this.sourceStartIndex;
+        var idx = startIndex + offset;
+
 
         switch (length) {
             case 1:
                 return key.charAt(0) == data[idx];
             case 2:
-                return key.charAt(0) == data[idx] &&
+                return key.charAt(0) == data[idx ] &&
                         key.charAt(1) == data[idx + 1];
             case 3:
                 return key.charAt(0) == data[idx] &&
@@ -1014,16 +1016,17 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
     }
 
-    public boolean isInteger(int offset, int end) {
-        int len = end - offset;
+    public boolean isInteger(int startIndex, int endIndex) {
+        int len = endIndex - startIndex;
+        int offset = this.sourceStartIndex;
         final char[] digitChars = data;
-        final var negative = (digitChars[offset] == '-');
+        final var negative = (digitChars[startIndex] == '-');
         final var cmpLen = negative ? MIN_INT_STR_LENGTH : MAX_INT_STR_LENGTH;
         if (len < cmpLen) return true;
         if (len > cmpLen) return false;
         final var cmpStr = negative ? MIN_INT_CHARS : MAX_INT_CHARS;
         for (int i = 0; i < cmpLen; ++i) {
-            int diff = digitChars[offset + i] - cmpStr[i];
+            int diff = digitChars[startIndex + i + offset] - cmpStr[i];
             if (diff != 0) {
                 return (diff < 0);
             }
@@ -1032,85 +1035,93 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     }
 
     @Override
-    public double getDouble(int from, int to) {
-        try {
-            char[] buffer = data;
-            final int length = index - from;
-            double value = Double.NaN;
-            boolean simple = true;
-            int digitsPastPoint = 0;
-            boolean negative = false;
-            int index = from;
-            if (buffer[index] == MINUS) {
-                index++;
-                negative = true;
-            }
-            boolean foundDot = false;
-            int indexOfExponent = -1;
-            loop:
-            for (; index < to; index++) {
-                char ch = buffer[index];
+    public double getDouble(final int startIndex, final int endIndex) {
 
-                switch (ch) {
-                    case NUM_0:
-                    case NUM_1:
-                    case NUM_2:
-                    case NUM_3:
-                    case NUM_4:
-                    case NUM_5:
-                    case NUM_6:
-                    case NUM_7:
-                    case NUM_8:
-                    case NUM_9:
-                        if (foundDot) {
-                            digitsPastPoint++;
-                        }
-                        break;
+        return getBigDecimal(startIndex + sourceStartIndex, endIndex + sourceStartIndex).doubleValue();
+//        final int offset = this.sourceStartIndex;
+//        int from = startIndex + offset;
+//        int to = endIndex + offset;
+//        int index = from;
 
-                    case DECIMAL_POINT:
-                        foundDot = true;
-                        break;
-
-                    case EXPONENT_MARKER:
-                    case EXPONENT_MARKER2:
-                        simple = false;
-                        indexOfExponent = index + 1;
-                        break loop;
-
-                }
-            }
-
-            final int powLength = powersOf10.length;
-
-            if (length >=  powLength ) {
-                return Double.parseDouble(this.getString(from, to));
-            }
-
-            if (!simple) {
-                long lvalue = parseLongFromToIgnoreDot(from, index);
-                int exp = getInt(indexOfExponent, to);
-                double power =  powersOf10[digitsPastPoint];
-                value = (lvalue / power);
-                double pow = Math.pow(10, exp);
-                value = value * pow;
-                //return Double.parseDouble(this.getString(from, to));
-            } else if (!foundDot) {
-                value = getLong(from, index);
-            } else {
-                long lvalue = parseLongFromToIgnoreDot(from, index);
-                double power = powersOf10[digitsPastPoint];
-                value = lvalue / power;
-            }
-
-            if (value == 0.0 && negative) {
-                return -0.0;
-            } else {
-                return value;
-            }
-        } catch (Exception ex) {
-            throw new UnexpectedCharacterException("Convert JSON number to Java double",
-                    "Unable to parse " + getString(from, to), this,  this.getChartAt(from), from);
-        }
+//
+//
+//        try {
+//            char[] buffer = data;
+//            final int length = endIndex - startIndex;
+//            double value = Double.NaN;
+//            boolean simple = true;
+//            int digitsPastPoint = 0;
+//            boolean negative = false;
+//            if (buffer[index] == MINUS) {
+//                index++;
+//                negative = true;
+//            }
+//            boolean foundDot = false;
+//            int indexOfExponent = -1;
+//            loop:
+//            for (; index < to; index++) {
+//                char ch = buffer[index];
+//
+//                switch (ch) {
+//                    case NUM_0:
+//                    case NUM_1:
+//                    case NUM_2:
+//                    case NUM_3:
+//                    case NUM_4:
+//                    case NUM_5:
+//                    case NUM_6:
+//                    case NUM_7:
+//                    case NUM_8:
+//                    case NUM_9:
+//                        if (foundDot) {
+//                            digitsPastPoint++;
+//                        }
+//                        break;
+//
+//                    case DECIMAL_POINT:
+//                        foundDot = true;
+//                        break;
+//
+//                    case EXPONENT_MARKER:
+//                    case EXPONENT_MARKER2:
+//                        simple = false;
+//                        indexOfExponent = index + 1;
+//                        break loop;
+//
+//                }
+//            }
+//
+//            final int powLength = powersOf10.length;
+//
+//            if (length >=  powLength ) {
+//                return Double.parseDouble(this.getString(from, to));
+//            }
+//
+//            if (!simple) {
+//                long lvalue = parseLongFromToIgnoreDot(from, index);
+//                int exp = getInt(indexOfExponent, to);
+//                double power =  powersOf10[digitsPastPoint];
+//                value = (lvalue / power);
+//                double pow = Math.pow(10, exp);
+//                value = value * pow;
+//                //return Double.parseDouble(this.getString(from, to));
+//            } else if (!foundDot) {
+//                value = getLong(from, index);
+//            } else {
+//                long lvalue = parseLongFromToIgnoreDot(from, index);
+//                double power = powersOf10[digitsPastPoint];
+//                value = lvalue / power;
+//            }
+//
+//            if (value == 0.0 && negative) {
+//                return -0.0;
+//            } else {
+//                return value;
+//            }
+//        } catch (Exception ex) {
+//            throw new UnexpectedCharacterException("Convert JSON number to Java double",
+//                    "Unable to parse " + getString(from, to), this,  this.getChartAt(from), from);
+//        }
     }
 
     @Override

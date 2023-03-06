@@ -368,6 +368,46 @@ class CharArrayCharSourceTest {
 
     }
 
+
+    @Test
+    void matchChars() {
+
+        //...................01234567890123456789
+        final String json = "abcd";
+        final var source =
+                Sources.stringSource(Json.niceJson(json));
+
+        source.next();
+        assertTrue(source.matchChars(1, 3, new String("bc")));
+        assertFalse(source.matchChars(1, 3, new String("ab")));
+
+    }
+
+
+    @Test
+    void parseDoubleSimple() {
+
+        //...................01234567890123456789
+        final String json = " 1.2 ";
+        final var source =
+                Sources.stringSource(Json.niceJson(json));
+
+        assertEquals(1.2, source.getDouble(1, 4));
+
+    }
+
+    @Test
+    void parseDoubleExp() {
+
+        //...................01234567890123456789
+        final String json = " 1.2e12 ";
+        final var source =
+                Sources.stringSource(Json.niceJson(json));
+
+        assertEquals(1.2e12, source.getDouble(1, 7));
+
+    }
+
     @Test
     void readNumberWithNothingBeforeDecimal() {
         //.................0123456789
@@ -568,6 +608,17 @@ class CharArrayCharSourceTest {
         assertEquals(-1, charSource.getInt(0, s.length()));
     }
 
+    @Test
+    void isIntegerFalse() {
+
+        //...................01234567890123456789
+        final String json = "" + Long.MAX_VALUE;
+        CharSource source = Sources.stringSource(json);
+
+        source.next();
+        assertFalse(source.isInteger(1, json.length()));
+
+    }
 
     @Test
     void isIntegerButLong() {

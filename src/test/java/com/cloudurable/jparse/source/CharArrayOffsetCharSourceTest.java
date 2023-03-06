@@ -328,4 +328,69 @@ class CharArrayOffsetCharSourceTest {
 
     }
 
+
+    @Test
+    void matchChars() {
+
+        //...................01234567890123456789
+        final String json = "     abcd ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        source.next();
+        assertTrue(source.matchChars(1, 3, new String("bc")));
+        assertFalse(source.matchChars(1, 3, new String("ab")));
+
+    }
+
+    @Test
+    void isInteger() {
+
+        //...................01234567890123456789
+        final String json = "      123 ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        source.next();
+        assertTrue(source.isInteger(1, 3));
+
+    }
+
+    @Test
+    void isIntegerFalse() {
+
+        //...................01234567890123456789
+        final String json = "     " + Long.MAX_VALUE + " ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        source.next();
+        assertFalse(source.isInteger(1, json.length()-1));
+
+    }
+
+    @Test
+    void parseDoubleSimple() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      1.2 ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals(1.2, source.getDouble(1, 4));
+
+    }
+
+    @Test
+    void parseDoubleExp() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      1.2e12 ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals(1.2e12, source.getDouble(1, 7));
+
+    }
+
 }
