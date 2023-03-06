@@ -106,10 +106,10 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     public void checkForJunk() {
         int index = this.index;
         final var data = this.data;
-        final var length = data.length;
+        final var end = this.sourceEndIndex;
         int ch = ETX;
 
-        for (; index < length; index++) {
+        for (; index < end; index++) {
             ch = data[index];
             switch (ch) {
                 case NEW_LINE_WS:
@@ -200,25 +200,26 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
     @Override
     public String getString(int startIndex, int endIndex) {
-        return new String(data, startIndex, endIndex - startIndex);
+        final int from = startIndex + sourceStartIndex;
+        return new String(data, from, endIndex - startIndex);
     }
 
     @Override
     public CharSequence getCharSequence(final int startIndex, final int endIndex) {
-        return new CharArraySegment(startIndex, endIndex - startIndex, data);
+        return new CharArraySegment(startIndex + sourceStartIndex, endIndex - startIndex, data);
     }
 
     @Override
     public char[] getArray(int startIndex, int endIndex) {
         final int length = endIndex - startIndex;
         char[] array = new char[length];
-        System.arraycopy(data, startIndex, array, 0, length);
+        System.arraycopy(data, startIndex + sourceStartIndex, array, 0, length);
         return array;
     }
 
     @Override
     public BigDecimal getBigDecimal(int startIndex, int endIndex) {
-        return new BigDecimal(data, startIndex, endIndex - startIndex);
+        return new BigDecimal(data, startIndex + sourceStartIndex, endIndex - startIndex);
     }
 
     @Override
@@ -228,15 +229,18 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
     @Override
     public String getEncodedString(int start, int end) {
-        return CharArrayUtils.decodeJsonString(data, start, end);
+        return CharArrayUtils.decodeJsonString(data, start + sourceStartIndex, end + sourceStartIndex);
     }
 
     @Override
-    public String toEncodedStringIfNeeded(int start, int end) {
+    public String toEncodedStringIfNeeded(int startIndex, int endIndex) {
+        final int start = startIndex + sourceStartIndex;
+        final int end = endIndex + sourceStartIndex;
+
         if (CharArrayUtils.hasEscapeChar(data, start, end)) {
-            return getEncodedString(start, end);
+            return getEncodedString(startIndex, endIndex);
         } else {
-            return this.getString(start, end);
+            return this.getString(startIndex, endIndex);
         }
     }
 
@@ -846,13 +850,13 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     }
 
     @Override
-    public boolean findCommaOrEnd() {
+    public boolean findCommaOrEndForArray() {
         int i = index;
         char ch = 0;
         final var data = this.data;
         final var end = sourceEndIndex;
 
-        for (; i < length; i++) {
+        for (; i < end; i++) {
             ch = data[i];
             switch (ch) {
                 case ARRAY_END_TOKEN:
@@ -1037,7 +1041,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     @Override
     public double getDouble(final int startIndex, final int endIndex) {
 
-        return getBigDecimal(startIndex + sourceStartIndex, endIndex + sourceStartIndex).doubleValue();
+        return getBigDecimal(startIndex, endIndex).doubleValue();
 //        final int offset = this.sourceStartIndex;
 //        int from = startIndex + offset;
 //        int to = endIndex + offset;
@@ -1130,30 +1134,32 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     }
 
     @Override
-    public int getInt(int offset, int to) {
+    public int getInt(int startIndex, int endIndex) {
 
+        int from = startIndex + sourceStartIndex;
+        int to = endIndex + sourceStartIndex;
 
         final var digitChars = data;
 
         int num;
         boolean negative = false;
-        char c = digitChars[offset];
+        char c = digitChars[from];
         if (c == '-') {
-            offset++;
+            from++;
             negative = true;
         } else if (c == '+') {
-            offset++;
+            from++;
             negative = false;
         }
 
-        c = digitChars[offset];
+        c = digitChars[from];
         num = (c - '0');
-        offset++;
+        from++;
 
         int digit;
 
-        for (; offset < to; offset++) {
-            c = digitChars[offset];
+        for (; from < to; from++) {
+            c = digitChars[from];
             digit = (c - '0');
             num = (num * 10) + digit;
         }
@@ -1211,26 +1217,28 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     }
 
     @Override
-    public long getLong(int offset, int to) {
+    public long getLong(final int startIndex, final int endIndex) {
+        int from = startIndex + sourceStartIndex;
+        int to = endIndex + sourceStartIndex;
 
         final var digitChars = data;
 
         long num;
         boolean negative = false;
-        char c = digitChars[offset];
+        char c = digitChars[from];
         if (c == '-') {
-            offset++;
+            from++;
             negative = true;
         }
 
-        c = digitChars[offset];
+        c = digitChars[from];
         num = (c - '0');
-        offset++;
+        from++;
 
         long digit;
 
-        for (; offset < to; offset++) {
-            c = digitChars[offset];
+        for (; from < to; from++) {
+            c = digitChars[from];
             digit = (c - '0');
             num = (num * 10) + digit;
         }
@@ -1274,6 +1282,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
         buf.append( "line number " + (line + 1) ).append('\n');
         buf.append( "index number " + index ).append('\n');
+        buf.append( "offset index number " + index + sourceStartIndex).append('\n');
 
 
         try {

@@ -129,7 +129,7 @@ public class JsonStrictParser implements JsonIndexOverlayParser {
             done = parseArrayItem(source, tokens);
 
             if (!done) {
-                done = source.findCommaOrEnd();
+                done = source.findCommaOrEndForArray();
             }
         }
 

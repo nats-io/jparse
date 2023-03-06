@@ -1,7 +1,11 @@
 package com.cloudurable.jparse.source;
 
+import com.cloudurable.jparse.Json;
 import com.cloudurable.jparse.node.support.ParseConstants;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -390,6 +394,228 @@ class CharArrayOffsetCharSourceTest {
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
         assertEquals(1.2e12, source.getDouble(1, 7));
+
+    }
+
+
+    @Test
+    void parseFloatSimple() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      1.2 ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals(1.2f, source.getFloat(1, 4), 0.000001);
+
+    }
+
+    @Test
+    void parseFloatExp() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      1.2e12 ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals(1.2e12f, source.getFloat(1, 7), 0.000001);
+
+    }
+
+
+
+    @Test
+    void parseIntSimple() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      100 ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals("100", source.getString(1, 4));
+        assertEquals(100, source.getInt(1, 4));
+
+    }
+
+    @Test
+    void parseLongSimple() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      100 ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals("100", source.getString(1, 4));
+        assertEquals(100, source.getLong(1, 4));
+
+    }
+
+    @Test
+    void getBigDecimal() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      100 ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals("100", source.getString(1, 4));
+        assertEquals(new BigDecimal(100), source.getBigDecimal(1, 4));
+
+    }
+
+    @Test
+    void getBigInt() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      100 ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals("100", source.getString(1, 4));
+        assertEquals(new BigInteger("100"), source.getBigInteger(1, 4));
+
+    }
+
+    @Test
+    void getEncodedString() {
+        // ....................................012345678901
+        //................................01234567890123456789
+        final String json = Json.niceJson("     `b`n`r`t ");
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals(Json.niceJson("`b`n`r`t"), source.getString(0, 8));
+        assertEquals("\b\n\r\t", source.getEncodedString(0, 8));
+
+    }
+
+    @Test
+    void toEncodedStringIfNeeded() {
+        // ....................................012345678901
+        //................................01234567890123456789
+        final String json = Json.niceJson("     `b`n`r`t ");
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals(Json.niceJson("`b`n`r`t"), source.getString(0, 8));
+        assertEquals("\b\n\r\t", source.toEncodedStringIfNeeded(0, 8));
+
+    }
+
+    @Test
+    void toEncodedStringIfNeededNotNeeded() {
+        // ....................................012345678901
+        //.................................01234567890123456789
+        final String json = Json.niceJson("     himom ");
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals("himom", source.toEncodedStringIfNeeded(0, 5));
+
+    }
+
+
+
+
+    @Test
+    void findCommaOrEnd() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "       ,2] ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertFalse(source.findCommaOrEndForArray());
+        assertEquals(2, source.getIndex());
+    }
+
+    @Test
+    void findCommaOrEndEndCase() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      ] ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertTrue(source.findCommaOrEndForArray());
+        assertEquals(2, source.getIndex());
+    }
+
+
+    @Test
+    void findObjectEndOrAttributeSep() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "       : 2 } ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertFalse(source.findObjectEndOrAttributeSep());
+        assertEquals(2, source.getIndex());
+    }
+
+    @Test
+    void findObjectEndOrAttributeSepEndCase() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      } ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertTrue(source.findObjectEndOrAttributeSep());
+        assertEquals(2, source.getIndex());
+    }
+
+    @Test
+    void checkForJunk() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      } ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        try {
+            source.checkForJunk();
+            fail();
+        }catch (Exception ex) {
+
+        }
+    }
+
+
+    @Test
+    void getString() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      100 ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals("100", source.getString(1, 4));
+
+    }
+
+    @Test
+    void getArray() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      100 ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals("100", new String(source.getArray(1, 4)));
+
+    }
+
+    @Test
+    void getCharArraySeq() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "      100 ";
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+
+        assertEquals("100", source.getCharSequence(1, 4).toString());
 
     }
 

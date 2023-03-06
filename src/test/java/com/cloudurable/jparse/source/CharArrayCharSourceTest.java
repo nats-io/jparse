@@ -17,8 +17,6 @@ package com.cloudurable.jparse.source;
 
 import com.cloudurable.jparse.Json;
 import com.cloudurable.jparse.node.support.ParseConstants;
-import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
-import com.cloudurable.jparse.parser.JsonStrictParser;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -407,6 +405,35 @@ class CharArrayCharSourceTest {
         assertEquals(1.2e12, source.getDouble(1, 7));
 
     }
+
+    @Test
+    void findCommaOrEnd() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "  ,2] ";
+        final var source =
+                Sources.stringSource(Json.niceJson(json));
+
+        source.next();
+
+        assertFalse(source.findCommaOrEndForArray());
+        assertEquals(2, source.getIndex());
+
+    }
+
+    @Test
+    void findCommaOrEndEndCase() {
+        // .......................012345
+        //...................01234567890123456789
+        final String json = "  ] ";
+        final var source =
+                Sources.stringSource(Json.niceJson(json));
+        source.next();
+
+        assertTrue(source.findCommaOrEndForArray());
+        assertEquals(3, source.getIndex());
+    }
+
 
     @Test
     void readNumberWithNothingBeforeDecimal() {

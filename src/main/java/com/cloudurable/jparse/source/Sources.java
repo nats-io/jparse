@@ -48,6 +48,14 @@ public class Sources {
         return new CharArrayCharSource(source);
     }
 
+    public static CharSource charSource(final int offset, final char[] source) {
+        return new CharArrayOffsetCharSource(offset, source.length, source);
+    }
+
+    public static CharSource charSource(final int offset, final int endIndex, final char[] source) {
+        return new CharArrayOffsetCharSource(offset, endIndex, source);
+    }
+
     public static CharSource charBufferSource(final CharBuffer source) {
         return charSeqSource(source);
     }

@@ -104,7 +104,7 @@ public class JsonEventFastParser extends JsonEventAbstractParser {
             done = parseArrayItem(source, event);
 
             if (!done) {
-                done = source.findCommaOrEnd();
+                done = source.findCommaOrEndForArray();
             }
         }
         event.end(TokenTypes.ARRAY_TOKEN, source.getIndex(), source);

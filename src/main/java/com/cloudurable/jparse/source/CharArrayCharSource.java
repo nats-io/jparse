@@ -848,7 +848,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     }
 
     @Override
-    public boolean findCommaOrEnd() {
+    public boolean findCommaOrEndForArray() {
         int i = index;
         char ch = 0;
         final var data = this.data;

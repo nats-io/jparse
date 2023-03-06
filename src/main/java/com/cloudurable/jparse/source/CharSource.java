@@ -81,7 +81,7 @@ public interface CharSource {
     String errorDetails( String message, int index, int ch );
 
 
-    boolean findCommaOrEnd();
+    boolean findCommaOrEndForArray();
 
     boolean findObjectEndOrAttributeSep();
 

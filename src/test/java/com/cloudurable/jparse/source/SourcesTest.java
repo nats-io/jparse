@@ -17,7 +17,6 @@ package com.cloudurable.jparse.source;
 
 import com.cloudurable.jparse.Json;
 import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
-import com.cloudurable.jparse.parser.JsonStrictParser;
 import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.node.support.PathUtils;
 import com.cloudurable.jparse.token.Token;
@@ -89,6 +88,18 @@ public class SourcesTest {
     void testReader() throws Exception {
         FileReader reader = new FileReader("./src/test/resources/json/glossary.json");
         final CharSource charSource = Sources.readerSource(reader);
+        doTest(charSource);
+    }
+
+    @Test
+    void testOffset() throws Exception {
+        final CharSource charSource = Sources.charSource(0, glossaryJson.toCharArray());
+        doTest(charSource);
+    }
+
+    @Test
+    void testOffsetWithEnd() throws Exception {
+        final CharSource charSource = Sources.charSource(0, glossaryJson.length(), glossaryJson.toCharArray());
         doTest(charSource);
     }
 
