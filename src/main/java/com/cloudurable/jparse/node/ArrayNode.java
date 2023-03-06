@@ -104,27 +104,28 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         return getNumberNode(index).doubleValue();
     }
 
+    // TODO take these out.
+//    public double[] getDoubleArray() {
+//        int length = length();
+//        double[] array = new double[length];
+//        for (int i = 0; i < length; i++) {
+//            final Token token = tokens.get(i + 1);
+//            array[i] = source.getDouble(token.startIndex, token.endIndex);
+//        }
+//        return array;
+//    }
+//
+//    public float[] getFloatArray() {
+//        int length = length();
+//        float[] array = new float[length];
+//        for (int i = 0; i < length; i++) {
+//            final Token token = tokens.get(i + 1);
+//            array[i] = source.getFloat(token.startIndex, token.endIndex);
+//        }
+//        return array;
+//    }
+
     public double[] getDoubleArray() {
-        int length = length();
-        double[] array = new double[length];
-        for (int i = 0; i < length; i++) {
-            final Token token = tokens.get(i + 1);
-            array[i] = source.getDouble(token.startIndex, token.endIndex);
-        }
-        return array;
-    }
-
-    public float[] getFloatArray() {
-        int length = length();
-        float[] array = new float[length];
-        for (int i = 0; i < length; i++) {
-            final Token token = tokens.get(i + 1);
-            array[i] = source.getFloat(token.startIndex, token.endIndex);
-        }
-        return array;
-    }
-
-    public double[] getDoubleArrayFast() {
         int length = length();
         double[] array = new double[length];
         for (int i = 0; i < length; i++) {
@@ -134,7 +135,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         return array;
     }
 
-    public float[] getFloatArrayFast() {
+    public float[] getFloatArray() {
         int length = length();
         float[] array = new float[length];
         for (int i = 0; i < length; i++) {
@@ -144,25 +145,25 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         return array;
     }
 
-    public int[] getIntArrayFast() {
-        int length = length();
-        int[] array = new int[length];
-        for (int i = 0; i < length; i++) {
-            final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).intValue();
-        }
-        return array;
-    }
-
-    public long[] getLongArrayFast() {
-        int length = length();
-        long[] array = new long[length];
-        for (int i = 0; i < length; i++) {
-            final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).longValue();
-        }
-        return array;
-    }
+//    public int[] getIntArrayFast() {
+//        int length = length();
+//        int[] array = new int[length];
+//        for (int i = 0; i < length; i++) {
+//            final Token token = tokens.get(i + 1);
+//            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).intValue();
+//        }
+//        return array;
+//    }
+//
+//    public long[] getLongArrayFast() {
+//        int length = length();
+//        long[] array = new long[length];
+//        for (int i = 0; i < length; i++) {
+//            final Token token = tokens.get(i + 1);
+//            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).longValue();
+//        }
+//        return array;
+//    }
 
     public BigDecimal[] getBigDecimalArray() {
         int length = length();

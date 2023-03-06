@@ -33,7 +33,7 @@ public interface CharSource {
 
     char getCurrentCharSafe();
 
-    void skipWhiteSpace();
+    char skipWhiteSpace();
 
     char getChartAt(int index);
 
@@ -81,7 +81,7 @@ public interface CharSource {
     String errorDetails( String message, int index, int ch );
 
 
-    boolean findCommaOrEnd();
+    boolean findCommaOrEndForArray();
 
     boolean findObjectEndOrAttributeSep();
 
