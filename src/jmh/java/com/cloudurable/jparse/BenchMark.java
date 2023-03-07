@@ -24,6 +24,7 @@ import com.cloudurable.jparse.token.TokenEventListener;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jsoniter.JsonIterator;
 import io.nats.client.support.JsonParseException;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -344,11 +345,11 @@ public class BenchMark {
 //    }
 //
 
-
-    @Benchmark
-    public void jParseStrictLongArray(Blackhole bh) {
-        bh.consume(this.strictParser.parse(intsJsonData).asArray().getLongArray());
-    }
+//
+//    @Benchmark
+//    public void jParseStrictLongArray(Blackhole bh) {
+//        bh.consume(this.strictParser.parse(intsJsonData).asArray().getLongArray());
+//    }
 
     @Benchmark
     public void jParseFastLongArray(Blackhole bh) {
@@ -361,14 +362,19 @@ public class BenchMark {
         bh.consume(mapper.readValue(intsJsonData, long[].class));
     }
 
-
-
-
-
     @Benchmark
-    public void jParseStrictFloatArray(Blackhole bh) {
-        bh.consume(this.strictParser.parse(doublesJsonData).asArray().getFloatArray());
+    public void jsonIteratorLongArray(Blackhole bh) throws JsonProcessingException {
+        bh.consume(JsonIterator.deserialize(intsJsonData, long[].class));
     }
+
+
+
+
+
+//    @Benchmark
+//    public void jParseStrictFloatArray(Blackhole bh) {
+//        bh.consume(this.strictParser.parse(doublesJsonData).asArray().getFloatArray());
+//    }
 
 //    @Benchmark
 //    public void jParseStrictFloatArrayFast(Blackhole bh) {
@@ -380,24 +386,24 @@ public class BenchMark {
 //        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getFloatArrayFast());
 //    }
 
-    @Benchmark
-    public void jParseFastFloatArray(Blackhole bh) {
-        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getFloatArray());
-    }
-
-
-
-    @Benchmark
-    public void jacksonFloatArray(Blackhole bh) throws JsonProcessingException {
-        bh.consume(mapper.readValue(doublesJsonData, float[].class));
-    }
-
-
-
-    @Benchmark
-    public void jParseStrictDoubleArray(Blackhole bh) {
-        bh.consume(this.strictParser.parse(doublesJsonData).asArray().getDoubleArray());
-    }
+//    @Benchmark
+//    public void jParseFastFloatArray(Blackhole bh) {
+//        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getFloatArray());
+//    }
+//
+//
+//
+//    @Benchmark
+//    public void jacksonFloatArray(Blackhole bh) throws JsonProcessingException {
+//        bh.consume(mapper.readValue(doublesJsonData, float[].class));
+//    }
+//
+//
+//
+//    @Benchmark
+//    public void jParseStrictDoubleArray(Blackhole bh) {
+//        bh.consume(this.strictParser.parse(doublesJsonData).asArray().getDoubleArray());
+//    }
 
 //    @Benchmark
 //    public void jParseStrictDoubleArrayFast(Blackhole bh) {
@@ -408,65 +414,65 @@ public class BenchMark {
 //    public void jParseFastDoubleArrayFast(Blackhole bh) {
 //        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getDoubleArrayFast());
 //    }
-
-    @Benchmark
-    public void jParseFastDoubleArray(Blackhole bh) {
-        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getDoubleArray());
-    }
-
-    @Benchmark
-    public void jacksonDoubleArray(Blackhole bh) throws JsonProcessingException {
-        bh.consume(mapper.readValue(doublesJsonData, double[].class));
-    }
-
-
-    @Benchmark
-    public void jParseStrictIntArray(Blackhole bh) {
-        bh.consume(this.strictParser.parse(intsJsonData).asArray().getIntArray());
-    }
-
-    @Benchmark
-    public void jParseFastIntArray(Blackhole bh) {
-        bh.consume(this.fastParser.parse(intsJsonData).asArray().getIntArray());
-    }
-
-
-
-    @Benchmark
-    public void jacksonIntArray(Blackhole bh) throws JsonProcessingException {
-        bh.consume(mapper.readValue(intsJsonData, int[].class));
-    }
-
-    @Benchmark
-    public void jParseStrictBigIntArray(Blackhole bh) {
-        bh.consume(this.strictParser.parse(intsJsonData).asArray().getBigIntegerArray());
-    }
-
-    @Benchmark
-    public void jParseFastBigIntArray(Blackhole bh) {
-        bh.consume(this.fastParser.parse(intsJsonData).asArray().getBigIntegerArray());
-    }
-
-    @Benchmark
-    public void jacksonBigIntArray(Blackhole bh) throws JsonProcessingException {
-        bh.consume(mapper.readValue(intsJsonData, BigInteger[].class));
-    }
-
-    @Benchmark
-    public void jParseStrictBigDecimalArray(Blackhole bh) {
-        bh.consume(strictParser.parse(doublesJsonData).asArray().getBigDecimalArray());
-    }
-
-    @Benchmark
-    public void jParseFastBigDecimalArray(Blackhole bh) {
-        bh.consume(fastParser.parse(doublesJsonData).asArray().getBigDecimalArray());
-    }
-
-
-    @Benchmark
-    public void jacksonBigDecimalArray(Blackhole bh) throws JsonProcessingException {
-        bh.consume(mapper.readValue(doublesJsonData, BigDecimal[].class));
-    }
+//
+//    @Benchmark
+//    public void jParseFastDoubleArray(Blackhole bh) {
+//        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getDoubleArray());
+//    }
+//
+//    @Benchmark
+//    public void jacksonDoubleArray(Blackhole bh) throws JsonProcessingException {
+//        bh.consume(mapper.readValue(doublesJsonData, double[].class));
+//    }
+//
+//
+//    @Benchmark
+//    public void jParseStrictIntArray(Blackhole bh) {
+//        bh.consume(this.strictParser.parse(intsJsonData).asArray().getIntArray());
+//    }
+//
+//    @Benchmark
+//    public void jParseFastIntArray(Blackhole bh) {
+//        bh.consume(this.fastParser.parse(intsJsonData).asArray().getIntArray());
+//    }
+//
+//
+//
+//    @Benchmark
+//    public void jacksonIntArray(Blackhole bh) throws JsonProcessingException {
+//        bh.consume(mapper.readValue(intsJsonData, int[].class));
+//    }
+//
+//    @Benchmark
+//    public void jParseStrictBigIntArray(Blackhole bh) {
+//        bh.consume(this.strictParser.parse(intsJsonData).asArray().getBigIntegerArray());
+//    }
+//
+//    @Benchmark
+//    public void jParseFastBigIntArray(Blackhole bh) {
+//        bh.consume(this.fastParser.parse(intsJsonData).asArray().getBigIntegerArray());
+//    }
+//
+//    @Benchmark
+//    public void jacksonBigIntArray(Blackhole bh) throws JsonProcessingException {
+//        bh.consume(mapper.readValue(intsJsonData, BigInteger[].class));
+//    }
+//
+//    @Benchmark
+//    public void jParseStrictBigDecimalArray(Blackhole bh) {
+//        bh.consume(strictParser.parse(doublesJsonData).asArray().getBigDecimalArray());
+//    }
+//
+//    @Benchmark
+//    public void jParseFastBigDecimalArray(Blackhole bh) {
+//        bh.consume(fastParser.parse(doublesJsonData).asArray().getBigDecimalArray());
+//    }
+//
+//
+//    @Benchmark
+//    public void jacksonBigDecimalArray(Blackhole bh) throws JsonProcessingException {
+//        bh.consume(mapper.readValue(doublesJsonData, BigDecimal[].class));
+//    }
 
 
 //
