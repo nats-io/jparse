@@ -15,5 +15,44 @@
  */
 package com.cloudurable.jparse.node.support;
 
-public record NumberParseResult(int endIndex, boolean wasFloat) {
+import java.util.Objects;
+
+public final class NumberParseResult {
+    private final int endIndex;
+    private final boolean wasFloat;
+
+    public NumberParseResult(int endIndex, boolean wasFloat) {
+        this.endIndex = endIndex;
+        this.wasFloat = wasFloat;
+    }
+
+    public int endIndex() {
+        return endIndex;
+    }
+
+    public boolean wasFloat() {
+        return wasFloat;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (NumberParseResult) obj;
+        return this.endIndex == that.endIndex &&
+                this.wasFloat == that.wasFloat;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(endIndex, wasFloat);
+    }
+
+    @Override
+    public String toString() {
+        return "NumberParseResult[" +
+                "endIndex=" + endIndex + ", " +
+                "wasFloat=" + wasFloat + ']';
+    }
+
 }

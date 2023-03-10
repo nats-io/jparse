@@ -33,19 +33,29 @@ public interface TokenTypes {
     int PATH_INDEX_TOKEN = 11;
 
     static String getTypeName(final int tokenType) {
-        return switch (tokenType) {
-            case OBJECT_TOKEN -> "Object";
-            case ATTRIBUTE_KEY_TOKEN -> "Key";
-            case ATTRIBUTE_VALUE_TOKEN -> "Attribute Value";
-            case ARRAY_TOKEN -> "Array";
-            case ARRAY_ITEM_TOKEN -> "Array Item";
-            case INT_TOKEN -> "Integer";
-            case FLOAT_TOKEN -> "Float";
-            case STRING_TOKEN -> "String";
-            case BOOLEAN_TOKEN -> "Boolean";
-            case NULL_TOKEN -> "Null";
-            default -> "" + tokenType;
-
-        };
+        switch (tokenType) {
+            case OBJECT_TOKEN:
+                return "Object";
+            case ATTRIBUTE_KEY_TOKEN:
+                return "Key";
+            case ATTRIBUTE_VALUE_TOKEN:
+                return "Attribute Value";
+            case ARRAY_TOKEN:
+                return "Array";
+            case ARRAY_ITEM_TOKEN:
+                return "Array Item";
+            case INT_TOKEN:
+                return "Integer";
+            case FLOAT_TOKEN:
+                return "Float";
+            case STRING_TOKEN:
+                return "String";
+            case BOOLEAN_TOKEN:
+                return "Boolean";
+            case NULL_TOKEN:
+                return "Null";
+            default:
+                return "" + tokenType;
+        }
     }
 }

@@ -64,19 +64,42 @@ public abstract class JsonEventAbstractParser implements JsonEventParser, JsonIn
         @Override
         public void start(final int tokenId, final int index, final CharSource source) {
 
-            final var listener = switch (tokenId) {
-                case TokenTypes.OBJECT_TOKEN -> new JsonEventStrictParser.ComplexListener(TokenTypes.OBJECT_TOKEN);
-                case TokenTypes.ARRAY_TOKEN -> new JsonEventStrictParser.ComplexListener(TokenTypes.ARRAY_TOKEN);
-                case TokenTypes.ARRAY_ITEM_TOKEN -> arrayItemListener;
-                case TokenTypes.ATTRIBUTE_KEY_TOKEN -> new JsonEventStrictParser.ComplexListener(TokenTypes.ATTRIBUTE_KEY_TOKEN);
-                case TokenTypes.ATTRIBUTE_VALUE_TOKEN -> new JsonEventStrictParser.ComplexListener(TokenTypes.ATTRIBUTE_VALUE_TOKEN);
-                case TokenTypes.STRING_TOKEN -> stringListener;
-                case TokenTypes.FLOAT_TOKEN -> floatListener;
-                case TokenTypes.INT_TOKEN -> intListener;
-                case TokenTypes.BOOLEAN_TOKEN -> booleanListener;
-                case TokenTypes.NULL_TOKEN -> nullListener;
-                default -> exceptionListener;
-            };
+            TokenEventListener listener;
+            switch (tokenId) {
+                case TokenTypes.OBJECT_TOKEN:
+                    listener = new JsonEventStrictParser.ComplexListener(TokenTypes.OBJECT_TOKEN);
+                    break;
+                case TokenTypes.ARRAY_TOKEN:
+                    listener = new JsonEventStrictParser.ComplexListener(TokenTypes.ARRAY_TOKEN);
+                    break;
+                case TokenTypes.ARRAY_ITEM_TOKEN:
+                    listener = arrayItemListener;
+                    break;
+                case TokenTypes.ATTRIBUTE_KEY_TOKEN:
+                    listener = new JsonEventStrictParser.ComplexListener(TokenTypes.ATTRIBUTE_KEY_TOKEN);
+                    break;
+                case TokenTypes.ATTRIBUTE_VALUE_TOKEN:
+                    listener = new JsonEventStrictParser.ComplexListener(TokenTypes.ATTRIBUTE_VALUE_TOKEN);
+                    break;
+                case TokenTypes.STRING_TOKEN:
+                    listener = stringListener;
+                    break;
+                case TokenTypes.FLOAT_TOKEN:
+                    listener = floatListener;
+                    break;
+                case TokenTypes.INT_TOKEN:
+                    listener = intListener;
+                    break;
+                case TokenTypes.BOOLEAN_TOKEN:
+                    listener = booleanListener;
+                    break;
+                case TokenTypes.NULL_TOKEN:
+                    listener = nullListener;
+                    break;
+                default:
+                    listener = exceptionListener;
+                    break;
+            }
 
             listener.start(tokenId, index, source);
             stackIndex++;
