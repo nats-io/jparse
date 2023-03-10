@@ -59,15 +59,67 @@ index of the data elements during parsing, and allowing for real-time access and
 If you would like to learn more about index overlay parsers vs. DOM and Event parsers, read this
 [JSON parser description: DOM vs. Index Overlay vs. Event Driven](https://github.com/RichardHightower/jparse/wiki/JSON-parser-description--DOM-vs.-Index-Overlay-vs.-Event-Driven).
 
+
+
+...
+
+## JParse origins 
+
+Initially JParse was needed it for another project for a client.
+This client changed direction,but the idea of the parser stayed in my mind. 
+The idea was to write protocol handler on top of Java NIO but with the idea 
+that we would have versions that worked natively in Vertx. It ended up being too big of an effort to 
+finish with the budget allocated, but the initial testing showed about a 300x improvement over a legacy client. 
+
+Can't say more than that about the client. Most of the speedup was due to both the protocol and JSON parser 
+(as it is a mixed protocol version, routing with headers and JSON) being an index overlay. But, also, quite a bit 
+of it was due to legacy code which needed some tuning and updated architecture work.
+
+In general, index overlay is better for protocol headers if you only want a portion of the payload 
+(the use case it was created for) or if you are doing integration or routing and don’t need the whole parse. 
+An index overlay will not create a bunch of temporary buffers and /or intermediate conversions.
+
+### Why it is better for deserialization
+Also, an index overlay is better for any field type for struct or object deserialization. 
+Imagine running into a number in JSON.
+
+Is it a float, double, int, long, BigInteger, or BigDecimal?
+
+It is better to wait until you try to deserialize it to do the final conversion because you will 
+either do extra work or possibly lose precision if you convert it into a number before it is deserialized
+into an object or struct field. Also, imagine that the struct or object does not use all of the fields from 
+the JSON object, and some of those fields are Strings. 
+
+String decoding (\n\r\t\uxxxx) can be a time-consuming
+operations and the String decoding can take longer than the rest of the JSON parse for large strings 
+like the filed named `description` or `notes`.
+
+With an index overlay, only the fields that are used will have to be decoded. 
+Decoding is expensive from a buffer copy and an expensive (relatively speaking) operation in general. 
+This is a boon for frameworks like Vert.x that build on top of Netty, which goes through great 
+pains to avoid buffer copies. Sorry, it slipped. It is a real bonus.
+
+## Use Case Example Cloud Events
+The perfect use case would be when you want to use tools like JSONPath to grab a portion of a JSON stream, 
+and it would be realistically in the realm of being 100x faster than a non-index overlay parser. 
+
+Another use case where an index overlay parser would do well would be a framework like [CloudEvents](https://cloudevents.io/). 
+
+In the CloudEvents use case, you can read the `summary` and `message` type and route the message to the 
+right microservice without final parsing the total payload, and can easily send the payload 
+to downstream queues, streams, and services without doing extra work or additional buffer copies.
+
+
 ## Why not just update Boon?
-I am one of the original authors of Boon, which was a utility library that became a JSON parser.
+Developers who worked on this were also the original authors of Boon, which was a utility library that became 
+a JSON parser.
 [Boon got a lot of attention back in 2014](https://www.infoq.com/news/2014/04/groovy-2.3-json), 
 and it was the fastest way to parse JSON and serialize to/from JavaBeans circa 2014. 
 
 Why not just update Boon?  Boon was meant to be a utility lib and became a JSON parser.
-Boon is 90,000 lines of code (just Java main not including test classes).
+Boon is 90,000+ lines of code (just Java main not including test classes).
 Boon does too many things that no one uses. It was due for a complete redesign. 
-It also uses Unsafe which you can't do in later version of Java. 
+It also uses `Unsafe` which you can't do in later version of Java. 
 
 JParse is feature complete now done and is only 5,098 lines long vs. 90,000 LoC of Boon. 
 Jackson core is 55,000 LOC and there are other libs needed for various data types and mappings if you use Jackson. 

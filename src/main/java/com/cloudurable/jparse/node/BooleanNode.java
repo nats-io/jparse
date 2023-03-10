@@ -87,22 +87,33 @@ public class BooleanNode implements ScalarNode {
     @Override
     public char charAt(int index) {
         if (value) {
-            return switch (index) {
-                case 0 -> 't';
-                case 1 -> 'r';
-                case 2 -> 'u';
-                case 3 -> 'e';
-                default -> throw new IllegalStateException();
-            };
+            switch (index) {
+                case 0:
+                    return 't';
+                case 1:
+                    return 'r';
+                case 2:
+                    return 'u';
+                case 3:
+                    return 'e';
+                default:
+                    throw new IllegalStateException();
+            }
         } else {
-            return switch (index) {
-                case 0 -> 'f';
-                case 1 -> 'a';
-                case 2 -> 'l';
-                case 3 -> 's';
-                case 4 -> 'e';
-                default -> throw new IllegalStateException();
-            };
+            switch (index) {
+                case 0:
+                    return 'f';
+                case 1:
+                    return 'a';
+                case 2:
+                    return 'l';
+                case 3:
+                    return 's';
+                case 4:
+                    return 'e';
+                default:
+                    throw new IllegalStateException();
+            }
         }
     }
 

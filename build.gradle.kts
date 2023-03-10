@@ -37,3 +37,9 @@ jmh {
     iterations.set(2)
     fork.set(1)
 }
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}

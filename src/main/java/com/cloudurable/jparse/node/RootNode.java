@@ -53,20 +53,26 @@ public class RootNode implements CollectionNode {
 
     @Override
     public Node getNode(Object key) {
-        return switch (rootToken.type) {
-            case OBJECT_TOKEN -> getObjectNode().getNode(key);
-            case ARRAY_TOKEN -> getArrayNode().getNode(key);
-            default -> doGetNode(key);
-        };
+        switch (rootToken.type) {
+            case OBJECT_TOKEN:
+                return getObjectNode().getNode(key);
+            case ARRAY_TOKEN:
+                return getArrayNode().getNode(key);
+            default:
+                return doGetNode(key);
+        }
     }
 
     @Override
     public List<List<Token>> childrenTokens() {
-        return switch (rootToken.type) {
-            case OBJECT_TOKEN -> getObjectNode().childrenTokens();
-            case ARRAY_TOKEN -> getArrayNode().childrenTokens();
-            default -> doGetChildrenTokens();
-        };
+        switch (rootToken.type) {
+            case OBJECT_TOKEN:
+                return getObjectNode().childrenTokens();
+            case ARRAY_TOKEN:
+                return getArrayNode().childrenTokens();
+            default:
+                return doGetChildrenTokens();
+        }
     }
 
     private List<List<Token>> doGetChildrenTokens() {

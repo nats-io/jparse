@@ -60,13 +60,17 @@ public class NullNode implements ScalarNode {
 
     @Override
     public char charAt(int index) {
-        return switch (index) {
-            case 0 -> 'n';
-            case 1 -> 'u';
-            case 2 -> 'l';
-            case 3 -> 'l';
-            default -> throw new IllegalStateException();
-        };
+        switch (index) {
+            case 0:
+                return 'n';
+            case 1:
+                return 'u';
+            case 2:
+            case 3:
+                return 'l';
+            default:
+                throw new IllegalStateException();
+        }
     }
 
     @Override

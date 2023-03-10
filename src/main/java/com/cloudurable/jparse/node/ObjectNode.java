@@ -149,7 +149,9 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof final ObjectNode other)) return false;
+        if (!(o instanceof  ObjectNode)) return false;
+
+        final ObjectNode other = (ObjectNode) o;
 
         if (this.tokens.size() != other.tokens.size()) {
             return false;
@@ -324,13 +326,16 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
             keys = new ArrayList<>(childrenTokens.size() / 2);
             for (int index = 0; index < childrenTokens.size(); index += 2) {
                 List<Token> itemKey = childrenTokens.get(index);
-                CharSequence element;
                 Token keyToken = itemKey.get(1);
-                element = switch (keyToken.type) {
-                    case TokenTypes.STRING_TOKEN -> new StringNode(keyToken, source, objectsKeysCanBeEncoded).toString();
-                    default -> throw new IllegalStateException("Only String are allowed for keys " + TokenTypes.getTypeName(keyToken.type));
+                switch (keyToken.type) {
+                    case TokenTypes.STRING_TOKEN :
+                        final var element  =new StringNode(keyToken, source, objectsKeysCanBeEncoded);
+                        keys.add(element);
+                        break;
+                    default :
+                        throw new IllegalStateException("Only String are allowed for keys " + TokenTypes.getTypeName(keyToken.type));
                 };
-                keys.add(element);
+
             }
         }
         return keys;

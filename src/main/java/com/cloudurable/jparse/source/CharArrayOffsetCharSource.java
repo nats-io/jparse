@@ -518,31 +518,33 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     }
 
     private boolean isHex(char datum) {
-        return switch (datum) {
-            case 'A'-> true;
-            case 'B'-> true;
-            case 'C'-> true;
-            case 'D'-> true;
-            case 'E'-> true;
-            case 'F'-> true;
-            case 'a'-> true;
-            case 'b'-> true;
-            case 'c'-> true;
-            case 'd'-> true;
-            case 'e'-> true;
-            case 'f'-> true;
-            case '0'-> true;
-            case '1'-> true;
-            case '2'-> true;
-            case '3'-> true;
-            case '4'-> true;
-            case '5'-> true;
-            case '6'-> true;
-            case '7'-> true;
-            case '8'-> true;
-            case '9'-> true;
-            default -> false;
-        };
+        switch (datum) {
+            case 'A':
+            case 'B':
+            case 'C':
+            case 'D':
+            case 'E':
+            case 'F':
+            case 'a':
+            case 'b':
+            case 'c':
+            case 'd':
+            case 'e':
+            case 'f':
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override
@@ -728,10 +730,21 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     }
 
     private boolean isNumber(final char ch) {
-        return switch (ch) {
-            case NUM_0, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9 -> true;
-            default -> false;
-        };
+        switch (ch) {
+            case NUM_0:
+            case NUM_1:
+            case NUM_2:
+            case NUM_3:
+            case NUM_4:
+            case NUM_5:
+            case NUM_6:
+            case NUM_7:
+            case NUM_8:
+            case NUM_9:
+                return true;
+            default:
+                return false;
+        }
     }
 
     private NumberParseResult parseFloatWithExponent() {
@@ -792,17 +805,33 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     }
 
     private boolean isNumberOrSign(char ch) {
-        return switch (ch) {
-            case NUM_0, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, MINUS, PLUS -> true;
-            default -> false;
-        };
+        switch (ch) {
+            case NUM_0:
+            case NUM_1:
+            case NUM_2:
+            case NUM_3:
+            case NUM_4:
+            case NUM_5:
+            case NUM_6:
+            case NUM_7:
+            case NUM_8:
+            case NUM_9:
+            case MINUS:
+            case PLUS:
+                return true;
+            default:
+                return false;
+        }
     }
 
     private boolean isSign(char ch) {
-        return switch (ch) {
-            case MINUS, PLUS -> true;
-            default -> false;
-        };
+        switch (ch) {
+            case MINUS:
+            case PLUS:
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override

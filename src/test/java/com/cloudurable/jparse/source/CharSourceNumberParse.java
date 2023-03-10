@@ -17,10 +17,39 @@ package com.cloudurable.jparse.source;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CharSourceNumberParse {
 
+
+    @Test
+    void longUpperRange() {
+        String longMax = "" + Long.MAX_VALUE;
+        final var charSource = Sources.stringSource(longMax);
+        assertEquals(Long.MAX_VALUE, charSource.getLong(0, longMax.length()));
+    }
+
+    @Test
+    void longMinRange() {
+        String str = "" + Long.MIN_VALUE;
+        final var charSource = Sources.stringSource(str);
+        assertEquals(Long.MIN_VALUE, charSource.getLong(0, str.length()));
+    }
+
+    @Test
+    void intMaxRange() {
+        String str = "" + Integer.MAX_VALUE;
+        final var charSource = Sources.stringSource(str);
+        assertEquals(Integer.MAX_VALUE, charSource.getLong(0, str.length()));
+    }
+
+    @Test
+    void intMinRange() {
+        String str = "" + Integer.MIN_VALUE;
+        final var charSource = Sources.stringSource(str);
+        assertEquals(Integer.MIN_VALUE, charSource.getLong(0, str.length()));
+    }
 
     @Test
     void parseMissingDecimalMantissa() {

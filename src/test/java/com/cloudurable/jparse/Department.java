@@ -16,7 +16,38 @@
 package com.cloudurable.jparse;
 
 import java.util.List;
+import java.util.Objects;
 
-public record Department (String name,
-                          List<Employee> employees) {
+public final class Department {
+    private final String name;
+    private final List<Employee> employees;
+
+    public Department(String name,
+                List<Employee> employees) {
+        this.name = name;
+        this.employees = employees;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (Department) obj;
+        return Objects.equals(this.name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, employees);
+    }
+
+    @Override
+    public String toString() {
+        return "Department[" +
+                "name=" + name + ']';
+    }
 }

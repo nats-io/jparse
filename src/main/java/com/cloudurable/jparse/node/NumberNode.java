@@ -141,17 +141,21 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
     }
 
     public boolean isInteger() {
-        return switch (elementType) {
-            case INT -> source.isInteger(this.token.startIndex, this.token.endIndex);
-            default -> false;
-        };
+        switch (elementType) {
+            case INT:
+                return source.isInteger(this.token.startIndex, this.token.endIndex);
+            default:
+                return false;
+        }
     }
 
     public boolean isLong() {
-        return switch (elementType) {
-            case INT -> !source.isInteger(this.token.startIndex, this.token.endIndex);
-            default -> false;
-        };
+        switch (elementType) {
+            case INT:
+                return !source.isInteger(this.token.startIndex, this.token.endIndex);
+            default:
+                return false;
+        }
     }
 
 
