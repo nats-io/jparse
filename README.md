@@ -36,7 +36,7 @@ Whether you're processing massive data sets, building complex data pipelines, or
 more efficient way to parse JSON data, our index overlay JSON parser is the ideal solution.
 Try it today and experience the power of real-time JSON parsing for yourself!
 
-## What is an Index overlay parser
+## What is an Index overlay parser?
 
 An index overlay parser is a type of parser used for processing structured data, particularly JSON data. 
 Unlike traditional parsers that typically parse the entire data document before returning the results, 
