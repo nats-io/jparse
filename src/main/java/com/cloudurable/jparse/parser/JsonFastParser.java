@@ -172,11 +172,9 @@ public class JsonFastParser implements JsonIndexOverlayParser {
                 case MINUS:
                 case PLUS:
                     parseNumber(source, tokens);
-                    if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == ARRAY_SEP) {
-                        if (source.getCurrentChar() == ARRAY_END_TOKEN) {
+                    if (source.getCurrentChar() == ARRAY_END_TOKEN ) {
                             source.next();
                             return true;
-                        }
                     }
                     break;
 
