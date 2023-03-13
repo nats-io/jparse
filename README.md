@@ -1,4 +1,4 @@
-# J Parse 
+# JParse 
 
 JParse, the most efficient JSON parser for the JVM yet.
 

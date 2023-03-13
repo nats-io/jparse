@@ -1,0 +1,150 @@
+import org.gradle.internal.os.OperatingSystem
+
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'maven-publish'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
+    id 'signing'
+    id 'me.champeau.jmh' version '0.6.7'
+}
+
+
+def jarVersion = "1.0.0"
+group = 'io.nats.jparse'
+
+def isMerge = System.getenv("BUILD_EVENT") == "push"
+def isRelease = System.getenv("BUILD_EVENT") == "release"
+
+// version is the variable the build actually uses.
+version = isRelease ? jarVersion : jarVersion + "-SNAPSHOT"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    testImplementation("com.jsoniter:jsoniter:0.9.23")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
+    testImplementation("com.jayway.jsonpath:json-path:2.4.0")
+    testImplementation("org.noggit:noggit:0.8")
+    testImplementation("io.nats:jnats:2.16.8")
+}
+
+test {
+    useJUnitPlatform()
+    maxHeapSize = "1g"
+    testLogging {
+        exceptionFormat = 'full'
+        events "started", "passed", "skipped", "failed"
+    }
+    maxParallelForks = 1
+}
+javadoc {
+    options.overview = 'src/main/javadoc/overview.html' // relative to source root
+    source = sourceSets.main.allJava
+    title = "JSON Parser that uses events and index overlay"
+    classpath = sourceSets.main.runtimeClasspath
+    doLast {
+        if (!OperatingSystem.current().isWindows()) {
+            exec {
+                println "Updating favicon on all html files"
+                workingDir 'build/docs/javadoc'
+                // Only on linux, mac at this point
+                commandLine 'find', '.', '-name', '*.html', '-exec', 'sed', '-i', '-e', 's#<head>#<head><link rel="icon" type="image/ico" href="favicon.ico">#', '{}', ';'
+            }
+            copy {
+                println "Copying images to javadoc folder"
+                from 'src/main/javadoc/images'
+                into 'build/docs/javadoc'
+            }
+        }
+    }
+}
+
+
+task javadocJar(type: Jar) {
+    archiveClassifier.set('javadoc')
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.allSource
+}
+
+jmh {
+    warmupIterations.set(1)
+    iterations.set(2)
+    fork.set(1)
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+if (isMerge || isRelease) {
+    nexusPublishing {
+        repositories {
+            sonatype {
+                username = System.getenv('OSSRH_USERNAME')
+                password = System.getenv('OSSRH_PASSWORD')
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                name = rootProject.name
+                packaging = 'jar'
+                groupId = group
+                artifactId = archivesBaseName
+                description = 'JSON Parser that uses events and index overlay.'
+                url = 'https://github.com/nats-io/jparse'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = "synadia"
+                        name = "Synadia"
+                        email = "info@synadia.com"
+                        url = "https://nats.io"
+                    }
+                }
+                scm {
+                    url = 'https://github.com/nats-io/jparse'
+                }
+            }
+        }
+    }
+}
+
+if (isRelease) {
+    signing {
+        def signingKeyId = System.getenv('SIGNING_KEY_ID')
+        def signingKey = System.getenv('SIGNING_KEY')
+        def signingPassword = System.getenv('SIGNING_PASSWORD')
+        useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+        sign configurations.archives
+        sign publishing.publications.mavenJava
+    }
+}
+
