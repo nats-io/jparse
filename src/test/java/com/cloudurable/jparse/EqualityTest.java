@@ -20,7 +20,6 @@ import com.cloudurable.jparse.node.NodeType;
 import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.node.StringNode;
 import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
-import com.cloudurable.jparse.parser.JsonStrictParser;
 import com.cloudurable.jparse.source.Sources;
 import org.junit.jupiter.api.Test;
 

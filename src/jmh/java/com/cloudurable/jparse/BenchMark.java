@@ -16,6 +16,7 @@
 package com.cloudurable.jparse;
 
 import com.cloudurable.jparse.parser.JsonEventParser;
+import com.cloudurable.jparse.parser.functable.JsonFuncParser;
 import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
 import com.cloudurable.jparse.source.Sources;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,7 +31,6 @@ import org.openjdk.jmh.infra.Blackhole;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +40,11 @@ public class BenchMark {
 
 
     JsonIndexOverlayParser fastParser = Json.builder().setStrict(false).build();
+
+    JsonIndexOverlayParser funcParser = Json.builder().setAllowComments(true)
+            .setObjectsKeysCanBeEncoded(false)
+            .setSupportNoQuoteKeys(false).build();
+
     JsonIndexOverlayParser strictParser = Json.builder().setStrict(true).build();
     JsonEventParser fastEventParser =  Json.builder().setStrict(false).buildEventParser();
     JsonEventParser strictEventParser =  Json.builder().setStrict(true).buildEventParser();
@@ -189,48 +194,57 @@ public class BenchMark {
 //        bh.consume(ObjectBuilder.fromJSON(jsonData));
 //    }
 
-
-    @Benchmark
-    public void readWebJSONJParseFast(Blackhole bh) {
-        bh.consume(fastParser.parse(webXmlJsonData));
-    }
-    @Benchmark
-    public void readWebJSONJParseStrict(Blackhole bh) {
-        bh.consume(strictParser.parse(webXmlJsonData));
-    }
-
-    @Benchmark
-    public void readWebJsonJsonIter(Blackhole bh) throws Exception{
-        JsonIterator iter = JsonIterator.parse(webXmlJsonData);
-        bh.consume(iter);
-        bh.consume(iter.read(mapTypeRefJI));
-    }
-
-    @Benchmark
-    public void readWebJsonJackson(Blackhole bh) throws JsonProcessingException {
-        bh.consume(mapper.readValue(webXmlJsonData, mapTypeRef));
-    }
-        @Benchmark
-    public void readGlossaryJackson(Blackhole bh) throws JsonProcessingException {
-        bh.consume(mapper.readValue(glossaryJsonData, mapTypeRef));
-    }
-
+//
+//    @Benchmark
+//    public void readWebJSONJParseFast(Blackhole bh) {
+//        bh.consume(fastParser.parse(webXmlJsonData));
+//    }
+//    @Benchmark
+//    public void readWebJSONJParseFunc(Blackhole bh) {
+//        bh.consume(funcParser.parse(webXmlJsonData));
+//    }
+//    @Benchmark
+//    public void readWebJSONJParseStrict(Blackhole bh) {
+//        bh.consume(strictParser.parse(webXmlJsonData));
+//    }
+//
+//    @Benchmark
+//    public void readWebJsonJsonIter(Blackhole bh) throws Exception{
+//        JsonIterator iter = JsonIterator.parse(webXmlJsonData);
+//        bh.consume(iter);
+//        bh.consume(iter.read(mapTypeRefJI));
+//    }
+//
+//    @Benchmark
+//    public void readWebJsonJackson(Blackhole bh) throws JsonProcessingException {
+//        bh.consume(mapper.readValue(webXmlJsonData, mapTypeRef));
+//    }
+//        @Benchmark
+//    public void readGlossaryJackson(Blackhole bh) throws JsonProcessingException {
+//        bh.consume(mapper.readValue(glossaryJsonData, mapTypeRef));
+//    }
+//
     @Benchmark
     public void readGlossaryJParseFast(Blackhole bh) {
         bh.consume(fastParser.parse(glossaryJsonData));
     }
 
     @Benchmark
-    public void readGlossaryJParseStrict(Blackhole bh) {
-        bh.consume(strictParser.parse(glossaryJsonData));
+    public void readGlossaryJParseFunc(Blackhole bh) {
+        bh.consume(funcParser.parse(glossaryJsonData));
     }
-
-    @Benchmark
-    public void readGlossaryJsonIter(Blackhole bh) throws Exception{
-        JsonIterator iter = JsonIterator.parse(glossaryJsonData);
-        bh.consume(iter.read(mapTypeRefJI));
-    }
-
+//
+//    @Benchmark
+//    public void readGlossaryJParseStrict(Blackhole bh) {
+//        bh.consume(strictParser.parse(glossaryJsonData));
+//    }
+//
+//    @Benchmark
+//    public void readGlossaryJsonIter(Blackhole bh) throws Exception{
+//        JsonIterator iter = JsonIterator.parse(glossaryJsonData);
+//        bh.consume(iter.read(mapTypeRefJI));
+//    }
+//
 //    @Benchmark
 //    public void readGlossaryJackson(Blackhole bh) throws JsonProcessingException {
 //        bh.consume(mapper.readValue(glossaryJsonData, mapTypeRef));
@@ -375,16 +389,21 @@ public class BenchMark {
 //    }
 //
 
-//
+
 //    @Benchmark
 //    public void jParseStrictLongArray(Blackhole bh) {
 //        bh.consume(this.strictParser.parse(intsJsonData).asArray().getLongArray());
 //    }
 
-//    @Benchmark
-//    public void jParseFastLongArray(Blackhole bh) {
-//        bh.consume(this.fastParser.parse(intsJsonData).asArray().getLongArray());
-//    }
+    @Benchmark
+    public void jParseFuncLongArray(Blackhole bh) {
+        bh.consume(this.funcParser.parse(intsJsonData).asArray().getLongArray());
+    }
+
+    @Benchmark
+    public void jParseFastLongArray(Blackhole bh) {
+        bh.consume(this.fastParser.parse(intsJsonData).asArray().getLongArray());
+    }
 //
 //
 //    @Benchmark
@@ -396,7 +415,7 @@ public class BenchMark {
 //    public void jsonIteratorLongArray(Blackhole bh) throws JsonProcessingException {
 //        bh.consume(JsonIterator.deserialize(intsJsonData, long[].class));
 //    }
-
+//
 
 
 
@@ -406,20 +425,16 @@ public class BenchMark {
 //        bh.consume(this.strictParser.parse(doublesJsonData).asArray().getFloatArray());
 //    }
 
-//    @Benchmark
-//    public void jParseStrictFloatArrayFast(Blackhole bh) {
-//        bh.consume(this.strictParser.parse(doublesJsonData).asArray().getFloatArrayFast());
-//    }
 //
-//    @Benchmark
-//    public void jParseFastFloatArrayFast(Blackhole bh) {
-//        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getFloatArrayFast());
-//    }
+    @Benchmark
+    public void jParseFuncFloatArray(Blackhole bh) {
+        bh.consume(this.funcParser.parse(doublesJsonData).asArray().getFloatArray());
+    }
 
-//    @Benchmark
-//    public void jParseFastFloatArray(Blackhole bh) {
-//        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getFloatArray());
-//    }
+    @Benchmark
+    public void jParseFastFloatArray(Blackhole bh) {
+        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getFloatArray());
+    }
 //
 //
 //
@@ -428,6 +443,12 @@ public class BenchMark {
 //        bh.consume(mapper.readValue(doublesJsonData, float[].class));
 //    }
 //
+//
+//    @Benchmark
+//    public void jsonIteratorFloatArray(Blackhole bh) {
+//        bh.consume(JsonIterator.deserialize(doublesJsonData, float[].class));
+//    }
+
 //
 //
 //    @Benchmark

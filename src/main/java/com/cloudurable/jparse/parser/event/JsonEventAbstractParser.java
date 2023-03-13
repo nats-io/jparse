@@ -13,10 +13,12 @@
  * limitations under the License.
  *
  */
-package com.cloudurable.jparse.parser;
+package com.cloudurable.jparse.parser.event;
 
 import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.node.support.TokenList;
+import com.cloudurable.jparse.parser.JsonEventParser;
+import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.source.support.UnexpectedCharacterException;
 import com.cloudurable.jparse.token.Token;
@@ -25,7 +27,7 @@ import com.cloudurable.jparse.token.TokenTypes;
 
 import java.util.List;
 
-public abstract class JsonEventAbstractParser implements JsonEventParser, JsonIndexOverlayParser{
+public abstract class JsonEventAbstractParser implements JsonEventParser, JsonIndexOverlayParser {
 
     private final TokenEventListener tokenEventListener;
     private TokenList tokenList;
@@ -67,19 +69,19 @@ public abstract class JsonEventAbstractParser implements JsonEventParser, JsonIn
             TokenEventListener listener;
             switch (tokenId) {
                 case TokenTypes.OBJECT_TOKEN:
-                    listener = new JsonEventStrictParser.ComplexListener(TokenTypes.OBJECT_TOKEN);
+                    listener = new ComplexListener(TokenTypes.OBJECT_TOKEN);
                     break;
                 case TokenTypes.ARRAY_TOKEN:
-                    listener = new JsonEventStrictParser.ComplexListener(TokenTypes.ARRAY_TOKEN);
+                    listener = new ComplexListener(TokenTypes.ARRAY_TOKEN);
                     break;
                 case TokenTypes.ARRAY_ITEM_TOKEN:
                     listener = arrayItemListener;
                     break;
                 case TokenTypes.ATTRIBUTE_KEY_TOKEN:
-                    listener = new JsonEventStrictParser.ComplexListener(TokenTypes.ATTRIBUTE_KEY_TOKEN);
+                    listener = new ComplexListener(TokenTypes.ATTRIBUTE_KEY_TOKEN);
                     break;
                 case TokenTypes.ATTRIBUTE_VALUE_TOKEN:
-                    listener = new JsonEventStrictParser.ComplexListener(TokenTypes.ATTRIBUTE_VALUE_TOKEN);
+                    listener = new ComplexListener(TokenTypes.ATTRIBUTE_VALUE_TOKEN);
                     break;
                 case TokenTypes.STRING_TOKEN:
                     listener = stringListener;

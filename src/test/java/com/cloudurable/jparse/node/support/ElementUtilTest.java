@@ -16,7 +16,6 @@
 package com.cloudurable.jparse.node.support;
 
 import com.cloudurable.jparse.Json;
-import com.cloudurable.jparse.parser.JsonStrictParser;
 import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
 import com.cloudurable.jparse.node.NodeType;
 import com.cloudurable.jparse.node.RootNode;

@@ -13,10 +13,11 @@
  * limitations under the License.
  *
  */
-package com.cloudurable.jparse.parser;
+package com.cloudurable.jparse.parser.indexoverlay;
 
 import com.cloudurable.jparse.node.RootNode;
 import com.cloudurable.jparse.node.support.TokenList;
+import com.cloudurable.jparse.parser.JsonIndexOverlayParser;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.source.support.UnexpectedCharacterException;
 import com.cloudurable.jparse.token.Token;
