@@ -13,20 +13,24 @@
  * limitations under the License.
  *
  */
-package com.cloudurable.jparse.parser;
+package com.cloudurable.jparse.parser.event;
 
+
+import com.cloudurable.jparse.parser.event.JsonEventAbstractParser;
 import com.cloudurable.jparse.source.CharSource;
 import com.cloudurable.jparse.source.support.UnexpectedCharacterException;
 import com.cloudurable.jparse.token.TokenEventListener;
 import com.cloudurable.jparse.token.TokenTypes;
 
 
-public class JsonEventFastParser extends JsonEventAbstractParser {
+
+public class JsonEventStrictParser extends JsonEventAbstractParser {
 
 
+    int nestLevel;
 
 
-    public JsonEventFastParser(boolean objectsKeysCanBeEncoded, TokenEventListener tokenEventListener) {
+    public JsonEventStrictParser(boolean objectsKeysCanBeEncoded, TokenEventListener tokenEventListener) {
         super(objectsKeysCanBeEncoded, tokenEventListener);
     }
 
@@ -80,6 +84,9 @@ public class JsonEventFastParser extends JsonEventAbstractParser {
                     throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character", source, (char) ch);
             }
 
+            source.checkForJunk();
+
+
     }
 
     private void parseFalse(final CharSource source, final TokenEventListener event) {
@@ -98,6 +105,7 @@ public class JsonEventFastParser extends JsonEventAbstractParser {
     }
 
     private void parseArray(final CharSource source, final TokenEventListener event) {
+        levelCheck(source);
         event.start(TokenTypes.ARRAY_TOKEN, source.getIndex(), source);
         boolean done = false;
         while (!done) {
@@ -201,6 +209,7 @@ public class JsonEventFastParser extends JsonEventAbstractParser {
 
     private boolean parseKey(final CharSource source, final TokenEventListener event) {
 
+        final char startChar = source.getCurrentChar();
         int ch = source.nextSkipWhiteSpace();
         event.start(TokenTypes.ATTRIBUTE_KEY_TOKEN, source.getIndex(), source);
         boolean found = false;
@@ -223,6 +232,9 @@ public class JsonEventFastParser extends JsonEventAbstractParser {
                 break;
 
             case OBJECT_END_TOKEN:
+                if (startChar == OBJECT_ATTRIBUTE_SEP) {
+                    throw new UnexpectedCharacterException("Parsing key", "Unexpected character found", source);
+                }
                 return true;
 
             default:
@@ -306,10 +318,11 @@ public class JsonEventFastParser extends JsonEventAbstractParser {
 
     private void parseString(final CharSource source, final TokenEventListener event) {
         event.start(TokenTypes.STRING_TOKEN, source.getIndex() + 1, source);
-        event.end(TokenTypes.STRING_TOKEN, source.findEndOfEncodedStringFast(), source);
+        event.end(TokenTypes.STRING_TOKEN, source.findEndOfEncodedString(), source);
     }
 
     private void parseObject(final CharSource source, final TokenEventListener event) {
+        levelCheck(source);
         event.start(TokenTypes.OBJECT_TOKEN, source.getIndex(), source);
 
         boolean done = false;
@@ -326,5 +339,11 @@ public class JsonEventFastParser extends JsonEventAbstractParser {
         event.end(TokenTypes.OBJECT_TOKEN, source.getIndex(), source);
     }
 
+    private void levelCheck(CharSource source) {
+        nestLevel++;
+        if (nestLevel > NEST_LEVEL) {
+            throw new UnexpectedCharacterException("Next level violation", "Too many levels " + nestLevel, source);
+        }
+    }
 
 }

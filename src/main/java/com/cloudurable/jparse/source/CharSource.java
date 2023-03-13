@@ -90,4 +90,8 @@ public interface CharSource {
     NumberParseResult findEndOfNumberFast();
 
     int findEndOfEncodedStringFast();
+
+    boolean findChar(char c);
+
+    int findAttributeEnd();
 }

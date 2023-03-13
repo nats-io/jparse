@@ -103,6 +103,44 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     }
 
     @Override
+    public int findAttributeEnd() {
+        int index = this.index;
+        final var data = this.data;
+        final var end = this.sourceEndIndex;
+
+        loop:
+        for (; index < end; index++){
+            char ch = data[index];
+            switch (ch) {
+                case NEW_LINE_WS:
+                case CARRIAGE_RETURN_WS:
+                case TAB_WS:
+                case SPACE_WS:
+                case ATTRIBUTE_SEP:
+                    this.index = index;
+                    break loop;
+            }
+        }
+
+        return index;
+    }
+
+    @Override
+    public boolean findChar(char c) {
+        int index = this.index;
+        final var data = this.data;
+        final var end = sourceEndIndex;
+
+        for (; index < end; index++){
+            if (data[index]==c){
+                this.index = index;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void checkForJunk() {
         int index = this.index;
         final var data = this.data;
