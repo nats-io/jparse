@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -259,7 +260,7 @@ class JsonParserTest {
         assertEquals(new BigInteger("7"), asBigInteger(jsonObject, "2"));
         assertEquals(new BigDecimal("7"), asBigDecimal(jsonObject, "2"));
 
-        assertEquals(List.of(1, 2, 3, true, "hi"), asArray(jsonObject, "abc").stream().map(n->n.asScalar().value()).collect(Collectors.toList()));
+        assertEquals(Arrays.asList(1, 2, 3, true, "hi"), asArray(jsonObject, "abc").stream().map(n->n.asScalar().value()).collect(Collectors.toList()));
 
         assertEquals(1, asInt(asList(jsonObject, "abc"), 0));
         assertEquals("hi", asString(asList(jsonObject, "abc"), 4));
