@@ -15,8 +15,8 @@
  */
 package io.nats.jparse.node;
 
-import io.nats.jparse.Department;
-import io.nats.jparse.Employee;
+import io.nats.jparse.examples.Department;
+import io.nats.jparse.examples.Employee;
 import io.nats.jparse.Path;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.source.Sources;

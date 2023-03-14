@@ -15,6 +15,10 @@
  */
 package io.nats.jparse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.jsoniter.JsonIterator;
+import com.jsoniter.output.JsonStream;
+import io.nats.jparse.node.ObjectNode;
 import io.nats.jparse.node.RootNode;
 import io.nats.jparse.parser.JsonEventParser;
 import io.nats.jparse.parser.JsonParser;
@@ -54,33 +58,34 @@ public class BenchMark {
     final static String intsJsonData;
     final static String webXmlJsonData;
     final static String glossaryJsonData;
+    final static String glossaryEvent;
 
 
 
 
     final static TypeReference<HashMap<String, Object>> mapTypeRef
-            = new TypeReference<>() {
+            = new TypeReference<HashMap<String, Object>>() {
     };
 
-    final static TypeLiteral<Map<String, Object>> mapTypeRefJI = new TypeLiteral<>() {
+    final static TypeLiteral<Map<String, Object>> mapTypeRefJI = new TypeLiteral<Map<String, Object>>() {
 
     };
 
     final static TypeReference<List<Object>> listObjects
-            = new TypeReference<>() {
+            = new TypeReference<List<Object>>() {
     };
-
-    final static TypeReference<List<Double>> listDoubleTypeRef
-            = new TypeReference<>() {
-    };
-
-    final static TypeReference<List<BigDecimal>> listBigDTypeRef
-            = new TypeReference<>() {
-    };
-
-    final static TypeReference<List<Float>> listFloatTypeRef
-            = new TypeReference<>() {
-    };
+//
+//    final static TypeReference<List<Double>> listDoubleTypeRef
+//            = new TypeReference<>() {
+//    };
+//
+//    final static TypeReference<List<BigDecimal>> listBigDTypeRef
+//            = new TypeReference<>() {
+//    };
+//
+//    final static TypeReference<List<Float>> listFloatTypeRef
+//            = new TypeReference<>() {
+//    };
 
 
     final static ObjectMapper mapper = new ObjectMapper();
@@ -104,6 +109,8 @@ public class BenchMark {
             intsJsonData = Sources.fileSource(new File("./src/test/resources/json/ints.json")).toString().trim();
             doublesJsonData = Sources.fileSource(new File("./src/test/resources/json/doubles.json")).toString().trim();
             glossaryJsonData = Sources.fileSource(new File("./src/test/resources/json/glossary.json")).toString().trim();
+            glossaryEvent = Sources.fileSource(new File("./src/test/resources/cloudevents/glossaryEvent.json")).toString().trim();
+
             webXmlJsonData = Sources.fileSource(new File("./src/test/resources/json/webxml.json")).toString().trim();
             jsonData = webXmlJsonData;
         } catch (Exception ex) {
@@ -117,20 +124,24 @@ public class BenchMark {
         try {
             long startTime = System.currentTimeMillis();
 
+            JsonParser fastParser = Json.builder().setStrict(false).build();
 
             for (int i = 0; i < 10_500_000; i++) {
 
-//                final RootNode root = new JsonParser().parse(webXmlJsonData);
-//                final var result = Path.atPath(webXmlObjectPath, root);
+                final ObjectNode objectNode = fastParser.parse(glossaryEvent).asObject();
+                if (objectNode.getNode("subject").equalsContent("glossaryFeed")) {
+                    final String id = objectNode.getStringNode("id").toUnencodedString();
+                    final String type = objectNode.getStringNode("type").toUnencodedString();
+                    final String description = objectNode.getStringNode("description").toUnencodedString();
+                    final String data = Json.serializeToString(objectNode.getNode("data"));
 
-                final RootNode result = Json.builder().setStrict(true).build().parse(webXmlJsonData);
-
-                //PathNode pathElements = Path.toPath("foo.bar.baz[99][0][10][11]['hi mom']");
-
-
-                if (i % 100_000 == 0) {
-                    System.out.printf("Elapsed time %s %s \n", ((System.currentTimeMillis() - startTime) / 1000.0), result);
+                    if (i % 1_000_000 == 0) {
+                        System.out.printf("Elapsed time %s %s \n", ((System.currentTimeMillis() - startTime) / 1000.0), data);
+                    }
                 }
+
+
+
             }
             System.out.println("Total Elapsed time " + ((System.currentTimeMillis() - startTime) / 1000.0));
 
@@ -139,6 +150,43 @@ public class BenchMark {
         }
     }
 
+
+    @Benchmark
+    public void readWebJsonJsonIter(Blackhole bh) throws Exception{
+        final JsonIterator iter = JsonIterator.parse(glossaryEvent);
+        final Map<String, Object> map = iter.read(mapTypeRefJI);
+        if (map.get("subject").equals("glossaryFeed")) {
+                final String id =  (String) map.get("id");
+                final String type = (String) map.get("type");
+                final String description = (String) map.get("description");
+                final String data = JsonStream.serialize(map.get("data"));
+                bh.consume(new Object[]{id, type, data, description});
+        }
+    }
+
+    @Benchmark
+    public void cloudEventJackson(Blackhole bh) throws JsonProcessingException {
+        final HashMap<String, Object> map = mapper.readValue(glossaryEvent, mapTypeRef);
+        if (map.get("subject").equals("glossaryFeed")) {
+            final String id =  (String) map.get("id");
+            final String type = (String) map.get("type");
+            final String description = (String) map.get("description");
+            final String data = mapper.writeValueAsString(map.get("data"));
+            bh.consume(new Object[]{id, type, data, description});
+        }
+    }
+
+    @Benchmark
+    public void cloudEventJParse(Blackhole bh) throws JsonProcessingException {
+        final ObjectNode objectNode = fastParser.parse(glossaryEvent).asObject();
+        if (objectNode.getNode("subject").equalsContent("glossaryFeed")) {
+            final String id = objectNode.getStringNode("id").toUnencodedString();
+            final String type = objectNode.getStringNode("type").toUnencodedString();
+            final String description = objectNode.getStringNode("description").toUnencodedString();
+            final String data = Json.serializeToString(objectNode.getNode("data"));
+            bh.consume(new Object[]{id, type, data, description});
+        }
+    }
 //
 //
 //    @Benchmark
@@ -222,15 +270,15 @@ public class BenchMark {
 //        bh.consume(mapper.readValue(glossaryJsonData, mapTypeRef));
 //    }
 //
-    @Benchmark
-    public void readGlossaryJParseFast(Blackhole bh) {
-        bh.consume(fastParser.parse(glossaryJsonData));
-    }
-
-    @Benchmark
-    public void readGlossaryJParseFunc(Blackhole bh) {
-        bh.consume(funcParser.parse(glossaryJsonData));
-    }
+//    @Benchmark
+//    public void readGlossaryJParseFast(Blackhole bh) {
+//        bh.consume(fastParser.parse(glossaryJsonData));
+//    }
+//
+//    @Benchmark
+//    public void readGlossaryJParseFunc(Blackhole bh) {
+//        bh.consume(funcParser.parse(glossaryJsonData));
+//    }
 //
 //    @Benchmark
 //    public void readGlossaryJParseStrict(Blackhole bh) {
@@ -393,15 +441,15 @@ public class BenchMark {
 //        bh.consume(this.strictParser.parse(intsJsonData).asArray().getLongArray());
 //    }
 
-    @Benchmark
-    public void jParseFuncLongArray(Blackhole bh) {
-        bh.consume(this.funcParser.parse(intsJsonData).asArray().getLongArray());
-    }
-
-    @Benchmark
-    public void jParseFastLongArray(Blackhole bh) {
-        bh.consume(this.fastParser.parse(intsJsonData).asArray().getLongArray());
-    }
+//    @Benchmark
+//    public void jParseFuncLongArray(Blackhole bh) {
+//        bh.consume(this.funcParser.parse(intsJsonData).asArray().getLongArray());
+//    }
+//
+//    @Benchmark
+//    public void jParseFastLongArray(Blackhole bh) {
+//        bh.consume(this.fastParser.parse(intsJsonData).asArray().getLongArray());
+//    }
 //
 //
 //    @Benchmark
@@ -424,15 +472,15 @@ public class BenchMark {
 //    }
 
 //
-    @Benchmark
-    public void jParseFuncFloatArray(Blackhole bh) {
-        bh.consume(this.funcParser.parse(doublesJsonData).asArray().getFloatArray());
-    }
-
-    @Benchmark
-    public void jParseFastFloatArray(Blackhole bh) {
-        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getFloatArray());
-    }
+//    @Benchmark
+//    public void jParseFuncFloatArray(Blackhole bh) {
+//        bh.consume(this.funcParser.parse(doublesJsonData).asArray().getFloatArray());
+//    }
+//
+//    @Benchmark
+//    public void jParseFastFloatArray(Blackhole bh) {
+//        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getFloatArray());
+//    }
 //
 //
 //
