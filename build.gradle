@@ -11,7 +11,7 @@ plugins {
 
 
 def jarVersion = "1.0.0"
-group = 'io.nats.jparse'
+group = 'io.nats'
 
 def isMerge = System.getenv("BUILD_EVENT") == "push"
 def isRelease = System.getenv("BUILD_EVENT") == "release"
