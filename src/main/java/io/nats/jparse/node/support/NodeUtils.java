@@ -32,7 +32,7 @@ public class NodeUtils {
 
     public static List<List<Token>> getChildrenTokens(final TokenSubList tokens) {
 
-        final var root = tokens.get(0);
+        final Token root = tokens.get(0);
         final List<List<Token>> childrenTokens;
         childrenTokens = new ArrayList<>(16);
 
@@ -90,8 +90,8 @@ public class NodeUtils {
 
     public static Node createNodeForObject(final List<Token> theTokens, final CharSource source, boolean objectsKeysCanBeEncoded) {
 
-        final var rootToken = theTokens.get(1);
-        final var tokens = theTokens.subList(1, theTokens.size());
+        final Token rootToken = theTokens.get(1);
+        final List<Token> tokens = theTokens.subList(1, theTokens.size());
         final NodeType nodeType = NodeType.tokenTypeToElement(rootToken.type);
 
         switch (nodeType) {

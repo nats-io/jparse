@@ -104,8 +104,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public void checkForJunk() {
         int index = this.index;
-        final var data = this.data;
-        final var length = data.length;
+        final char[]  data = this.data;
+        final int length = data.length;
         int ch = ETX;
 
         for (; index < length; index++) {

@@ -16,6 +16,7 @@
 package io.nats.jparse.parser.indexoverlay;
 
 import io.nats.jparse.node.RootNode;
+import io.nats.jparse.node.support.NumberParseResult;
 import io.nats.jparse.node.support.TokenList;
 import io.nats.jparse.parser.JsonIndexOverlayParser;
 import io.nats.jparse.source.CharSource;
@@ -200,7 +201,7 @@ public class JsonFastParser implements JsonIndexOverlayParser {
 
     private void parseNumber(final CharSource source, TokenList tokens) {
         final int startIndex = source.getIndex();
-        final var numberParse = source.findEndOfNumberFast();
+        final NumberParseResult numberParse = source.findEndOfNumberFast();
         tokens.add(new Token(startIndex, numberParse.endIndex(), numberParse.wasFloat() ? TokenTypes.FLOAT_TOKEN : TokenTypes.INT_TOKEN));
     }
 

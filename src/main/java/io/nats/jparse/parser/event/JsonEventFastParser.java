@@ -15,6 +15,7 @@
  */
 package io.nats.jparse.parser.event;
 
+import io.nats.jparse.node.support.NumberParseResult;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.source.support.UnexpectedCharacterException;
 import io.nats.jparse.token.TokenEventListener;
@@ -193,7 +194,7 @@ public class JsonEventFastParser extends JsonEventAbstractParser {
 
     private void parseNumber(final CharSource source, final TokenEventListener event) {
         final int startIndex = source.getIndex();
-        final var numberParse = source.findEndOfNumber();
+        final NumberParseResult numberParse = source.findEndOfNumber();
         final int tokenType = numberParse.wasFloat() ? TokenTypes.FLOAT_TOKEN : TokenTypes.INT_TOKEN;
         event.start(tokenType, startIndex, source);
         event.end(tokenType, numberParse.endIndex(), source);

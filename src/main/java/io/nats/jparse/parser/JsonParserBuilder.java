@@ -156,7 +156,7 @@ public class JsonParserBuilder {
     public JsonIndexOverlayParser build() {
 
         if (isSupportNoQuoteKeys() || isAllowHashComment() || isAllowSlashSlashComment() || isAllowSlashStarComment() || getParseKey() != null) {
-            final var funcTable = this.getFuncTable();
+            final ParseFunction[] funcTable = this.getFuncTable();
             funcTable[ParseConstants.STRING_START_TOKEN] = JsonParserFunctions::parseString;
             funcTable[ParseConstants.NULL_START] = JsonParserFunctions::parseNull;
             funcTable[ParseConstants.TRUE_BOOLEAN_START] = JsonParserFunctions::parseTrue;

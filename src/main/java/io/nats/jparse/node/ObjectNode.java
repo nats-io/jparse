@@ -92,7 +92,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
 
     @Override
     public Node get(Object key) {
-        final var value = getNode(key);
+        final Node value = getNode(key);
         return value instanceof NullNode ? null : value;
     }
 
@@ -158,16 +158,16 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
         }
 
 
-        final var keys = keys();
-        final var otherKeys = other.keys();
+        final List<CharSequence> keys = keys();
+        final List<CharSequence> otherKeys = other.keys();
 
         if (keys.size() != otherKeys.size()) {
             return false;
         }
 
         for (Object key : keys) {
-            final var otherElementValue = other.getNode(key);
-            final var thisElementValue = this.getNode(key);
+            final Node otherElementValue = other.getNode(key);
+            final Node thisElementValue = this.getNode(key);
 
             if (otherElementValue == null) {
                 return false;
@@ -185,7 +185,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
         if (hashCodeSet) {
             return hashCode;
         }
-        final var keys = keys();
+        final List<CharSequence> keys = keys();
         for (Object key : keys) {
             this.getNode(key);
         }
@@ -302,7 +302,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
             if (keyToken.length() != key.length()) {
                 return false;
             }
-            final var stringNode = new StringNode(keyToken, source, objectsKeysCanBeEncoded);
+            final StringNode stringNode = new StringNode(keyToken, source, objectsKeysCanBeEncoded);
             if (objectsKeysCanBeEncoded) {
                 final var string = stringNode.toString();
                 for (int index = 0; index < key.length(); index++) {
@@ -329,7 +329,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
                 Token keyToken = itemKey.get(1);
                 switch (keyToken.type) {
                     case TokenTypes.STRING_TOKEN :
-                        final var element  =new StringNode(keyToken, source, objectsKeysCanBeEncoded);
+                        final StringNode element  =new StringNode(keyToken, source, objectsKeysCanBeEncoded);
                         keys.add(element);
                         break;
                     default :
