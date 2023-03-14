@@ -1,4 +1,4 @@
-name: GitHub PR Build Actions For Nats Server Runner
+name: GitHub PR Build Actions For JParse
 
 on:
   pull_request:

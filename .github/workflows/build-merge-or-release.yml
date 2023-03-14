@@ -1,4 +1,4 @@
-name: GitHub Merge Or Release Build Actions For Nats Server Runner
+name: GitHub Merge Or Release Build Actions For JParse
 
 on:
   push:
