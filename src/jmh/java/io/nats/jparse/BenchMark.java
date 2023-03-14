@@ -140,6 +140,26 @@ public class BenchMark {
                     }
                 }
 
+//                final JsonIterator iter = JsonIterator.parse(glossaryEvent);
+//                final Map<String, Object> map = iter.read(mapTypeRefJI);
+//                if (map.get("subject").equals("glossaryFeed")) {
+//                    final String id =  (String) map.get("id");
+//                    final String type = (String) map.get("type");
+//                    final String description = (String) map.get("description");
+//                    final String data = JsonStream.serialize(map.get("data"));
+//                    if (i % 1_000_000 == 0) {
+//                        System.out.printf("Elapsed time %s %s \n", ((System.currentTimeMillis() - startTime) / 1000.0), data);
+//                    }
+//                }
+
+//                final HashMap<String, Object> map = mapper.readValue(glossaryEvent, mapTypeRef);
+//                if (map.get("subject").equals("glossaryFeed")) {
+//                    final String id =  (String) map.get("id");
+//                    final String type = (String) map.get("type");
+//                    final String description = (String) map.get("description");
+//                    final String data = mapper.writeValueAsString(map.get("data"));
+//                }
+
 
 
             }
