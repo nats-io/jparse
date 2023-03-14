@@ -152,7 +152,7 @@ public class BenchMark {
 
 
     @Benchmark
-    public void readWebJsonJsonIter(Blackhole bh) throws Exception{
+    public void cloudEventJsonIter(Blackhole bh) throws Exception{
         final JsonIterator iter = JsonIterator.parse(glossaryEvent);
         final Map<String, Object> map = iter.read(mapTypeRefJI);
         if (map.get("subject").equals("glossaryFeed")) {
