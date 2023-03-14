@@ -15,7 +15,6 @@
  */
 package io.nats.jparse.node.support;
 
-import com.cloudurable.jparse.node.*;
 import io.nats.jparse.node.*;
 import io.nats.jparse.path.IndexPathNode;
 import io.nats.jparse.path.KeyPathNode;

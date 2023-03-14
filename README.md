@@ -519,14 +519,11 @@ Department[name=HR, employees=[Employee[firstName=Sarah, lastName=Jones, dob=05/
 
 ## Caveats and limitations
 
-
-* Not done yet (BenchMark have changed a bit -- some got slightly better most some got slightly worse)
-* Still needs to improve error handling  (Did a solid first pass but there is room for improvement).
-* Boon had really excellent error messages and JParse will to (Not as good as I thought actually)
-* Does not support any extras (by design)
+* None that we know of.
+* Feature complete
+* Back ported to Java 11. 
+* Added support for event parser and parser that allows comments. 
 * Does not support NaN, +Infinity, -Infinity because that is not in the JSON org spec.
-* Does not support any attribute key types but Strings as per JSON org spec.
-* Just strict JSON no minimal JSON (Boon and others support strict and non strict modes, JParse only does strict)
-* It is new so there could be bugs and mistakes. 
+* Passes full JSON parser compliance testing see https://github.com/nst/JSONTestSuite. RFC-8259 compliant
 
 

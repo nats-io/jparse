@@ -16,7 +16,6 @@
 package io.nats.jparse;
 
 
-import com.cloudurable.jparse.node.*;
 import io.nats.jparse.node.*;
 import io.nats.jparse.parser.JsonEventParser;
 import io.nats.jparse.parser.JsonIndexOverlayParser;
