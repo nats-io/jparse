@@ -18,7 +18,7 @@ jobs:
             17
           distribution: 'adopt'
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Build and Test
         run: chmod +x gradlew && ./gradlew clean test
       - name: Verify Javadoc
