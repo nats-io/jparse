@@ -15,7 +15,7 @@
  */
 package io.nats.jparse;
 
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.token.TokenEventListener;
 
@@ -23,7 +23,7 @@ public class ObjectSerializerEventsTest extends ObjectSerializerTest {
 
 
     @Override
-    public JsonIndexOverlayParser jsonParser() {
+    public JsonParser jsonParser() {
         return Json.builder().setStrict(true).setTokenEventListener(new TokenEventListener() {
             @Override
             public void start(int tokenId, int index, CharSource source) {

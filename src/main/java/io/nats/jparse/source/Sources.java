@@ -94,7 +94,7 @@ public class Sources {
     }
 
     public static CharSource readerSource(final Reader readerSource) {
-        final var reader = new BufferedReader(readerSource);
+        final BufferedReader reader = new BufferedReader(readerSource);
         StringBuilder stringBuilder = new StringBuilder();
         try {
             String s = reader.readLine();

@@ -15,14 +15,15 @@
  */
 package io.nats.jparse;
 
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonEventParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.token.TokenEventListener;
 
 public class JsonParserFastEventsTest extends JsonParserTest{
     @Override
-    public JsonIndexOverlayParser jsonParser() {
-        final var parser =  Json.builder().setStrict(false).setTokenEventListener(new TokenEventListener() {
+    public JsonParser jsonParser() {
+        final JsonEventParser parser =  Json.builder().setStrict(false).setTokenEventListener(new TokenEventListener() {
             @Override
             public void start(int tokenId, int index, CharSource source) {
 
@@ -35,6 +36,6 @@ public class JsonParserFastEventsTest extends JsonParserTest{
         }).buildEventParser();
 
         System.out.println("JsonParserFastEventsTest " + parser.getClass().getName());
-        return (JsonIndexOverlayParser) parser;
+        return (JsonParser) parser;
     }
 }

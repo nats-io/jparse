@@ -26,12 +26,12 @@ class TokenListTest {
 
     @Test
     void cloneList() {
-        final var tokenList = new TokenList();
+        final TokenList tokenList = new TokenList();
         tokenList.add(new Token(1, 2, TokenTypes.ARRAY_TOKEN));
         tokenList.add(new Token(3, 4, TokenTypes.ARRAY_TOKEN));
         tokenList.add(new Token(5, 6, TokenTypes.ARRAY_TOKEN));
 
-        final var tokenList2 = tokenList.compactClone();
+        final TokenList tokenList2 = tokenList.compactClone();
 
         assertEquals(tokenList.size(), tokenList2.size());
 

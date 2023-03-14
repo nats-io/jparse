@@ -59,8 +59,8 @@ public class CharArraySegment implements CharSequence {
 
             final int end = length + offset;
             for (int i = offset,  j = other.offset; i < end; i++, j++) {
-                final var cOther = other.data[j];
-                final var cThis = data[i];
+                final char cOther = other.data[j];
+                final char cThis = data[i];
                 if (cOther != cThis) {
                     return false;
                 }
@@ -74,8 +74,8 @@ public class CharArraySegment implements CharSequence {
             }
             final int end = length + offset;
             for (int i = offset,  j = 0; i < end; i++, j++) {
-                final var cOther = other.charAt(j);
-                final var cThis = data[i];
+                final char cOther = other.charAt(j);
+                final char cThis = data[i];
                 if (cOther != cThis) {
                     return false;
                 }

@@ -16,7 +16,7 @@
 package io.nats.jparse;
 
 import io.nats.jparse.node.RootNode;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.source.Sources;
 
@@ -32,10 +32,10 @@ public class Validation {
             System.out.println("Event Strict Parser");
             final boolean showPass = false;
             final boolean showFail = false;
-            validateParser(file, (JsonIndexOverlayParser) Json.builder().setStrict(true).buildEventParser(), showFail, showPass);
+            validateParser(file, (JsonParser) Json.builder().setStrict(true).buildEventParser(), showFail, showPass);
 
             System.out.println("Strict Parser");
-            final var jsonParser = Json.builder().setStrict(true).build();
+            final JsonParser jsonParser = Json.builder().setStrict(true).build();
             validateParser(file, jsonParser, showFail, showPass);
 
         } catch (Throwable ex) {
@@ -43,7 +43,7 @@ public class Validation {
         }
     }
 
-    private static void validateParser(File file, JsonIndexOverlayParser jsonParser,
+    private static void validateParser(File file, JsonParser jsonParser,
                                        boolean showFail, boolean showPass) {
         int[] result1 = validate(file, "y_", showFail, showPass, jsonParser);
         int[] result2 = validate(file, "i_", showFail, showPass, jsonParser);
@@ -55,7 +55,7 @@ public class Validation {
     }
 
     private static int[] validate(File file, String match, boolean showFail, boolean showPass,
-                                  JsonIndexOverlayParser jsonParser) {
+                                  JsonParser jsonParser) {
 
 
         try {
@@ -65,7 +65,7 @@ public class Validation {
                 if (listFile.getName().startsWith(match)) {
 
                     final CharSource cs = Sources.fileSource(listFile);
-                    final var jsonString = cs.toString();
+                    final String jsonString = cs.toString();
 
                     //System.out.println("TESTING " + listFile);
                     try {

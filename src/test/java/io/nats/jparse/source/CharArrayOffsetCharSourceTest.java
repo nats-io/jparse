@@ -1,6 +1,7 @@
 package io.nats.jparse.source;
 
 import io.nats.jparse.Json;
+import io.nats.jparse.node.support.NumberParseResult;
 import io.nats.jparse.node.support.ParseConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -128,7 +129,7 @@ class CharArrayOffsetCharSourceTest {
         final CharArrayOffsetCharSource source =
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
-        final var result  = source.findEndOfNumberFast();
+        final NumberParseResult result  = source.findEndOfNumberFast();
         assertEquals(2, result.endIndex());
         assertFalse(result.wasFloat());
 
@@ -142,7 +143,7 @@ class CharArrayOffsetCharSourceTest {
         final CharArrayOffsetCharSource source =
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
-        final var result  = source.findEndOfNumberFast();
+        final NumberParseResult result  = source.findEndOfNumberFast();
         assertEquals(3, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -156,7 +157,7 @@ class CharArrayOffsetCharSourceTest {
         final CharArrayOffsetCharSource source =
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
-        final var result  = source.findEndOfNumberFast();
+        final NumberParseResult result  = source.findEndOfNumberFast();
         assertEquals(6, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -172,7 +173,7 @@ class CharArrayOffsetCharSourceTest {
         final CharArrayOffsetCharSource source =
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
-        final var result  = source.findEndOfNumberFast();
+        final NumberParseResult result  = source.findEndOfNumberFast();
         assertEquals(2, result.endIndex());
         assertFalse(result.wasFloat());
 
@@ -186,7 +187,7 @@ class CharArrayOffsetCharSourceTest {
         final CharArrayOffsetCharSource source =
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
-        final var result  = source.findEndOfNumberFast();
+        final NumberParseResult result  = source.findEndOfNumberFast();
         assertEquals(3, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -200,7 +201,7 @@ class CharArrayOffsetCharSourceTest {
         final CharArrayOffsetCharSource source =
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
-        final var result  = source.findEndOfNumberFast();
+        final NumberParseResult result  = source.findEndOfNumberFast();
         assertEquals(6, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -216,7 +217,7 @@ class CharArrayOffsetCharSourceTest {
         final CharArrayOffsetCharSource source =
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
-        final var result  = source.findEndOfNumber();
+        final NumberParseResult result  = source.findEndOfNumber();
         assertEquals(2, result.endIndex());
         assertFalse(result.wasFloat());
 
@@ -230,7 +231,7 @@ class CharArrayOffsetCharSourceTest {
         final CharArrayOffsetCharSource source =
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
-        final var result  = source.findEndOfNumber();
+        final NumberParseResult result  = source.findEndOfNumber();
         assertEquals(3, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -244,7 +245,7 @@ class CharArrayOffsetCharSourceTest {
         final CharArrayOffsetCharSource source =
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
-        final var result  = source.findEndOfNumber();
+        final NumberParseResult result  = source.findEndOfNumber();
         assertEquals(6, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -260,7 +261,7 @@ class CharArrayOffsetCharSourceTest {
         final CharArrayOffsetCharSource source =
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
-        final var result  = source.findEndOfNumber();
+        final NumberParseResult result  = source.findEndOfNumber();
         assertEquals(2, result.endIndex());
         assertFalse(result.wasFloat());
 
@@ -274,7 +275,7 @@ class CharArrayOffsetCharSourceTest {
         final CharArrayOffsetCharSource source =
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
-        final var result  = source.findEndOfNumber();
+        final NumberParseResult result  = source.findEndOfNumber();
         assertEquals(3, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -288,7 +289,7 @@ class CharArrayOffsetCharSourceTest {
         final CharArrayOffsetCharSource source =
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
-        final var result  = source.findEndOfNumber();
+        final NumberParseResult result  = source.findEndOfNumber();
         assertEquals(6, result.endIndex());
         assertTrue(result.wasFloat());
 

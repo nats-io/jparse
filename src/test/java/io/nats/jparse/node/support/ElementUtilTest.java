@@ -16,7 +16,7 @@
 package io.nats.jparse.node.support;
 
 import io.nats.jparse.Json;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.node.NodeType;
 import io.nats.jparse.node.RootNode;
 import io.nats.jparse.source.Sources;
@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ElementUtilTest {
 
-    public JsonIndexOverlayParser jsonParser() {
+    public JsonParser jsonParser() {
         return Json.builder().setStrict(true).build();
     }
 
@@ -177,7 +177,7 @@ class ElementUtilTest {
     @Test
     void testObject() {
 
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................0123456789
         final String json = "{'a':'b'}";
         final TokenList list = (TokenList) parser.scan(Sources.stringSource(json.replace("'", "\"")));
@@ -193,7 +193,7 @@ class ElementUtilTest {
     @Test
     void testObject2() {
 
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................0123456789
         final String json = "{'a':'b'}";
         RootNode parse = parser.parse(niceJson(json));

@@ -47,7 +47,7 @@ public class Path {
                 switch (node.type()) {
                     case OBJECT:
                         final ObjectNode objectNode = (ObjectNode) node;
-                        final var key = pathElement.asKey().toCharSequence();
+                        final CharSequence key = pathElement.asKey().toCharSequence();
                         node = objectNode.getNode(key);
                         break;
                     case ARRAY:
@@ -72,8 +72,8 @@ public class Path {
 
     }
 
-    public static PathNode toPath(String path) {
-        final var pathParser = new PathParser();
+    public static PathNode toPath(final String path) {
+        final PathParser pathParser = new PathParser();
         return pathParser.parse(path).getPathNode();
     }
 }

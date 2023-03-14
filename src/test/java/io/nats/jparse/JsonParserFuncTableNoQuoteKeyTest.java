@@ -17,8 +17,10 @@ package io.nats.jparse;
 
 import io.nats.jparse.node.ArrayNode;
 import io.nats.jparse.node.RootNode;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static io.nats.jparse.node.JsonTestUtils.asInt;
 import static io.nats.jparse.node.JsonTestUtils.showTokens;
@@ -28,8 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class JsonParserFuncTableNoQuoteKeyTest extends JsonParserTest {
 
     @Override
-    public  JsonIndexOverlayParser jsonParser() {
-        final var parser = Json.builder().setAllowComments(true)
+    public JsonParser jsonParser() {
+        final JsonParser parser = Json.builder().setAllowComments(true)
                 .setSupportNoQuoteKeys(true).build();
 
         System.out.println("             " + parser.getClass().getName());
@@ -40,10 +42,10 @@ public class JsonParserFuncTableNoQuoteKeyTest extends JsonParserTest {
     @Test
     public void testComplexMapNoQuoteKey() {
         //................012345678901234567890123
-        final var json = "{abc:2,'def':7, xyz :[1,2,3]}";
+        final String json = "{abc:2,'def':7, xyz :[1,2,3]}";
         final RootNode root = jsonParser().parse(Json.niceJson(json));
 
-        final var jsonObject = root.getMap();
+        final Map<String, Object> jsonObject = root.getMap();
         assertEquals(2, asInt(jsonObject, "abc"));
         assertEquals(7, asInt(jsonObject, "def"));
 
@@ -58,7 +60,7 @@ public class JsonParserFuncTableNoQuoteKeyTest extends JsonParserTest {
     @Test
     public void testDoubleArrayWithComment() {
         //................012345678901234567890123
-        final var json = "[1, 1.1, 1.2, 1.3, " +
+        final String json = "[1, 1.1, 1.2, 1.3, " +
                 "\n#hi noah \n1e+9, 1e9, 1e-9]";
         final double[] array = {1, 1.1, 1.2, 1.3, 1e+9, 1e9, 1e-9};
         double[] readDoubles = toArrayNode(niceJson(json)).getDoubleArray();
@@ -68,7 +70,7 @@ public class JsonParserFuncTableNoQuoteKeyTest extends JsonParserTest {
     @Test
     public void testDoubleArrayWithSlashSlash() {
         //................012345678901234567890123
-        final var json = "[1, 1.1, 1.2, 1.3, " +
+        final String json = "[1, 1.1, 1.2, 1.3, " +
                 "\n//hi noah \n1e+9, 1e9, 1e-9]";
         final double[] array = {1, 1.1, 1.2, 1.3, 1e+9, 1e9, 1e-9};
         double[] readDoubles = toArrayNode(niceJson(json)).getDoubleArray();
@@ -78,7 +80,7 @@ public class JsonParserFuncTableNoQuoteKeyTest extends JsonParserTest {
     @Test
     public void testDoubleArrayWithSlashStar() {
         //................012345678901234567890123
-        final var json = "[1, 1.1, 1.2, 1.3, " +
+        final String json = "[1, 1.1, 1.2, 1.3, " +
                 "\n/*hi noah \n\n\n*/1e+9, 1e9, 1e-9]";
         final double[] array = {1, 1.1, 1.2, 1.3, 1e+9, 1e9, 1e-9};
         double[] readDoubles = toArrayNode(niceJson(json)).getDoubleArray();
@@ -88,12 +90,12 @@ public class JsonParserFuncTableNoQuoteKeyTest extends JsonParserTest {
     @Test
     public void testComplexMap2() {
         //................012345678901234567890123
-        final var json = "{'1':2,'2':7,'3':[1,2,3]}";
+        final String json = "{'1':2,'2':7,'3':[1,2,3]}";
         final RootNode root = jsonParser().parse(Json.niceJson(json));
 
         showTokens(root.tokens());
 
-        final var jsonObject = root.getMap();
+        final Map<String, Object> jsonObject = root.getMap();
         assertEquals(2, asInt(jsonObject, "1"));
         assertEquals(7, asInt(jsonObject, "2"));
 

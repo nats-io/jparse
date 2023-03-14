@@ -18,7 +18,7 @@ package io.nats.jparse.parser.event;
 import io.nats.jparse.node.RootNode;
 import io.nats.jparse.node.support.TokenList;
 import io.nats.jparse.parser.JsonEventParser;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.source.support.UnexpectedCharacterException;
 import io.nats.jparse.token.Token;
@@ -27,7 +27,7 @@ import io.nats.jparse.token.TokenTypes;
 
 import java.util.List;
 
-public abstract class JsonEventAbstractParser implements JsonEventParser, JsonIndexOverlayParser {
+public abstract class JsonEventAbstractParser implements JsonEventParser, JsonParser {
 
     private final TokenEventListener tokenEventListener;
     private TokenList tokenList;

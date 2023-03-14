@@ -280,7 +280,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
 
     @Override
     public Node get(int index) {
-        final var node = getNodeAt(index);
+        final Node node = getNodeAt(index);
         return node.type() == NodeType.NULL ? null : node;
     }
 
@@ -296,11 +296,11 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         }
 
         for (int index = 0; index < this.tokens.size(); index++) {
-            var thisValue = this.tokens.get(index);
-            var otherValue = other.tokens.get(index);
+            Token thisValue = this.tokens.get(index);
+            Token otherValue = other.tokens.get(index);
             if (otherValue == null && thisValue == null) continue;
-            var thisStr = thisValue.asString(this.source);
-            var otherStr = otherValue.asString(other.source);
+            String thisStr = thisValue.asString(this.source);
+            String otherStr = otherValue.asString(other.source);
             if (!thisStr.equals(otherStr)) {
                 return false;
             }
@@ -386,8 +386,8 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
 
     public List<ObjectNode> filterObjects(Predicate<ObjectNode> predicate) {
         Node[] elements = elements();
-        final var length = elements.length;
-        final var arrayList = new ArrayList<ObjectNode>(length / 2);
+        final int length = elements.length;
+        final List<ObjectNode> arrayList = new ArrayList<>(length / 2);
         for (int i = 0; i < length; i++) {
             Node element = elements[i];
             if (element == null) {
@@ -405,8 +405,8 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
 
     public List<Node> filter(Predicate<Node> predicate) {
         Node[] elements = elements();
-        final var length = elements.length;
-        final var arrayList = new ArrayList<Node>(length / 2);
+        final int length = elements.length;
+        final List<Node> arrayList = new ArrayList<>(length / 2);
         for (int i = 0; i < length; i++) {
             Node element = elements[i];
             if (element == null) {

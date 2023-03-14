@@ -15,11 +15,8 @@
  */
 package io.nats.jparse;
 
-import io.nats.jparse.node.Node;
-import io.nats.jparse.node.NodeType;
-import io.nats.jparse.node.RootNode;
-import io.nats.jparse.node.StringNode;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.node.*;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.source.Sources;
 import org.junit.jupiter.api.Test;
 
@@ -27,24 +24,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EqualityTest {
 
-    public JsonIndexOverlayParser jsonParser() {
+    public JsonParser jsonParser() {
         return Json.builder().setStrict(true).build();
     }
 
     @Test
     void testRoot() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         final String json1 = "'abc'";
         final String json2 = "'abc'";
 
-        final var v1 = getJsonRoot(parser, json1);
-        final var v2 = getJsonRoot(parser, json2);
+        final RootNode v1 = getJsonRoot(parser, json1);
+        final RootNode v2 = getJsonRoot(parser, json2);
         doAssert(v1, v2);
     }
 
     @Test
     void testSimpleString() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         final String json1 = "'abc'";
         final String json2 = "'abc'";
 
@@ -59,46 +56,46 @@ public class EqualityTest {
 
     @Test
     void testSimpleInt() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         final String json1 = "1";
         final String json2 = "1";
-        var v1 = getJsonRoot(parser, json1).getNumberNode();
-        var v2 = getJsonRoot(parser, json2).getNumberNode();
+        NumberNode v1 = getJsonRoot(parser, json1).getNumberNode();
+        NumberNode v2 = getJsonRoot(parser, json2).getNumberNode();
         doAssert(v1, v2);
     }
 
 
     @Test
     void testSimpleArray() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         final String json1 = "[1,2,3,true,false]";
         final String json2 = "[1,2,3,true,false]";
-        var v1 = getJsonRoot(parser, json1).getArrayNode();
-        var v2 = getJsonRoot(parser, json2).getArrayNode();
+        ArrayNode v1 = getJsonRoot(parser, json1).getArrayNode();
+        ArrayNode v2 = getJsonRoot(parser, json2).getArrayNode();
         doAssert(v1, v2);
     }
 
     @Test
     void testSimpleObject() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         final String json1 = "{'1':2}";
         final String json2 = "{'1':2}";
-        var v1 = getJsonRoot(parser, json1).getObjectNode();
-        var v2 = getJsonRoot(parser, json2).getObjectNode();
+        ObjectNode v1 = getJsonRoot(parser, json1).getObjectNode();
+        ObjectNode v2 = getJsonRoot(parser, json2).getObjectNode();
         doAssert(v1, v2);
     }
 
     @Test
     void testSimpleObject2() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         final String json1 = "{'1':2,'2':1}";
         final String json2 = "{'2':1,'1':2}";
-        var v1 = getJsonRoot(parser, json1).getObjectNode();
-        var v2 = getJsonRoot(parser, json2).getObjectNode();
+        ObjectNode v1 = getJsonRoot(parser, json1).getObjectNode();
+        ObjectNode v2 = getJsonRoot(parser, json2).getObjectNode();
         doAssert(v1, v2);
     }
 
-    private RootNode getJsonRoot(JsonIndexOverlayParser parser, String json1) {
+    private RootNode getJsonRoot(JsonParser parser, String json1) {
         return parser.parse(Sources.stringSource(json1.replace("'", "\"")));
     }
 

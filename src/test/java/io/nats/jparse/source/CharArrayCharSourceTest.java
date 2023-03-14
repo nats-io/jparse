@@ -16,6 +16,7 @@
 package io.nats.jparse.source;
 
 import io.nats.jparse.Json;
+import io.nats.jparse.node.support.NumberParseResult;
 import io.nats.jparse.node.support.ParseConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "01";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         char next = (char) source.next();
@@ -53,7 +54,7 @@ class CharArrayCharSourceTest {
         //...................01234567890123456789
         final String json = "\t\n01";
 
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         char next = (char) source.nextSkipWhiteSpace();
@@ -77,7 +78,7 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "\t\n01";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         source.next();
@@ -117,7 +118,7 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "01";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         assertEquals('0', source.getChartAt(0));
@@ -138,7 +139,7 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "01";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         assertEquals("01", source.toString());
@@ -151,10 +152,10 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "01";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
-        final var result  = source.findEndOfNumberFast();
+        final NumberParseResult result  = source.findEndOfNumberFast();
         assertEquals(2, result.endIndex());
         assertFalse(result.wasFloat());
 
@@ -165,10 +166,10 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "0.2";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
-        final var result  = source.findEndOfNumberFast();
+        final NumberParseResult result  = source.findEndOfNumberFast();
         assertEquals(3, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -179,10 +180,10 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "0.2e12] ";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
-        final var result  = source.findEndOfNumberFast();
+        final NumberParseResult result  = source.findEndOfNumberFast();
         assertEquals(6, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -195,10 +196,10 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "01]";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
-        final var result  = source.findEndOfNumberFast();
+        final NumberParseResult result  = source.findEndOfNumberFast();
         assertEquals(2, result.endIndex());
         assertFalse(result.wasFloat());
 
@@ -209,10 +210,10 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "0.2]";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
-        final var result  = source.findEndOfNumberFast();
+        final NumberParseResult result  = source.findEndOfNumberFast();
         assertEquals(3, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -223,10 +224,10 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "0.2e12] ";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
-        final var result  = source.findEndOfNumberFast();
+        final NumberParseResult result  = source.findEndOfNumberFast();
         assertEquals(6, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -239,11 +240,11 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "12";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
         source.next();
 
-        final var result  = source.findEndOfNumber();
+        final NumberParseResult result  = source.findEndOfNumber();
         assertEquals(2, result.endIndex());
         assertFalse(result.wasFloat());
 
@@ -254,12 +255,12 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "0.2";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         source.next();
 
-        final var result  = source.findEndOfNumber();
+        final NumberParseResult result  = source.findEndOfNumber();
         assertEquals(3, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -270,11 +271,11 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "0.2e12] ";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         source.next();
-        final var result  = source.findEndOfNumber();
+        final NumberParseResult result  = source.findEndOfNumber();
         assertEquals(6, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -287,12 +288,12 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "12]";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         source.next();
 
-        final var result  = source.findEndOfNumber();
+        final NumberParseResult result  = source.findEndOfNumber();
         assertEquals(2, result.endIndex());
         assertFalse(result.wasFloat());
 
@@ -303,11 +304,11 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "0.2]";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         source.next();
-        final var result  = source.findEndOfNumber();
+        final NumberParseResult result  = source.findEndOfNumber();
         assertEquals(3, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -318,11 +319,11 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "0.2e12] ";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         source.next();
-        final var result  = source.findEndOfNumber();
+        final NumberParseResult result  = source.findEndOfNumber();
         assertEquals(6, result.endIndex());
         assertTrue(result.wasFloat());
 
@@ -333,7 +334,7 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "true";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         source.next();
@@ -346,7 +347,7 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "false";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         source.next();
@@ -359,7 +360,7 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "null";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         source.next();
@@ -373,7 +374,7 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = "abcd";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         source.next();
@@ -388,7 +389,7 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = " 1.2 ";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         assertEquals(1.2, source.getDouble(1, 4));
@@ -400,7 +401,7 @@ class CharArrayCharSourceTest {
 
         //...................01234567890123456789
         final String json = " 1.2e12 ";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         assertEquals(1.2e12, source.getDouble(1, 7));
@@ -412,7 +413,7 @@ class CharArrayCharSourceTest {
         // .......................012345
         //...................01234567890123456789
         final String json = "  ,2] ";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
 
         source.next();
@@ -427,7 +428,7 @@ class CharArrayCharSourceTest {
         // .......................012345
         //...................01234567890123456789
         final String json = "  ] ";
-        final var source =
+        final CharSource source =
                 Sources.stringSource(Json.niceJson(json));
         source.next();
 
@@ -439,11 +440,11 @@ class CharArrayCharSourceTest {
     @Test
     void readNumberWithNothingBeforeDecimal() {
         //.................0123456789
-        final var  json = "-.123";
-        final var source = Sources.stringSource(Json.niceJson(json));
+        final String json = "-.123";
+        final CharSource source = Sources.stringSource(Json.niceJson(json));
         source.next();
         try {
-            final var result = source.findEndOfNumber();
+            final NumberParseResult result = source.findEndOfNumber();
             assertTrue(false);
         } catch (Exception ex) {
 
@@ -453,10 +454,10 @@ class CharArrayCharSourceTest {
     @Test
     void readNumberNormalNegativeFloat() {
         //.................0123456789
-        final var  json = "-0.123";
-        final var source = Sources.stringSource(Json.niceJson(json));
+        final String json = "-0.123";
+        final CharSource source = Sources.stringSource(Json.niceJson(json));
         source.next();
-        final var result = source.findEndOfNumber();
+        final NumberParseResult result = source.findEndOfNumber();
         assertTrue(result.wasFloat());
         assertEquals(6, result.endIndex());
     }
@@ -466,8 +467,8 @@ class CharArrayCharSourceTest {
     void encoding() {
 
         //.................0123456789
-        final var  json = "'`u0003'";
-        final var source = Sources.stringSource(Json.niceJson(json));
+        final String json = "'`u0003'";
+        final CharSource source = Sources.stringSource(Json.niceJson(json));
         source.next();
         int end = source.findEndOfEncodedString();
         assertEquals(7, end);
@@ -478,8 +479,8 @@ class CharArrayCharSourceTest {
     void encodingFast() {
 
         //.................0123456789
-        final var  json = "'`u0003'";
-        final var source = Sources.stringSource(Json.niceJson(json));
+        final String json = "'`u0003'";
+        final CharSource source = Sources.stringSource(Json.niceJson(json));
         source.next();
         int end = source.findEndOfEncodedStringFast();
         assertEquals(7, end);
@@ -490,8 +491,8 @@ class CharArrayCharSourceTest {
     void encoding2() {
 
         //.................0123456789012
-        final var  json = "'abc`n`u0003'";
-        final var source = Sources.stringSource(Json.niceJson(json));
+        final String json = "'abc`n`u0003'";
+        final CharSource source = Sources.stringSource(Json.niceJson(json));
         source.next();
         int end = source.findEndOfEncodedString();
         assertEquals(12, end);
@@ -502,8 +503,8 @@ class CharArrayCharSourceTest {
     void encoding2Fast() {
 
         //.................0123456789012
-        final var  json = "'abc`n`u0003'";
-        final var source = Sources.stringSource(Json.niceJson(json));
+        final String json = "'abc`n`u0003'";
+        final CharSource source = Sources.stringSource(Json.niceJson(json));
         source.next();
         int end = source.findEndOfEncodedStringFast();
         assertEquals(12, end);
@@ -514,8 +515,8 @@ class CharArrayCharSourceTest {
     void encoding3() {
 
         //.................0123456789
-        final var  json =  "'abc`n`b`r`u1234'";
-        final var source = Sources.stringSource(Json.niceJson(json));
+        final String json =  "'abc`n`b`r`u1234'";
+        final CharSource source = Sources.stringSource(Json.niceJson(json));
         source.next();
         int end = source.findEndOfEncodedString();
         assertEquals(16, end);
@@ -532,7 +533,7 @@ class CharArrayCharSourceTest {
     void nextSkipWhiteSpaceSample() {
         //.....................01234
         final String string = "[ 1 , 3 ]";
-        final var charSource = Sources.stringSource(string);
+        final CharSource charSource = Sources.stringSource(string);
 
 
         assertEquals('[', (char) charSource.nextSkipWhiteSpace());
@@ -548,7 +549,7 @@ class CharArrayCharSourceTest {
     void skipWhiteSpace() {
         //.....................012345678901234567890123456789012345678
         final String string = "         1               [ 1 , 3 ]";
-        final var source = Sources.stringSource(string);
+        final CharSource source = Sources.stringSource(string);
         assertEquals('1', (char) source.nextSkipWhiteSpace());
         source.next();
         source.skipWhiteSpace();
@@ -565,7 +566,7 @@ class CharArrayCharSourceTest {
         final String json = "   {'h':   'a',\n\t 'i':'b'\n\t } \n\t    \n";
 
 
-        final var charSource = Sources.stringSource(Json.niceJson(json));
+        final CharSource charSource = Sources.stringSource(Json.niceJson(json));
         assertEquals('{', (char) charSource.nextSkipWhiteSpace());
         assertEquals('"', (char) charSource.nextSkipWhiteSpace());
         assertEquals('h', (char) charSource.nextSkipWhiteSpace());
@@ -588,8 +589,8 @@ class CharArrayCharSourceTest {
     @Test
     void nextSkipWhiteSpace() {
         //..................01234
-        final var string = "   12";
-        final var charSource = Sources.stringSource(string);
+        final String string = "   12";
+        final CharSource charSource = Sources.stringSource(string);
 
         char ch = (char) charSource.nextSkipWhiteSpace();
 

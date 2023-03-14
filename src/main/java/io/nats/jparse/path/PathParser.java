@@ -17,7 +17,7 @@ package io.nats.jparse.path;
 
 import io.nats.jparse.node.RootNode;
 import io.nats.jparse.node.support.TokenList;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.token.Token;
 import io.nats.jparse.token.TokenTypes;
@@ -25,7 +25,7 @@ import io.nats.jparse.node.support.ParseConstants;
 
 import java.util.List;
 
-public class PathParser implements JsonIndexOverlayParser {
+public class PathParser implements JsonParser {
 
 
     @Override
@@ -126,7 +126,7 @@ public class PathParser implements JsonIndexOverlayParser {
 
     private void parseIndexOrKey(CharSource source, char ch, TokenList tokens) {
 
-        final var startIndex = source.getIndex();
+        final int startIndex = source.getIndex();
 
 
         switch (ch) {
@@ -245,7 +245,7 @@ public class PathParser implements JsonIndexOverlayParser {
             }
         }
 
-        final var endIndex = source.getIndex();
+        final int endIndex = source.getIndex();
         int i = source.nextSkipWhiteSpace();
         if (i == ParseConstants.INDEX_BRACKET_END_TOKEN) {
             tokens.add(new Token(startIndex, endIndex, TokenTypes.PATH_KEY_TOKEN));
@@ -257,7 +257,7 @@ public class PathParser implements JsonIndexOverlayParser {
 
 
     private void parseKeyName(CharSource source, char ch, TokenList tokens) {
-        final var startIndex = source.getIndex();
+        final int startIndex = source.getIndex();
 
         loop:
         while (true) {
@@ -326,7 +326,7 @@ public class PathParser implements JsonIndexOverlayParser {
                     break loop;
 
                 case ParseConstants.INDEX_BRACKET_START_TOKEN:
-                    final var endIndex = source.getIndex();
+                    final int endIndex = source.getIndex();
                     tokens.add(new Token(startIndex, endIndex, TokenTypes.PATH_KEY_TOKEN));
                     parseIndexOrKey(source, (char) source.next(), tokens);
                     return;
@@ -337,7 +337,7 @@ public class PathParser implements JsonIndexOverlayParser {
             }
         }
 
-        final var endIndex = source.getIndex();
+        final int endIndex = source.getIndex();
 
         tokens.add(new Token(startIndex, endIndex, TokenTypes.PATH_KEY_TOKEN));
 
@@ -378,7 +378,7 @@ public class PathParser implements JsonIndexOverlayParser {
             }
         }
 
-        final var endIndex = source.getIndex();
+        final int endIndex = source.getIndex();
 
         tokens.add(new Token(startIndex, endIndex, TokenTypes.PATH_INDEX_TOKEN));
 

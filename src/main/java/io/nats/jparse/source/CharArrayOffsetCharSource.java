@@ -105,8 +105,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     @Override
     public int findAttributeEnd() {
         int index = this.index;
-        final var data = this.data;
-        final var end = this.sourceEndIndex;
+        final char[] data = this.data;
+        final int end = this.sourceEndIndex;
 
         loop:
         for (; index < end; index++){
@@ -128,8 +128,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     @Override
     public boolean findChar(char c) {
         int index = this.index;
-        final var data = this.data;
-        final var end = sourceEndIndex;
+        final char[] data = this.data;
+        final int end = sourceEndIndex;
 
         for (; index < end; index++){
             if (data[index]==c){
@@ -143,8 +143,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     @Override
     public void checkForJunk() {
         int index = this.index;
-        final var data = this.data;
-        final var end = this.sourceEndIndex;
+        final char[] data = this.data;
+        final int end = this.sourceEndIndex;
         int ch = ETX;
 
         for (; index < end; index++) {
@@ -165,8 +165,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     @Override
     public int nextSkipWhiteSpace() {
         int index = this.index + 1;
-        final var data = this.data;
-        final var endIndex = sourceEndIndex;
+        final char[] data = this.data;
+        final int endIndex = sourceEndIndex;
         int ch = ETX;
 
         loop:
@@ -189,8 +189,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     @Override
     public char skipWhiteSpace() {
         int index = this.index;
-        final var data = this.data;
-        final var endIndex = sourceEndIndex;
+        final char[] data = this.data;
+        final int endIndex = sourceEndIndex;
 
         char ch;
 
@@ -294,8 +294,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
         int i = index + 1;
         char ch = 0;
-        final var data = this.data;
-        final var endIndex = this.sourceEndIndex;
+        final char[] data = this.data;
+        final int endIndex = this.sourceEndIndex;
         for (; i < endIndex; i++) {
 
             ch = data[i];
@@ -353,8 +353,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
         int i = index + 1;
         char ch =  0;
-        final var data = this.data;
-        final var endIndex = this.sourceEndIndex;
+        final char[] data = this.data;
+        final int endIndex = this.sourceEndIndex;
 
         for (; i < endIndex; i++) {
             ch = data[i];
@@ -407,8 +407,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         int i = index + 1;
         char ch = 0;
         int signOperator = 0;
-        final var data = this.data;
-        final var end = sourceEndIndex;
+        final char[] data = this.data;
+        final int end = sourceEndIndex;
         for (; i < end; i++) {
             ch = data[i];
 
@@ -462,8 +462,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     @Override
     public int findEndOfEncodedStringFast() {
         int i = ++index;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
         boolean controlChar = false;
         for (; i < length; i++) {
             char ch = data[i];
@@ -488,8 +488,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     }
 
     private int findEndOfStringControlEncode(int i) {
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
         char ch = 0;
 
 
@@ -518,8 +518,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     @Override
     public int findEndOfEncodedString() {
         int i = ++index;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
         char ch = 0;
         for (; i < length; i++) {
             ch = data[i];
@@ -544,8 +544,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
 
     private int findEndOfHexEncoding(int index) {
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
 
         if (isHex(data[++index]) && isHex(data[++index])  && isHex(data[++index])  && isHex(data[++index]) ) {
             return index;
@@ -589,8 +589,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     public int findEndString() {
 
         int i = ++index;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
         char ch = 0;
 
         for (; i < length; i++) {
@@ -620,8 +620,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
         int i = index + 1;
 
-        final var data = this.data;
-        final var endIndex = this.sourceEndIndex;
+        final char[] data = this.data;
+        final int endIndex = this.sourceEndIndex;
 
         loop:
         for (; i < endIndex; i++) {
@@ -678,7 +678,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         }
 
         index = i;
-        final var numLength = i - startIndex;
+        final int numLength = i - startIndex;
 
         switch (startCh) {
             case NUM_0:
@@ -717,9 +717,9 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         if (!isNumber(ch)) {
             throw new UnexpectedCharacterException("Parsing float part of number", "After decimal point expecting number but got", this, (int) ch, this.index);
         }
-        final var data = this.data;
+        final char[] data = this.data;
 
-        final var endIndex = this.sourceEndIndex;
+        final int endIndex = this.sourceEndIndex;
 
         for (; i < endIndex; i++) {
             ch = data[i];
@@ -801,9 +801,9 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         }
 
         int i = index + 1;
-        final var data = this.data;
+        final char[] data = this.data;
 
-        final var endIndex = this.sourceEndIndex;
+        final int endIndex = this.sourceEndIndex;
 
         for (; i < endIndex; i++) {
             ch = data[i];
@@ -896,8 +896,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     public boolean findObjectEndOrAttributeSep() {
         int i = index;
         char ch = 0;
-        final var data = this.data;
-        final var end = sourceEndIndex;
+        final char[] data = this.data;
+        final int end = sourceEndIndex;
 
         for (; i < end; i++) {
             ch = data[i];
@@ -920,8 +920,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     public boolean findCommaOrEndForArray() {
         int i = index;
         char ch = 0;
-        final var data = this.data;
-        final var end = sourceEndIndex;
+        final char[] data = this.data;
+        final int end = sourceEndIndex;
 
         for (; i < end; i++) {
             ch = data[i];
@@ -960,9 +960,9 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     @Override
     public boolean matchChars(final int startIndex, final int endIndex, CharSequence key) {
 
-        final var length = endIndex - startIndex;
-        final var offset = this.sourceStartIndex;
-        var idx = startIndex + offset;
+        final int length = endIndex - startIndex;
+        final int offset = this.sourceStartIndex;
+        int idx = startIndex + offset;
 
 
         switch (length) {
@@ -1067,9 +1067,9 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
                         key.charAt(8) == data[idx + 8];
 
             default:
-                final var start = 0;
-                final var end = length - 1;
-                final var middle = length / 2;
+                final int start = 0;
+                final int end = length - 1;
+                final int middle = length / 2;
 
                 if (key.charAt(start) == data[idx] &&
                         key.charAt(end) == data[idx + end] &&
@@ -1091,11 +1091,11 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         int len = endIndex - startIndex;
         int offset = this.sourceStartIndex;
         final char[] digitChars = data;
-        final var negative = (digitChars[startIndex] == '-');
-        final var cmpLen = negative ? MIN_INT_STR_LENGTH : MAX_INT_STR_LENGTH;
+        final boolean negative = (digitChars[startIndex] == '-');
+        final int cmpLen = negative ? MIN_INT_STR_LENGTH : MAX_INT_STR_LENGTH;
         if (len < cmpLen) return true;
         if (len > cmpLen) return false;
-        final var cmpStr = negative ? MIN_INT_CHARS : MAX_INT_CHARS;
+        final char[] cmpStr = negative ? MIN_INT_CHARS : MAX_INT_CHARS;
         for (int i = 0; i < cmpLen; ++i) {
             int diff = digitChars[startIndex + i + offset] - cmpStr[i];
             if (diff != 0) {
@@ -1206,7 +1206,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         int from = startIndex + sourceStartIndex;
         int to = endIndex + sourceStartIndex;
 
-        final var digitChars = data;
+        final char[] digitChars = data;
 
         int num;
         boolean negative = false;
@@ -1238,7 +1238,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     public long parseLongFromToIgnoreDot(int offset, int to) {
 
 
-        final var digitChars = this.data;
+        final char[] digitChars = this.data;
 
         long num;
         boolean negative = false;
@@ -1288,7 +1288,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         int from = startIndex + sourceStartIndex;
         int to = endIndex + sourceStartIndex;
 
-        final var digitChars = data;
+        final char[] digitChars = data;
 
         long num;
         boolean negative = false;
@@ -1319,7 +1319,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     public String errorDetails( String message, int index, int ch ) {
         StringBuilder buf = new StringBuilder(255);
 
-        final var array = data;
+        final char[] array = data;
 
         buf.append( message ).append("\n");
 

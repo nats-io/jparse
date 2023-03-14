@@ -15,8 +15,9 @@
  */
 package io.nats.jparse;
 
+import io.nats.jparse.node.RootNode;
 import io.nats.jparse.parser.JsonEventParser;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.source.Sources;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,13 +37,13 @@ import java.util.Map;
 public class BenchMark {
 
 
-    JsonIndexOverlayParser fastParser = Json.builder().setStrict(false).build();
+    JsonParser fastParser = Json.builder().setStrict(false).build();
 
-    JsonIndexOverlayParser funcParser = Json.builder().setAllowComments(true)
+    JsonParser funcParser = Json.builder().setAllowComments(true)
             .setObjectsKeysCanBeEncoded(false)
             .setSupportNoQuoteKeys(false).build();
 
-    JsonIndexOverlayParser strictParser = Json.builder().setStrict(true).build();
+    JsonParser strictParser = Json.builder().setStrict(true).build();
     JsonEventParser fastEventParser =  Json.builder().setStrict(false).buildEventParser();
     JsonEventParser strictEventParser =  Json.builder().setStrict(true).buildEventParser();
 
@@ -122,7 +123,7 @@ public class BenchMark {
 //                final RootNode root = new JsonParser().parse(webXmlJsonData);
 //                final var result = Path.atPath(webXmlObjectPath, root);
 
-                final var result = Json.builder().setStrict(true).build().parse(webXmlJsonData);
+                final RootNode result = Json.builder().setStrict(true).build().parse(webXmlJsonData);
 
                 //PathNode pathElements = Path.toPath("foo.bar.baz[99][0][10][11]['hi mom']");
 

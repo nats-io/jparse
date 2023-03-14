@@ -91,7 +91,7 @@ public class TokenList extends AbstractList<Token> {
     }
 
     public TokenList compactClone() {
-        final var length = index;
+        final int length = index;
         final Token[] newTokens = new Token[index];
         System.arraycopy(tokens, 0, newTokens, 0, length);
         return new TokenList(newTokens);

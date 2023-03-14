@@ -15,11 +15,11 @@
  */
 package io.nats.jparse;
 
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 
 public class JsonScannerFastTest extends JsonScannerTest{
     @Override
-    public JsonIndexOverlayParser jsonParser() {
+    public JsonParser jsonParser() {
         return Json.builder().setStrict(false).build();
     }
 }
