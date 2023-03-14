@@ -17,8 +17,10 @@ package io.nats.jparse;
 
 import io.nats.jparse.node.ArrayNode;
 import io.nats.jparse.node.RootNode;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static io.nats.jparse.node.JsonTestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,19 +28,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class JsonParserFastTest extends JsonParserTest {
 
     @Override
-    public JsonIndexOverlayParser jsonParser() {
+    public JsonParser jsonParser() {
         return Json.builder().setStrict(false).build();
     }
 
     @Test
     public void testComplexMap2() {
         //................012345678901234567890123
-        final var json = "{'1':2,'2':7,'3':[1,2,3]}";
+        final String json = "{'1':2,'2':7,'3':[1,2,3]}";
         final RootNode root = jsonParser().parse(Json.niceJson(json));
 
         showTokens(root.tokens());
 
-        final var jsonObject = root.getMap();
+        final Map<String, Object> jsonObject = root.getMap();
         assertEquals(2, asInt(jsonObject, "1"));
         assertEquals(7, asInt(jsonObject, "2"));
 

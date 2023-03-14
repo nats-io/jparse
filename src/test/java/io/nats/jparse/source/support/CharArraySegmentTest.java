@@ -24,13 +24,13 @@ class CharArraySegmentTest {
     @Test
     void test() {
 
-        final var testString = "0123456789";
+        final String testString = "0123456789";
 
-        final var chars = testString.toCharArray();
+        final char[] chars = testString.toCharArray();
 
-        final var testA = new CharArraySegment(5, chars.length - 5, chars);
-        final var testAP1 = new CharArraySegment(5, chars.length - 5, testString.toCharArray());
-        final var testB = new CharArraySegment(0, 5, chars);
+        final CharArraySegment testA = new CharArraySegment(5, chars.length - 5, chars);
+        final CharArraySegment testAP1 = new CharArraySegment(5, chars.length - 5, testString.toCharArray());
+        final CharArraySegment testB = new CharArraySegment(0, 5, chars);
 
         assertEquals("56789", testA.toString());
         assertEquals("56789".hashCode(), testA.hashCode());
@@ -49,12 +49,12 @@ class CharArraySegmentTest {
     @Test
     void test2() {
 
-        final var testString = "0123456789";
+        final String testString = "0123456789";
 
-        final var chars = testString.toCharArray();
+        final char[] chars = testString.toCharArray();
 
-        final var testA = new CharArraySegment(5, chars.length - 5, chars);
-        final var testB = new CharArraySegment(0, 5, chars);
+        final CharArraySegment testA = new CharArraySegment(5, chars.length - 5, chars);
+        final CharArraySegment testB = new CharArraySegment(0, 5, chars);
 
 
         assertTrue(testA.equals("56789"));

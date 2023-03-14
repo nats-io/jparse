@@ -16,7 +16,7 @@
 package io.nats.jparse.source;
 
 import io.nats.jparse.Json;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.node.RootNode;
 import io.nats.jparse.node.support.PathUtils;
 import io.nats.jparse.token.Token;
@@ -37,7 +37,7 @@ public class SourcesTest {
 
     final static String glossaryJson;
 
-    public JsonIndexOverlayParser jsonParser() {
+    public JsonParser jsonParser() {
         return Json.builder().setStrict(true).build();
     }
 
@@ -119,7 +119,7 @@ public class SourcesTest {
 
     @Test
     void testCharBufferSimple() {
-        final var testString = "0123456789";
+        final String testString = "0123456789";
         CharBuffer charBuffer = CharBuffer.allocate(testString.length());
         charBuffer.put(testString);
         charBuffer.flip();
@@ -152,7 +152,7 @@ public class SourcesTest {
     private void doTest(CharSource charSource, File file) {
 
         try {
-            final var jsonParser = jsonParser();
+            final JsonParser jsonParser = jsonParser();
 
             RootNode jsonRoot = jsonParser.parse(charSource);
 
@@ -164,7 +164,7 @@ public class SourcesTest {
     }
 
     private void doTest(CharSource charSource) {
-        final var jsonParser = jsonParser();
+        final JsonParser jsonParser = jsonParser();
 
         RootNode jsonRoot = jsonParser.parse(charSource);
         Token token = jsonRoot.getNode().rootElementToken();

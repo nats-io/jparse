@@ -153,7 +153,7 @@ public class JsonParserBuilder {
         return this;
     }
 
-    public JsonIndexOverlayParser build() {
+    public JsonParser build() {
 
         if (isSupportNoQuoteKeys() || isAllowHashComment() || isAllowSlashSlashComment() || isAllowSlashStarComment() || getParseKey() != null) {
             final ParseFunction[] funcTable = this.getFuncTable();

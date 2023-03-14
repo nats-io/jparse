@@ -17,6 +17,8 @@ package io.nats.jparse.path;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,14 +27,14 @@ class PathParserParseTest {
     @Test
     public void testScanPath() {
 
-        final var pathParser = new PathParser();
+        final PathParser pathParser = new PathParser();
 
         //....................0123456
-        final var testPath = "abc.def";
+        final String testPath = "abc.def";
 
-        final var pathNode = pathParser.parse(testPath).getPathNode();
-        final var pathElement1 = pathNode.get(0);
-        final var pathElement2 = pathNode.get(1);
+        final PathNode pathNode = pathParser.parse(testPath).getPathNode();
+        final PathElement pathElement1 = pathNode.get(0);
+        final PathElement pathElement2 = pathNode.get(1);
 
         assertTrue(pathElement1.isKey());
         assertTrue(pathElement2.isKey());
@@ -46,14 +48,14 @@ class PathParserParseTest {
     @Test
     public void testScanIndex() {
 
-        final var pathParser = new PathParser();
+        final PathParser pathParser = new PathParser();
 
         //....................0123456
-        final var testPath = "abc[1]";
+        final String testPath = "abc[1]";
 
-        final var pathNode = pathParser.parse(testPath).getPathNode();
-        final var pathElement1 = pathNode.get(0);
-        final var pathElement2 = pathNode.get(1);
+        final PathNode pathNode = pathParser.parse(testPath).getPathNode();
+        final PathElement pathElement1 = pathNode.get(0);
+        final PathElement pathElement2 = pathNode.get(1);
 
         assertTrue(pathElement1.isKey());
         assertTrue(pathElement2.isIndex());
@@ -61,13 +63,11 @@ class PathParserParseTest {
         assertEquals(1, pathElement2.asIndex().intValue());
 
 
-        final var iterator = pathNode.iterator();
+        final Iterator<PathElement> iterator = pathNode.iterator();
 
         while (iterator.hasNext()) {
             PathElement element = iterator.next();
 
-
-            System.out.println(element);
 
         }
 
@@ -76,21 +76,21 @@ class PathParserParseTest {
     @Test
     public void testScanBracketHasKey() {
 
-        final var pathParser = new PathParser();
+        final PathParser pathParser = new PathParser();
 
         //....................0123456
-        final var testPath = "abc['def']";
+        final String testPath = "abc['def']";
 
-        final var pathNode = pathParser.parse(testPath).getPathNode();
-        final var pathElement1 = pathNode.get(0);
-        final var pathElement2 = pathNode.get(1);
+        final PathNode pathNode = pathParser.parse(testPath).getPathNode();
+        final PathElement pathElement1 = pathNode.get(0);
+        final PathElement pathElement2 = pathNode.get(1);
 
         assertTrue(pathElement1.isKey());
         assertTrue(pathElement2.isKey());
         assertEquals("abc", pathElement1.asKey().toString());
         assertEquals("def", pathElement2.asKey().toString());
 
-        final var iterator = pathNode.iterator();
+        final Iterator<PathElement> iterator = pathNode.iterator();
 
         while (iterator.hasNext()) {
             PathElement element = iterator.next();
@@ -107,17 +107,17 @@ class PathParserParseTest {
     @Test
     public void testScanIndexRoot() {
 
-        final var pathParser = new PathParser();
+        final PathParser pathParser = new PathParser();
         //....................0123456
-        final var testPath = "[2]";
+        final String testPath = "[2]";
 
-        final var pathNode = pathParser.parse(testPath).getPathNode();
-        final var pathElement1 = pathNode.get(0);
+        final PathNode pathNode = pathParser.parse(testPath).getPathNode();
+        final PathElement pathElement1 = pathNode.get(0);
 
         assertTrue(pathElement1.isIndex());
         assertEquals(2, pathElement1.asIndex().intValue());
 
-        final var iterator = pathNode.iterator();
+        final Iterator<PathElement> iterator = pathNode.iterator();
 
 
         while (iterator.hasNext()) {
@@ -134,17 +134,17 @@ class PathParserParseTest {
     @Test
     public void testScanBracketHasKeyRoot() {
 
-        final var pathParser = new PathParser();
+        final PathParser pathParser = new PathParser();
         //....................0123456
-        final var testPath = "['abc']";
+        final String testPath = "['abc']";
 
-        final var pathNode = pathParser.parse(testPath).getPathNode();
-        final var pathElement1 = pathNode.get(0);
+        final PathNode pathNode = pathParser.parse(testPath).getPathNode();
+        final PathElement pathElement1 = pathNode.get(0);
 
         assertTrue(pathElement1.isKey());
         assertEquals("abc", pathElement1.asKey().toString());
 
-        final var iterator = pathNode.iterator();
+        final Iterator<PathElement> iterator = pathNode.iterator();
 
 
         while (iterator.hasNext()) {
@@ -161,17 +161,17 @@ class PathParserParseTest {
     @Test
     public void testScanBracketHasKeyRootWithWhiteSpace() {
 
-        final var pathParser = new PathParser();
+        final PathParser pathParser = new PathParser();
         //....................0123456
-        final var testPath = "['ab \t\nc']";
+        final String testPath = "['ab \t\nc']";
 
-        final var pathNode = pathParser.parse(testPath).getPathNode();
-        final var pathElement1 = pathNode.get(0);
+        final PathNode pathNode = pathParser.parse(testPath).getPathNode();
+        final PathElement pathElement1 = pathNode.get(0);
 
         assertTrue(pathElement1.isKey());
         assertEquals("ab \t\nc", pathElement1.asKey().toString());
 
-        final var iterator = pathNode.iterator();
+        final Iterator<PathElement> iterator = pathNode.iterator();
 
 
         while (iterator.hasNext()) {
@@ -188,17 +188,17 @@ class PathParserParseTest {
     @Test
     public void testScanBracketHasKeyRootWithDash() {
 
-        final var pathParser = new PathParser();
+        final PathParser pathParser = new PathParser();
         //....................0123456
-        final var testPath = "['abc-def']";
+        final String testPath = "['abc-def']";
 
-        final var pathNode = pathParser.parse(testPath).getPathNode();
-        final var pathElement1 = pathNode.get(0);
+        final PathNode pathNode = pathParser.parse(testPath).getPathNode();
+        final PathElement pathElement1 = pathNode.get(0);
 
         assertTrue(pathElement1.isKey());
         assertEquals("abc-def", pathElement1.asKey().toString());
 
-        final var iterator = pathNode.iterator();
+        final Iterator<PathElement> iterator = pathNode.iterator();
 
 
         while (iterator.hasNext()) {
@@ -215,17 +215,17 @@ class PathParserParseTest {
     @Test
     public void testScanBracketHasKeyRootWithWildStuff() {
 
-        final var pathParser = new PathParser();
+        final PathParser pathParser = new PathParser();
         //....................0123456
-        final var testPath = "['abc-def@^&#@!_)(\n\r\t']";
+        final String testPath = "['abc-def@^&#@!_)(\n\r\t']";
 
-        final var pathNode = pathParser.parse(testPath).getPathNode();
-        final var pathElement1 = pathNode.get(0);
+        final PathNode pathNode = pathParser.parse(testPath).getPathNode();
+        final PathElement pathElement1 = pathNode.get(0);
 
         assertTrue(pathElement1.isKey());
         assertEquals("abc-def@^&#@!_)(\n\r\t", pathElement1.asKey().toString());
 
-        final var iterator = pathNode.iterator();
+        final Iterator<PathElement> iterator = pathNode.iterator();
 
 
         while (iterator.hasNext()) {

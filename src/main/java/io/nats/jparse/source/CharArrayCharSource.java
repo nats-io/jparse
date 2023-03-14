@@ -126,8 +126,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public int nextSkipWhiteSpace() {
         int index = this.index + 1;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
         int ch = ETX;
 
         loop:
@@ -150,8 +150,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public char skipWhiteSpace() {
         int index = this.index;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
 
         char ch;
 
@@ -222,7 +222,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
     @Override
     public BigInteger getBigInteger(int startIndex, int endIndex) {
-        final var len = endIndex - startIndex;
+        final int len = endIndex - startIndex;
         if (len > MAX_LONG_STR_LENGTH) {
             return getBigDecimal(startIndex, endIndex).toBigInteger();
         } else {
@@ -257,8 +257,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
         int i = index + 1;
         char ch = 0;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
         for (; i < length; i++) {
 
             ch = data[i];
@@ -316,8 +316,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
         int i = index + 1;
         char ch =  0;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
 
         for (; i < length; i++) {
             ch = data[i];
@@ -370,8 +370,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         int i = index + 1;
         char ch = 0;
         int signOperator = 0;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
         for (; i < length; i++) {
             ch = data[i];
 
@@ -425,8 +425,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public int findEndOfEncodedStringFast() {
         int i = ++index;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
         boolean controlChar = false;
         for (; i < length; i++) {
             char ch = data[i];
@@ -451,8 +451,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     }
 
     private int findEndOfStringControlEncode(int i) {
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
         char ch = 0;
 
 
@@ -481,8 +481,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public int findEndOfEncodedString() {
         int i = ++index;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
         char ch = 0;
         for (; i < length; i++) {
             ch = data[i];
@@ -507,8 +507,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
 
     private int findEndOfHexEncoding(int index) {
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
 
         if (isHex(data[++index]) && isHex(data[++index])  && isHex(data[++index])  && isHex(data[++index]) ) {
             return index;
@@ -551,8 +551,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public int findAttributeEnd() {
         int index = this.index;
-        final var data = this.data;
-        final var length = this.data.length;
+        final char[] data = this.data;
+        final int length = this.data.length;
 
         loop:
         for (; index < length; index++){
@@ -574,8 +574,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public boolean findChar(char c) {
         int index = this.index;
-        final var data = this.data;
-        final var length = this.data.length;
+        final char[] data = this.data;
+        final int length = this.data.length;
 
         for (; index < length; index++){
             if (data[index]==c){
@@ -590,8 +590,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     public int findEndString() {
 
         int i = ++index;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
         char ch = 0;
 
         for (; i < length; i++) {
@@ -621,8 +621,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
 
         int i = index + 1;
 
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
 
         loop:
         for (; i < length; i++) {
@@ -679,7 +679,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         }
 
         index = i;
-        final var numLength = i - startIndex;
+        final int numLength = i - startIndex;
 
         switch (startCh) {
             case NUM_0:
@@ -718,8 +718,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         if (!isNumber(ch)) {
             throw new UnexpectedCharacterException("Parsing float part of number", "After decimal point expecting number but got", this, (int) ch, this.index);
         }
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
 
         for (; i < length; i++) {
             ch = data[i];
@@ -799,8 +799,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
         }
 
         int i = index + 1;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
 
         for (; i < length; i++) {
             ch = data[i];
@@ -894,8 +894,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     public boolean findObjectEndOrAttributeSep() {
         int i = index;
         char ch = 0;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
 
         for (; i < length; i++) {
             ch = data[i];
@@ -918,8 +918,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     public boolean findCommaOrEndForArray() {
         int i = index;
         char ch = 0;
-        final var data = this.data;
-        final var length = data.length;
+        final char[] data = this.data;
+        final int length = data.length;
 
         for (; i < length; i++) {
             ch = data[i];
@@ -958,8 +958,8 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public boolean matchChars(final int startIndex, final int endIndex, CharSequence key) {
 
-        final var length = endIndex - startIndex;
-        var idx = startIndex;
+        final int length = endIndex - startIndex;
+        int idx = startIndex;
 
         switch (length) {
             case 1:
@@ -1063,9 +1063,9 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
                         key.charAt(8) == data[idx + 8];
 
             default:
-                final var start = 0;
-                final var end = length - 1;
-                final var middle = length / 2;
+                final int start = 0;
+                final int end = length - 1;
+                final int middle = length / 2;
 
                 if (key.charAt(start) == data[idx] &&
                         key.charAt(end) == data[idx + end] &&
@@ -1086,11 +1086,11 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     public boolean isInteger(int offset, int end) {
         int len = end - offset;
         final char[] digitChars = data;
-        final var negative = (digitChars[offset] == '-');
-        final var cmpLen = negative ? MIN_INT_STR_LENGTH : MAX_INT_STR_LENGTH;
+        final boolean negative = (digitChars[offset] == '-');
+        final int cmpLen = negative ? MIN_INT_STR_LENGTH : MAX_INT_STR_LENGTH;
         if (len < cmpLen) return true;
         if (len > cmpLen) return false;
-        final var cmpStr = negative ? MIN_INT_CHARS : MAX_INT_CHARS;
+        final char[] cmpStr = negative ? MIN_INT_CHARS : MAX_INT_CHARS;
         for (int i = 0; i < cmpLen; ++i) {
             int diff = digitChars[offset + i] - cmpStr[i];
             if (diff != 0) {
@@ -1192,7 +1192,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     public int getInt(int offset, int to) {
 
 
-        final var digitChars = data;
+        final char[] digitChars = data;
 
         int num;
         boolean negative = false;
@@ -1224,7 +1224,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     public long parseLongFromToIgnoreDot(int offset, int to) {
 
 
-        final var digitChars = this.data;
+        final char[] digitChars = this.data;
 
         long num;
         boolean negative = false;
@@ -1272,7 +1272,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     @Override
     public long getLong(int offset, int to) {
 
-        final var digitChars = data;
+        final char[] digitChars = data;
 
         long num;
         boolean negative = false;
@@ -1303,7 +1303,7 @@ public class CharArrayCharSource implements CharSource, ParseConstants {
     public String errorDetails( String message, int index, int ch ) {
         StringBuilder buf = new StringBuilder(255);
 
-        final var array = data;
+        final char[] array = data;
 
         buf.append( message ).append("\n");
 

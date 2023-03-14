@@ -58,7 +58,7 @@ public interface Node extends CharSequence {
 
     @Override
     default int length() {
-        var token = rootElementToken();
+        final Token token = rootElementToken();
         return token.endIndex - token.startIndex;
     }
 
@@ -70,7 +70,7 @@ public interface Node extends CharSequence {
 
     @Override
     default CharSequence subSequence(int start, int end) {
-        var token = rootElementToken();
+        Token token = rootElementToken();
         return charSource().getCharSequence(start + token.startIndex, end + token.startIndex);
     }
 

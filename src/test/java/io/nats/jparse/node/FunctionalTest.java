@@ -24,6 +24,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,8 +51,8 @@ class FunctionalTest {
         final String json = getJson();
 
 
-        final var departmentsNode = Path.atPath("departments", json).asCollection().asArray();
-        final var departments = departmentsNode.mapObjectNode(on ->
+        final ArrayNode departmentsNode = Path.atPath("departments", json).asCollection().asArray();
+        final List<Department> departments = departmentsNode.mapObjectNode(on ->
                 new Department(on.getString("departmentName"),
                         on.getArrayNode("employees").mapObjectNode(en ->
                                 new Employee(en.getString("firstName"), en.getString("lastName"),
@@ -67,10 +69,10 @@ class FunctionalTest {
         final String json = getJson();
 
 
-        final var departmentsNode = Path.atPath("departments", json).asCollection().asArray();
+        final ArrayNode departmentsNode = Path.atPath("departments", json).asCollection().asArray();
 
-        final var departments = departmentsNode.map(node -> {
-            final var on = node.asCollection().asObject();
+        final List<Department> departments = departmentsNode.map(node -> {
+            final ObjectNode on = node.asCollection().asObject();
             return new Department(on.getString("departmentName"),
                     on.getArrayNode("employees").mapObjectNode(en ->
                             new Employee(en.getString("firstName"), en.getString("lastName"),
@@ -88,9 +90,9 @@ class FunctionalTest {
         final String json = getJson();
 
 
-        final var departmentsNode = Path.atPath("departments", json).asCollection().asArray();
+        final ArrayNode departmentsNode = Path.atPath("departments", json).asCollection().asArray();
 
-        final var engineering = departmentsNode.findObjectNode(objectNode ->
+        final Optional<ObjectNode> engineering = departmentsNode.findObjectNode(objectNode ->
                 objectNode.getNode("departmentName").asScalar().equalsString("Engineering"));
 
         Assertions.assertTrue(engineering.isPresent());
@@ -105,10 +107,10 @@ class FunctionalTest {
         final String json = getJson();
 
 
-        final var departmentsNode = Path.atPath("departments", json).asCollection().asArray();
+        final ArrayNode departmentsNode = Path.atPath("departments", json).asCollection().asArray();
 
-        final var engineering = departmentsNode.find(node -> {
-                    final var objectNode = node.asCollection().asObject();
+        final Optional<Node> engineering = departmentsNode.find(node -> {
+                    final ObjectNode objectNode = node.asCollection().asObject();
                     return objectNode.getNode("departmentName").asScalar().equalsString("Engineering");
                 }
         );
@@ -121,9 +123,9 @@ class FunctionalTest {
         final String json = getJson();
 
 
-        final var departmentsNode = Path.atPath("departments", json).asCollection().asArray();
+        final ArrayNode departmentsNode = Path.atPath("departments", json).asCollection().asArray();
 
-        final var engineering = departmentsNode.filterObjects(objectNode -> {
+        final List<ObjectNode> engineering = departmentsNode.filterObjects(objectNode -> {
                     return objectNode.getNode("departmentName").asScalar().equalsString("Engineering");
                 }
         );
@@ -137,10 +139,10 @@ class FunctionalTest {
         final String json = getJson();
 
 
-        final var departmentsNode = Path.atPath("departments", json).asCollection().asArray();
+        final ArrayNode departmentsNode = Path.atPath("departments", json).asCollection().asArray();
 
-        final var engineering = departmentsNode.filter(node -> {
-                    final var objectNode = node.asCollection().asObject();
+        final List<Node> engineering = departmentsNode.filter(node -> {
+                    final ObjectNode objectNode = node.asCollection().asObject();
                     return objectNode.getNode("departmentName").asScalar().equalsString("Engineering");
                 }
         );

@@ -15,11 +15,14 @@
  */
 package io.nats.jparse;
 
+import io.nats.jparse.node.Node;
 import io.nats.jparse.node.ObjectNode;
 import io.nats.jparse.node.RootNode;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.source.Sources;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,22 +32,22 @@ public class TestKeyLookUp {
 
     @Test
     void testStringKey() {
-        final var parser = Json.builder().build();
-        final var json1 = "'1'";
-        final var json2 = "{'1':{'2':1}}";
-        final var key = getJsonRoot(parser, json1).getNode();
-        final var map = getJsonRoot(parser, json2).getObjectNode();
-        final var value = map.getNode(key);
+        final JsonParser parser = Json.builder().build();
+        final String json1 = "'1'";
+        final String json2 = "{'1':{'2':1}}";
+        final Node key = getJsonRoot(parser, json1).getNode();
+        final ObjectNode map = getJsonRoot(parser, json2).getObjectNode();
+        final Optional<Node> value = map.getNode(key);
         assertTrue(value.isPresent());
-        final var innerMap = value.get();
+        final Node innerMap = value.get();
         assertTrue(innerMap instanceof ObjectNode);
-        final var innerObject = (ObjectNode) innerMap;
-        final var v = innerObject.getLong("2");
+        final ObjectNode innerObject = (ObjectNode) innerMap;
+        final long v = innerObject.getLong("2");
         assertEquals(1, v);
     }
 
 
-    private RootNode getJsonRoot(JsonIndexOverlayParser parser, String json1) {
+    private RootNode getJsonRoot(JsonParser parser, String json1) {
         return parser.parse(Sources.stringSource(json1.replace("'", "\"")));
     }
 }

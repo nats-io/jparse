@@ -10,7 +10,7 @@ plugins {
 }
 
 
-def jarVersion = "1.0.2"
+def jarVersion = "1.1.0"
 group = 'io.nats'
 
 def isMerge = System.getenv("BUILD_EVENT") == "push"
@@ -20,8 +20,8 @@ def isRelease = System.getenv("BUILD_EVENT") == "release"
 version = isRelease ? jarVersion : jarVersion + "-SNAPSHOT"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 repositories {

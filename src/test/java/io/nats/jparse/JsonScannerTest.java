@@ -16,7 +16,7 @@
 package io.nats.jparse;
 
 import io.nats.jparse.node.RootNode;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.source.Sources;
 import io.nats.jparse.token.Token;
@@ -31,9 +31,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JsonScannerTest {
 
-    public JsonIndexOverlayParser jsonParser() {
+    public JsonParser jsonParser() {
 
-        JsonIndexOverlayParser build = Json.builder().setStrict(true).build();
+        JsonParser build = Json.builder().setStrict(true).build();
         System.out.println("########## CLASSNAME OF JSON PARSER " + build.getClass().getName());
         return build;
     }
@@ -45,7 +45,7 @@ class JsonScannerTest {
     @Test
     public void testComplexMap() {
         //................012345678901234567890123
-        final var json = "{'1':2,'2':7,'abc':[1,2,3]}";
+        final String json = "{'1':2,'2':7,'abc':[1,2,3]}";
         final List<Token> tokens = tokens(json);
         //showTokens(tokens);
         validateToken(tokens.get(0), TokenTypes.OBJECT_TOKEN, 0, 27);
@@ -79,7 +79,7 @@ class JsonScannerTest {
     @Test
     public void testMapWithList() {
         //................012345678901234567890123
-        final var json = "{'abc':[1,2,'3']}";
+        final String json = "{'abc':[1,2,'3']}";
         final List<Token> tokens = tokens(json);
         //showTokens(tokens);
         validateToken(tokens.get(0), TokenTypes.OBJECT_TOKEN, 0, 17);
@@ -100,7 +100,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleListWithInts() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................0123456789
         final String json = "[ 1 , 3 ]";
 
@@ -124,7 +124,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleListWithIntsNoSpaces() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................0123456
         final String json = "[1,3]";
 
@@ -150,7 +150,7 @@ class JsonScannerTest {
     void testSimpleList() {
 
 
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //0123456789
         final String json = "['h','a']";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
@@ -177,12 +177,12 @@ class JsonScannerTest {
     @Test
     void testSingletonListWithOneObject() {
 
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................01234567890
         final String json = "[{'h':'a'}]";
         final List<Token> tokens = parser.scan(Json.niceJson(json));
 
-        final var arrayToken = tokens.get(0);
+        final Token arrayToken = tokens.get(0);
 
 
         assertEquals(TokenTypes.ARRAY_TOKEN, arrayToken.type);
@@ -196,7 +196,7 @@ class JsonScannerTest {
 
     @Test
     void testListOfObjects() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................01234567890123456789012
         final String json = "[{'h':'a'},{'i':'b'}]";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
@@ -210,7 +210,7 @@ class JsonScannerTest {
 
     @Test
     void testMapTwoItems() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................01234567890123456789012
         final String json = "{'h':'a', 'i':'b'}";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
@@ -224,7 +224,7 @@ class JsonScannerTest {
     @Test
     void testListOfLists() {
 
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         final String json = "[['h','a'],['i','b']]";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
 
@@ -243,7 +243,7 @@ class JsonScannerTest {
     @Test
     void testStringKey() {
 
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         final String json = "{'1':1}";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
 
@@ -257,10 +257,10 @@ class JsonScannerTest {
 
     @Test
     void test2ItemIntKeyMap() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         final String json = "{'1':2,'2':3}";
 
-        final var tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
+        final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
 
         /**
          * Token[startIndex=0, endIndex=13, type=OBJECT] 0
@@ -289,7 +289,7 @@ class JsonScannerTest {
 
     @Test
     void testParseNumber() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //0123456789
         final String json = "1";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -303,7 +303,7 @@ class JsonScannerTest {
 
     @Test
     void testParseNumberFloat() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................0123456789
         final String json = "1.1";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -317,7 +317,7 @@ class JsonScannerTest {
 
     @Test
     void testParseNumberFloat2() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................0123456789
         final String json = "1.1e-12";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -331,7 +331,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleListStrNum() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //0123456789
         final String json = "['h',1]";
 
@@ -357,7 +357,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleListTwoNumbers() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................0123456789
         final String json = "[1,2]";
 
@@ -382,7 +382,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleListStrStr() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //0123456789
         final String json = "['h','i']";
 
@@ -405,7 +405,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleObject() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................0123456789
         final String json = "{'h':'a'}";
         final List<Token> tokens = parser.scan(Json.niceJson(json));
@@ -439,7 +439,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleObjectNumberValue() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................0123456789
         final String json = "{'h': 1  }";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
@@ -473,12 +473,12 @@ class JsonScannerTest {
 
     @Test
     void testSimpleBooleanTrue() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................01234567890123456789
         final String json = "true";
         final CharSource source = Sources.stringSource(Json.niceJson(json));
         final List<Token> tokens = parser.scan(source);
-        final var trueToken = tokens.get(0);
+        final Token trueToken = tokens.get(0);
         assertEquals(TokenTypes.BOOLEAN_TOKEN, trueToken.type);
         assertEquals(0, trueToken.startIndex);
         assertEquals(4, trueToken.endIndex);
@@ -487,32 +487,32 @@ class JsonScannerTest {
 
     @Test
     void testSimpleMapFromMap() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................01234567890123456789
         final String json = "{'a':{'a':1}}";
         final RootNode jsonRoot = parser.parse(Json.niceJson(json));
         jsonRoot.tokens().forEach(System.out::println);
-        final var objectToken = jsonRoot.tokens().get(0);
+        final Token objectToken = jsonRoot.tokens().get(0);
         assertEquals(TokenTypes.OBJECT_TOKEN, objectToken.type);
         validateToken(objectToken, TokenTypes.OBJECT_TOKEN, 0, 13);
 
-        final var keyToken = jsonRoot.tokens().get(1);
+        final Token keyToken = jsonRoot.tokens().get(1);
         assertEquals(TokenTypes.ATTRIBUTE_KEY_TOKEN, keyToken.type);
-        final var stringToken = jsonRoot.tokens().get(2);
+        final Token stringToken = jsonRoot.tokens().get(2);
         assertEquals(TokenTypes.STRING_TOKEN, stringToken.type);
-        final var valueToken = jsonRoot.tokens().get(3);
+        final Token valueToken = jsonRoot.tokens().get(3);
         assertEquals(TokenTypes.ATTRIBUTE_VALUE_TOKEN, valueToken.type);
 
 
     }
     @Test
     void testSimpleBooleanFalse() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................01234567890123456789
         final String json = "false";
         final CharSource source = Sources.stringSource(Json.niceJson(json));
         final List<Token> tokens = parser.scan(source);
-        final var token = tokens.get(0);
+        final Token token = tokens.get(0);
         assertEquals(TokenTypes.BOOLEAN_TOKEN, token.type);
         assertEquals(0, token.startIndex);
         assertEquals(5, token.endIndex);
@@ -521,12 +521,12 @@ class JsonScannerTest {
 
     @Test
     void testSimpleString2() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................01234567890123456789
         final String json = "'hi'";
         final CharSource source = Sources.stringSource(Json.niceJson(json));
         final List<Token> tokens = parser.scan(source);
-        final var token = tokens.get(0);
+        final Token token = tokens.get(0);
         assertEquals(TokenTypes.STRING_TOKEN, token.type);
         assertEquals(1, token.startIndex);
         assertEquals(3, token.endIndex);
@@ -535,7 +535,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleObjectTwoItems() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................01234567890123456789
         final String json = "{'h':'a', 'i':'b'}";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
@@ -592,7 +592,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleObjectTwoItemsWeirdSpacing() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //.................. 0123456789012345678901234567890123456789012345
         final String json = "   {'h':   'a',\n\t 'i':'b'\n\t } \n\t    \n";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
@@ -631,7 +631,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleObjectTwoItemsWeirdSpacing2() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //01234567890123456789
         final String json = "   {'h':   'a',   'i':'b'   }        ";
         final List<Token> tokens = parser.scan(Sources.stringSource(json.replace("'", "\"")));
@@ -669,7 +669,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleString() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................0123
         final String json = "'h'";
 
@@ -683,7 +683,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleStringSkipWhiteSpace() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         final String str = "hi mom";
         final String json = String.format("     \"%s\"     ", str);
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -696,7 +696,7 @@ class JsonScannerTest {
 
     @Test
     void testStringHandleControlChars() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         final String str = "hi mom \\\" \\n \\t all good";
         final String json = String.format("     \"%s\"     ", str);
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -709,7 +709,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleNumber() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................0123
         final String json = "1 ";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -722,7 +722,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleNumberNoSpace() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "1";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -736,7 +736,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleLongNumber() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "1234567890 ";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -753,7 +753,7 @@ class JsonScannerTest {
 
     @Test
     void testSimpleLongNoSpace() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "1234567890";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -770,7 +770,7 @@ class JsonScannerTest {
 
     @Test
     void testDecimal() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "1.12 ";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -787,7 +787,7 @@ class JsonScannerTest {
 
     @Test
     void testDecimalNoSpace() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "1.12";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -804,7 +804,7 @@ class JsonScannerTest {
 
     @Test
     void testDecimalWithExponent() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "1.12e5";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -821,7 +821,7 @@ class JsonScannerTest {
 
     @Test
     void testDecimalOneEFive() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "1e5";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -838,7 +838,7 @@ class JsonScannerTest {
 
     @Test
     void testBadChar() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "@";
         try {
@@ -853,7 +853,7 @@ class JsonScannerTest {
 
     @Test
     void testBadCharInNumber() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "123@";
         try {
@@ -867,7 +867,7 @@ class JsonScannerTest {
 
     @Test
     void testBadCharInFloat() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "123.1@";
         try {
@@ -881,7 +881,7 @@ class JsonScannerTest {
 
     @Test
     void testTooManySignOperators() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "123.1e-+1";
         try {
@@ -895,7 +895,7 @@ class JsonScannerTest {
 
     @Test
     void testUnexpectedExponentChar() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "123.1e-@";
         try {
@@ -909,7 +909,7 @@ class JsonScannerTest {
 
     @Test
     void testUnexpectedList() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "[1,@]";
         try {
@@ -923,7 +923,7 @@ class JsonScannerTest {
 
     @Test
     void testUnexpectedMapValue() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "{1:@}";
         try {
@@ -937,7 +937,7 @@ class JsonScannerTest {
 
     @Test
     void testUnexpectedKey() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "{@:1}";
         try {
@@ -952,7 +952,7 @@ class JsonScannerTest {
 
     @Test
     void testUnexpectedEndKeyKey() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "{:1}";
         try {
@@ -966,7 +966,7 @@ class JsonScannerTest {
 
     @Test
     void testUnexpectedEndOfMapValue() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "{1:}";
         try {
@@ -981,7 +981,7 @@ class JsonScannerTest {
 
     @Test
     void stringNotClosed() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "\"hello cruel world'";
         try {
@@ -995,7 +995,7 @@ class JsonScannerTest {
 
     @Test
     void testParseFloatWithExponentMarkerInList() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
 
         final String json = "[123.1e-9]";
         final List<Token> tokens = parser.scan(Sources.stringSource(json));
@@ -1009,7 +1009,7 @@ class JsonScannerTest {
 
     @Test
     void encoding() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................012345678
         final String json = "'`u0004'";
         final List<Token> tokens = parser.scan(Json.niceJson(json));

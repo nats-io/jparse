@@ -23,7 +23,7 @@ import io.nats.jparse.token.Token;
 
 import java.util.List;
 
-public interface JsonIndexOverlayParser extends ParseConstants {
+public interface JsonParser extends ParseConstants {
     List<Token> scan(final CharSource source);
     RootNode parse(final CharSource source);
     default RootNode parse(final String source) {

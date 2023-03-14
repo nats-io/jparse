@@ -19,7 +19,7 @@ import io.nats.jparse.node.ArrayNode;
 import io.nats.jparse.node.Node;
 import io.nats.jparse.node.ObjectNode;
 import io.nats.jparse.node.RootNode;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.parser.JsonParserBuilder;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.token.Token;
@@ -63,7 +63,7 @@ public class Json {
         }
     }
 
-    private static final JsonIndexOverlayParser PARSER = builder().build();
+    private static final JsonParser PARSER = builder().build();
 
     public static JsonParserBuilder builder() {
         return builderRef.get().cloneBuilder();

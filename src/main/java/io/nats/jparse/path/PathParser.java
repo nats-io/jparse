@@ -17,7 +17,7 @@ package io.nats.jparse.path;
 
 import io.nats.jparse.node.RootNode;
 import io.nats.jparse.node.support.TokenList;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.token.Token;
 import io.nats.jparse.token.TokenTypes;
@@ -25,7 +25,7 @@ import io.nats.jparse.node.support.ParseConstants;
 
 import java.util.List;
 
-public class PathParser implements JsonIndexOverlayParser {
+public class PathParser implements JsonParser {
 
 
     @Override

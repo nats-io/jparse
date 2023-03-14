@@ -99,7 +99,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
     @Override
     public Set<Entry<CharSequence, Node>> entrySet() {
 
-        return new AbstractSet<>() {
+        return new AbstractSet<Entry<CharSequence, Node>>() {
 
             @Override
             public boolean contains(Object o) {
@@ -109,7 +109,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
             @Override
             public Iterator<Entry<CharSequence, Node>> iterator() {
                 final Iterator<CharSequence> iterator = keys().iterator();
-                return new Iterator<>() {
+                return new Iterator<Entry<CharSequence, Node>>() {
                     @Override
                     public boolean hasNext() {
                         return iterator.hasNext();
@@ -118,7 +118,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
                     @Override
                     public Entry<CharSequence, Node> next() {
                         CharSequence nextKey = iterator.next();
-                        return new Entry<>() {
+                        return new Entry<CharSequence, Node>() {
                             @Override
                             public CharSequence getKey() {
                                 return nextKey;
@@ -304,7 +304,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
             }
             final StringNode stringNode = new StringNode(keyToken, source, objectsKeysCanBeEncoded);
             if (objectsKeysCanBeEncoded) {
-                final var string = stringNode.toString();
+                final String string = stringNode.toString();
                 for (int index = 0; index < key.length(); index++) {
                     if (string.charAt(index) != key.charAt(index)) {
                         return false;

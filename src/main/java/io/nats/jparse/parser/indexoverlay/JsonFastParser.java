@@ -18,7 +18,7 @@ package io.nats.jparse.parser.indexoverlay;
 import io.nats.jparse.node.RootNode;
 import io.nats.jparse.node.support.NumberParseResult;
 import io.nats.jparse.node.support.TokenList;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.source.support.UnexpectedCharacterException;
 import io.nats.jparse.token.Token;
@@ -26,7 +26,7 @@ import io.nats.jparse.token.TokenTypes;
 
 import java.util.List;
 
-public class JsonFastParser implements JsonIndexOverlayParser {
+public class JsonFastParser implements JsonParser {
 
     private final boolean objectsKeysCanBeEncoded;
 

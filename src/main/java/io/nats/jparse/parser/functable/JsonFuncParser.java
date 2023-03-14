@@ -17,7 +17,7 @@ package io.nats.jparse.parser.functable;
 
 import io.nats.jparse.node.RootNode;
 import io.nats.jparse.node.support.TokenList;
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.source.support.UnexpectedCharacterException;
 import io.nats.jparse.token.Token;
@@ -25,7 +25,7 @@ import io.nats.jparse.token.TokenTypes;
 
 import java.util.List;
 
-public class JsonFuncParser implements JsonIndexOverlayParser {
+public class JsonFuncParser implements JsonParser {
 
     private final boolean objectsKeysCanBeEncoded;
 

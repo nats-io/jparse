@@ -16,6 +16,7 @@
 package io.nats.jparse;
 
 import io.nats.jparse.node.RootNode;
+import io.nats.jparse.node.ScalarNode;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.source.Sources;
 import org.junit.jupiter.api.Test;
@@ -75,7 +76,7 @@ class PathTest {
     void nestedMapList() {
         final String json = "{'a':'b', 'b':'c', 'c': [1,2,3]}";
         RootNode rootNode = Json.toRootNode(Json.niceJson(json));
-        final var node = Path.atPath("c[0]", rootNode.getNode()).asScalar();
+        final ScalarNode node = Path.atPath("c[0]", rootNode.getNode()).asScalar();
         Object value = node.value();
         assertEquals(1, value);
     }
@@ -84,7 +85,7 @@ class PathTest {
     void nestedMapList2() {
         final String json = "{'a':'b', 'b':'c', 'c': [1,2,3]}";
         RootNode rootNode = Json.toRootNode(Json.niceJson(json));
-        final var node = Path.atPath("['c'][0]", rootNode.getNode()).asScalar();
+        final ScalarNode node = Path.atPath("['c'][0]", rootNode.getNode()).asScalar();
         Object value = node.value();
         assertEquals(1, value);
     }

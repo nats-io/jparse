@@ -296,11 +296,11 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         }
 
         for (int index = 0; index < this.tokens.size(); index++) {
-            var thisValue = this.tokens.get(index);
-            var otherValue = other.tokens.get(index);
+            Token thisValue = this.tokens.get(index);
+            Token otherValue = other.tokens.get(index);
             if (otherValue == null && thisValue == null) continue;
-            var thisStr = thisValue.asString(this.source);
-            var otherStr = otherValue.asString(other.source);
+            String thisStr = thisValue.asString(this.source);
+            String otherStr = otherValue.asString(other.source);
             if (!thisStr.equals(otherStr)) {
                 return false;
             }

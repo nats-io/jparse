@@ -25,7 +25,7 @@ class CharArrayUtilsTest {
     @Test
     void decodeJsonString() {
         final String encodedString = niceJson("hello `b `n `b `u1234 ");
-        final var result = CharArrayUtils.decodeJsonString(encodedString.toCharArray(), 0, encodedString.length());
+        final String result = CharArrayUtils.decodeJsonString(encodedString.toCharArray(), 0, encodedString.length());
 
         final int expectedCount = encodedString.length() - 3 - 5;
         assertEquals(expectedCount, result.length());

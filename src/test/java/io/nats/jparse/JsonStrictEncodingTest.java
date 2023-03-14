@@ -15,7 +15,7 @@
  */
 package io.nats.jparse;
 
-import io.nats.jparse.parser.JsonIndexOverlayParser;
+import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.token.Token;
 import org.junit.jupiter.api.Test;
 
@@ -25,14 +25,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JsonStrictEncodingTest {
 
-    public JsonIndexOverlayParser jsonParser() {
+    public JsonParser jsonParser() {
         return Json.builder().setStrict(true).build();
     }
 
 
     @Test
     void badEncoding1() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................012345678
         final String json = "['`x00']";
 
@@ -46,7 +46,7 @@ public class JsonStrictEncodingTest {
 
     @Test
     void badEncoding2() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................012345678
         final String json = "['`uqqqq']";
 
@@ -60,7 +60,7 @@ public class JsonStrictEncodingTest {
 
     @Test
     void badEncoding3() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................012345678
         final String json = "[`uD834`uDd']";
 
@@ -74,7 +74,7 @@ public class JsonStrictEncodingTest {
 
     @Test
     void badEncoding4() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................012345678
         final String json = "['`�']";
 
@@ -88,7 +88,7 @@ public class JsonStrictEncodingTest {
 
     @Test
     void badEncoding5() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................012345678
         final String json = "'`UA66D'";
 
@@ -102,7 +102,7 @@ public class JsonStrictEncodingTest {
 
     @Test
     void badEncoding6() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................012345678
         final String json = "'`uD800`uD800`x'";
 
@@ -116,7 +116,7 @@ public class JsonStrictEncodingTest {
 
     @Test
     void badEncoding7() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................012345678
         final String json = "'`uD800`u'";
 
@@ -130,7 +130,7 @@ public class JsonStrictEncodingTest {
 
     @Test
     void badEncoding8() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................01234567890
         final String json = "'`uD800`u1'";
 
@@ -144,7 +144,7 @@ public class JsonStrictEncodingTest {
 
     @Test
     void badEncoding9() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................01234567890
         final String json = "'`uD800`u1x'";
 
@@ -158,7 +158,7 @@ public class JsonStrictEncodingTest {
 
     @Test
     void badEncoding10() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................01234567890
         final String json = "'`u00A'";
 
@@ -172,7 +172,7 @@ public class JsonStrictEncodingTest {
 
     @Test
     void badEncoding11() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................01234567890
         final String json = "'`u\uD83C\uDF00'";
 
@@ -186,7 +186,7 @@ public class JsonStrictEncodingTest {
 
     @Test
     void badEncoding12() {
-        final JsonIndexOverlayParser parser = jsonParser();
+        final JsonParser parser = jsonParser();
         //...................012345678
         final String json = "['`u�']";
 
