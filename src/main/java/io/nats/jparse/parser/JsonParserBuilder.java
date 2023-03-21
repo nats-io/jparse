@@ -29,6 +29,7 @@ import io.nats.jparse.token.TokenEventListener;
 import io.nats.jparse.node.support.ParseConstants;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class JsonParserBuilder {
 
@@ -160,10 +161,9 @@ public class JsonParserBuilder {
             funcTable[ParseConstants.STRING_START_TOKEN] = JsonParserFunctions::parseString;
             funcTable[ParseConstants.NULL_START] = JsonParserFunctions::parseNull;
             funcTable[ParseConstants.TRUE_BOOLEAN_START] = JsonParserFunctions::parseTrue;
-            funcTable[ParseConstants.FALSE_BOOLEAN_START] = JsonParserFunctions:: parseFalse;
-            for (int i = ParseConstants.NUM_0; i < ParseConstants.NUM_9 +1; i++){
-                funcTable[i] = JsonParserFunctions::parseNumber;
-            }
+            funcTable[ParseConstants.FALSE_BOOLEAN_START] = JsonParserFunctions::parseFalse;
+            IntStream.rangeClosed(ParseConstants.NUM_0, ParseConstants.NUM_9)
+                    .forEach(i -> funcTable[i] = JsonParserFunctions::parseNumber);
             funcTable[ParseConstants.MINUS] = JsonParserFunctions::parseNumber;
             funcTable[ParseConstants.PLUS] = JsonParserFunctions::parseNumber;
 
