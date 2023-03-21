@@ -165,19 +165,13 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
             return false;
         }
 
-        for (Object key : keys) {
-            final Node otherElementValue = other.getNode(key);
-            final Node thisElementValue = this.getNode(key);
+        return keys.stream()
+                .allMatch(key -> {
+                    final Node otherElementValue = other.getNode(key);
+                    final Node thisElementValue = this.getNode(key);
 
-            if (otherElementValue == null) {
-                return false;
-            }
-
-            if (!otherElementValue.equals(thisElementValue)) {
-                return false;
-            }
-        }
-        return true;
+                    return otherElementValue != null && otherElementValue.equals(thisElementValue);
+                });
     }
 
     @Override

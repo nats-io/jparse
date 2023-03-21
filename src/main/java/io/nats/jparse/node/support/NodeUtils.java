@@ -24,6 +24,8 @@ import io.nats.jparse.token.Token;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 import static io.nats.jparse.token.TokenTypes.ARRAY_ITEM_TOKEN;
 
@@ -33,28 +35,23 @@ public class NodeUtils {
     public static List<List<Token>> getChildrenTokens(final TokenSubList tokens) {
 
         final Token root = tokens.get(0);
-        final List<List<Token>> childrenTokens;
-        childrenTokens = new ArrayList<>(16);
+        final List<List<Token>> childrenTokens = new ArrayList<>(16);
 
-        for (int index = 1; index < tokens.size(); index++) {
-            Token token = tokens.get(index);
-
-            if (token.startIndex > root.endIndex) {
-                break;
-            }
-
-            if (token.type <= ARRAY_ITEM_TOKEN) {
-
-                int childCount = tokens.countChildren(index, token);
-                int endIndex = index + childCount;
-                childrenTokens.add(tokens.subList(index, endIndex));
-                index = endIndex - 1;
-
-            } else {
-                childrenTokens.add(Collections.singletonList(token));
-            }
-
-        }
+        AtomicInteger index = new AtomicInteger(1);
+        IntStream.range(1, tokens.size())
+                .mapToObj(i -> tokens.get(i))
+                .filter(token -> token.startIndex <= root.endIndex)
+                .forEach(token -> {
+                    if (token.type <= ARRAY_ITEM_TOKEN) {
+                        int childCount = tokens.countChildren(index.get(), token);
+                        int endIndex = index.get() + childCount;
+                        childrenTokens.add(tokens.subList(index.get(), endIndex));
+                        index.set(endIndex);
+                    } else {
+                        childrenTokens.add(Collections.singletonList(token));
+                        index.incrementAndGet();
+                    }
+                });
 
         return childrenTokens;
     }

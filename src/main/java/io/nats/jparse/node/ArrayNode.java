@@ -41,6 +41,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ArrayNode extends AbstractList<Node> implements CollectionNode {
 
@@ -126,23 +127,22 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
 //    }
 
     public double[] getDoubleArray() {
-        int length = length();
-        double[] array = new double[length];
-        for (int i = 0; i < length; i++) {
-            final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).doubleValue();
-        }
-        return array;
+        //Using collections API cont by Luis Taddey or SeelePifer
+        return IntStream.range(0, length())
+                .mapToDouble(i -> source.getBigDecimal(tokens.get(i + 1).startIndex, tokens.get(i + 1).endIndex).doubleValue())
+                .toArray();
     }
 
     public float[] getFloatArray() {
-        int length = length();
-        float[] array = new float[length];
-        for (int i = 0; i < length; i++) {
-            final Token token = tokens.get(i + 1);
-            array[i] = (float) source.getBigDecimal(token.startIndex, token.endIndex).doubleValue();
+        double[] doubleArray = IntStream.range(0, length())
+                .mapToDouble(i -> source.getBigDecimal(tokens.get(i + 1).startIndex, tokens.get(i + 1).endIndex).doubleValue())
+                .toArray();
+        //Need to do that because can't use .toArray(size -> new float[size]);
+        float[] floatArray = new float[doubleArray.length];
+        for (int i = 0; i < doubleArray.length; i++) {
+            floatArray[i] = (float) doubleArray[i];
         }
-        return array;
+        return floatArray;
     }
 
 //    public int[] getIntArrayFast() {
@@ -166,43 +166,33 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
 //    }
 
     public BigDecimal[] getBigDecimalArray() {
-        int length = length();
-        BigDecimal[] array = new BigDecimal[length];
-        for (int i = 0; i < length; i++) {
-            final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex, token.endIndex);
-        }
-        return array;
+        return IntStream.range(0, length())
+                .mapToObj(i -> {
+                    final Token token = tokens.get(i + 1);
+                    return source.getBigDecimal(token.startIndex, token.endIndex);
+                })
+                .toArray(BigDecimal[]::new);
     }
 
     public BigInteger[] getBigIntegerArray() {
-        int length = length();
-        BigInteger[] array = new BigInteger[length];
-        for (int i = 0; i < length; i++) {
-            final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).toBigInteger();
-        }
-        return array;
+        return IntStream.range(0, length())
+                .mapToObj(i -> {
+                    final Token token = tokens.get(i + 1);
+                    return source.getBigDecimal(token.startIndex, token.endIndex).toBigInteger();
+                })
+                .toArray(BigInteger[]::new);
     }
 
     public int[] getIntArray() {
-        int length = length();
-        int[] array = new int[length];
-        for (int i = 0; i < length; i++) {
-            final Token token = tokens.get(i + 1);
-            array[i] = source.getInt(token.startIndex, token.endIndex);
-        }
-        return array;
+        return IntStream.range(0, length())
+                .map(i -> source.getInt(tokens.get(i + 1).startIndex, tokens.get(i + 1).endIndex))
+                .toArray();
     }
 
     public long[] getLongArray() {
-        int length = length();
-        long[] array = new long[length];
-        for (int i = 0; i < length; i++) {
-            final Token token = tokens.get(i + 1);
-            array[i] = source.getLong(token.startIndex, token.endIndex);
-        }
-        return array;
+        return IntStream.range(0, length())
+                .mapToLong(i -> source.getLong(tokens.get(i + 1).startIndex, tokens.get(i + 1).endIndex))
+                .toArray();
     }
 
     public NullNode getNullNode(int index) {
@@ -291,21 +281,16 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
 
         final ArrayNode other = (ArrayNode) o;
 
-        if (this.tokens.size() != other.tokens.size()) {
-            return false;
-        }
-
-        for (int index = 0; index < this.tokens.size(); index++) {
-            Token thisValue = this.tokens.get(index);
-            Token otherValue = other.tokens.get(index);
-            if (otherValue == null && thisValue == null) continue;
-            String thisStr = thisValue.asString(this.source);
-            String otherStr = otherValue.asString(other.source);
-            if (!thisStr.equals(otherStr)) {
-                return false;
-            }
-        }
-        return true;
+        return this.tokens.size() == other.tokens.size() &&
+                IntStream.range(0, this.tokens.size())
+                        .allMatch(index -> {
+                            Token thisValue = this.tokens.get(index);
+                            Token otherValue = other.tokens.get(index);
+                            if (otherValue == null && thisValue == null) return true;
+                            String thisStr = thisValue.asString(this.source);
+                            String otherStr = otherValue.asString(other.source);
+                            return thisStr.equals(otherStr);
+                        });
     }
 
 
@@ -336,87 +321,45 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
     }
 
     public <R> List<R> map(Function<Node, ? extends R> mapper) {
-        List<R> list = new ArrayList<>(this.size());
-        Node[] elements = elements();
-        for (int i = 0; i < elements.length; i++) {
-            Node element = elements[i];
-            if (element == null) {
-                element = getNodeAt(i);
-                elements[i] = element;
-            }
-            list.add(mapper.apply(element));
-        }
-        return list;
+        return IntStream.range(0, size())
+                .mapToObj(i -> {
+                    Node element = elements()[i];
+                    if (element == null) {
+                        element = getNodeAt(i);
+                    }
+                    return mapper.apply(element);
+                })
+                .collect(Collectors.toList());
     }
 
     public Optional<ObjectNode> findObjectNode(Predicate<ObjectNode> predicate) {
-        final Node[] elements = elements();
-        ObjectNode node = null;
-        for (int i = 0; i < elements.length; i++) {
-            Node element = elements[i];
-            if (element == null) {
-                element = getNodeAt(i);
-            }
-            if (element.type() == NodeType.OBJECT) {
-                ObjectNode objectNode = element.asCollection().asObject();
-                if (predicate.test(objectNode)) {
-                    node = objectNode;
-                    break;
-                }
-            }
-        }
-        return Optional.ofNullable(node);
+        return Arrays.stream(elements())
+                .filter(element -> element != null && element.type() == NodeType.OBJECT)
+                .map(element -> element.asCollection().asObject())
+                .filter(predicate)
+                .findFirst();
     }
 
     public Optional<Node> find(Predicate<Node> predicate) {
-        Node[] elements = elements();
-        Node node = null;
-        for (int i = 0; i < elements.length; i++) {
-            Node element = elements[i];
-            if (element == null) {
-                element = getNodeAt(i);
-            }
-            if (predicate.test(element)) {
-                node = element;
-                break;
-            }
-        }
-        return Optional.ofNullable(node);
+        return Arrays.stream(elements())
+                .filter(Objects::nonNull)
+                .filter(predicate)
+                .findFirst();
     }
 
     public List<ObjectNode> filterObjects(Predicate<ObjectNode> predicate) {
-        Node[] elements = elements();
-        final int length = elements.length;
-        final List<ObjectNode> arrayList = new ArrayList<>(length / 2);
-        for (int i = 0; i < length; i++) {
-            Node element = elements[i];
-            if (element == null) {
-                element = getNodeAt(i);
-            }
-            if (element.type() == NodeType.OBJECT) {
-                ObjectNode objectNode = element.asCollection().asObject();
-                if (predicate.test(objectNode)) {
-                    arrayList.add(objectNode);
-                }
-            }
-        }
-        return arrayList;
+        return Arrays.stream(elements())
+                .filter(element -> element != null && element.type() == NodeType.OBJECT)
+                .map(element -> element.asCollection().asObject())
+                .filter(predicate)
+                .collect(Collectors.toList());
     }
 
     public List<Node> filter(Predicate<Node> predicate) {
-        Node[] elements = elements();
-        final int length = elements.length;
-        final List<Node> arrayList = new ArrayList<>(length / 2);
-        for (int i = 0; i < length; i++) {
-            Node element = elements[i];
-            if (element == null) {
-                element = getNodeAt(i);
-            }
-            if (predicate.test(element)) {
-                arrayList.add(element);
-            }
-        }
-        return arrayList;
+        return Arrays.stream(elements())
+                .filter(Objects::nonNull)
+                .filter(predicate)
+                .collect(Collectors.toList());
     }
 
 
