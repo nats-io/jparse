@@ -26,6 +26,7 @@ import io.nats.jparse.token.Token;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class PathNode extends AbstractList<PathElement> implements CollectionNode {
 
@@ -132,17 +133,13 @@ public class PathNode extends AbstractList<PathElement> implements CollectionNod
             return false;
         }
 
-        for (int index = 0; index < this.tokens.size(); index++) {
-            Token thisValue = this.tokens.get(index);
-            Token otherValue = other.tokens.get(index);
-            if (otherValue == null && thisValue == null) continue;
-            String thisStr = thisValue.asString(this.source);
-            String otherStr = otherValue.asString(other.source);
-            if (!thisStr.equals(otherStr)) {
-                return false;
-            }
-        }
-        return true;
+        return IntStream.range(0, this.tokens.size())
+                .allMatch(index -> {
+                    Token thisValue = this.tokens.get(index);
+                    Token otherValue = other.tokens.get(index);
+                    return (otherValue == null && thisValue == null) ||
+                            thisValue.asString(this.source).equals(otherValue.asString(other.source));
+                });
     }
 
 
