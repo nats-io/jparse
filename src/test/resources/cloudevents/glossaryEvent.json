@@ -1,0 +1,41 @@
+{
+    "specversion": "1.0",
+    "id": "12356789",
+    "type": "io.nats.notification",
+    "source": "http://library.com/source",
+    "dataschema": "http://library.com/glossary/schema",
+    "datacontenttype": "application/json",
+    "data": {
+        "glossary": {
+            "title": "example glossary",
+            "GlossDiv": {
+                "title": "S",
+                "GlossList": {
+                    "GlossEntry": {
+                        "ID": "SGML",
+                        "SortAs": "SGML",
+                        "GlossTerm": "Standard Generalized Markup Language",
+                        "Acronym": "SGML",
+                        "Abbrev": "ISO 8879:1986",
+                        "GlossDef": {
+                            "para": "A \"meta-markup\" language, used to create markup languages such as DocBook.\nEpstein didn't kill himself\n\u2639",
+                            "GlossSeeAlso": [
+                                "GML",
+                                "XML"
+                            ],
+                            "published": true,
+                            "lines": 100,
+                            "score": 0.7
+                        },
+                        "GlossSee": "markup"
+                    }
+                }
+            }
+        }
+    },
+    "subject": "glossaryFeed",
+    "time": "2018-04-26T14:48:09+02:00",
+    "description": "Events are everywhere. However, event producers tend to describe events differently. The lack of a common way of describing events means developers must constantly re-learn how to consume events. This also limits the potential for libraries, tooling and infrastructure to aide the delivery of event data across environments, like SDKs, event routers or tracing systems. The portability and productivity we can achieve from event data is hindered overall. CloudEvents is a specification for describing event data in common formats to provide interoperability across services, platforms and systems. CloudEvents has received a large amount of industry interest, ranging from major cloud providers to popular SaaS companies. CloudEvents is hosted by the Cloud Native Computing Foundation (CNCF) and was approved as a Cloud Native sandbox level project on May 15, 2018 and as an incubator project on Oct 24, 2019.",
+    "aBoolean": true,
+    "aNumber": 10
+}

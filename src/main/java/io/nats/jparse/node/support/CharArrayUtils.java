@@ -138,16 +138,12 @@ public class CharArrayUtils {
     }
 
 
-    public static final boolean isEscape(int c) {
-        return c == ESCAPE;
-    }
-
 
     public static boolean hasEscapeChar(char[] array, int startIndex, int endIndex) {
         char currentChar;
         for (int index = startIndex; index < endIndex; index++) {
             currentChar = array[index];
-            if (isEscape(currentChar)) {
+            if (currentChar == ESCAPE) {
                 return true;
             }
 

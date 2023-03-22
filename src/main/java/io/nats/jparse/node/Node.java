@@ -90,4 +90,8 @@ public interface Node extends CharSequence {
         return originalCharSequence();
     }
 
+    default boolean equalsContent(String content) {
+        return equals(content);
+    }
+
 }

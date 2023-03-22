@@ -13,7 +13,7 @@
  * limitations under the License.
  *
  */
-package io.nats.jparse;
+package io.nats.jparse.examples;
 
 import java.util.List;
 import java.util.Objects;
