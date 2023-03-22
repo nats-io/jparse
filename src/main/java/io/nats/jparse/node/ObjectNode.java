@@ -302,8 +302,9 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
             if (keyToken.length() != key.length()) {
                 return false;
             }
-            final StringNode stringNode = new StringNode(keyToken, source, objectsKeysCanBeEncoded);
+
             if (objectsKeysCanBeEncoded) {
+                final StringNode stringNode = new StringNode(keyToken, source, objectsKeysCanBeEncoded);
                 final String string = stringNode.toString();
                 for (int index = 0; index < key.length(); index++) {
                     if (string.charAt(index) != key.charAt(index)) {
