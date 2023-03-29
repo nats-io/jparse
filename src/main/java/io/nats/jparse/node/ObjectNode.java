@@ -24,6 +24,8 @@ import io.nats.jparse.token.TokenTypes;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ObjectNode extends AbstractMap<CharSequence, Node> implements CollectionNode {
 
@@ -108,6 +110,16 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
     @Override
     public int size() {
         return keys().size();
+    }
+
+    @Override
+    public Set<CharSequence> keySet() {
+        return keys().stream().map(CharSequence::toString).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Collection<Node> values() {
+         return keys().stream().map(this::lookupElement).collect(Collectors.toList());
     }
 
     @Override
