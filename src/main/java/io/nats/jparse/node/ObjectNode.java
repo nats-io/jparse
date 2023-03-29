@@ -96,53 +96,68 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
         return value instanceof NullNode ? null : value;
     }
 
+    public boolean containsKey(Object key) {
+       return  lookupElement((CharSequence) key) != null;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return keys().isEmpty();
+    }
+
+    @Override
+    public int size() {
+        return keys().size();
+    }
+
     @Override
     public Set<Entry<CharSequence, Node>> entrySet() {
-
-        return new AbstractSet<Entry<CharSequence, Node>>() {
-
-            @Override
-            public boolean contains(Object o) {
-                return keys().contains(o);
-            }
-
-            @Override
-            public Iterator<Entry<CharSequence, Node>> iterator() {
-                final Iterator<CharSequence> iterator = keys().iterator();
-                return new Iterator<Entry<CharSequence, Node>>() {
-                    @Override
-                    public boolean hasNext() {
-                        return iterator.hasNext();
-                    }
-
-                    @Override
-                    public Entry<CharSequence, Node> next() {
-                        CharSequence nextKey = iterator.next();
-                        return new Entry<CharSequence, Node>() {
-                            @Override
-                            public CharSequence getKey() {
-                                return nextKey;
-                            }
-
-                            @Override
-                            public Node getValue() {
-                                return getObjectNode(nextKey);
-                            }
-
-                            @Override
-                            public Node setValue(Node value) {
-                                throw new UnsupportedOperationException();
-                            }
-                        };
-                    }
-                };
-            }
-
-            @Override
-            public int size() {
-                return keys().size();
-            }
-        };
+        throw new UnsupportedOperationException();
+//
+//        return new AbstractSet<Entry<CharSequence, Node>>() {
+//
+//            @Override
+//            public boolean contains(Object o) {
+//                return keys().contains(o);
+//            }
+//
+//            @Override
+//            public Iterator<Entry<CharSequence, Node>> iterator() {
+//                final Iterator<CharSequence> iterator = keys().iterator();
+//                return new Iterator<Entry<CharSequence, Node>>() {
+//                    @Override
+//                    public boolean hasNext() {
+//                        return iterator.hasNext();
+//                    }
+//
+//                    @Override
+//                    public Entry<CharSequence, Node> next() {
+//                        CharSequence nextKey = iterator.next();
+//                        return new Entry<CharSequence, Node>() {
+//                            @Override
+//                            public CharSequence getKey() {
+//                                return nextKey;
+//                            }
+//
+//                            @Override
+//                            public Node getValue() {
+//                                return getObjectNode(nextKey);
+//                            }
+//
+//                            @Override
+//                            public Node setValue(Node value) {
+//                                throw new UnsupportedOperationException();
+//                            }
+//                        };
+//                    }
+//                };
+//            }
+//
+//            @Override
+//            public int size() {
+//                return keys().size();
+//            }
+//        };
 
     }
 

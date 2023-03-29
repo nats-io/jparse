@@ -125,9 +125,33 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        NumberNode other = (NumberNode) o;
-        return CharSequenceUtils.equals(this, other);
+        if (o == null) return false;
+
+        if (o instanceof NumberNode) {
+            NumberNode other = (NumberNode) o;
+            return CharSequenceUtils.equals(this, other);
+        } else if (o instanceof Number) {
+
+            switch (o.getClass().getName()) {
+                case "java.lang.Integer":
+                    return this.intValue() == (int) o;
+                case "java.lang.Long":
+                    return this.longValue() == (long) o;
+                case "java.lang.Float":
+                    return this.floatValue() == (float) o;
+                case "java.lang.Double":
+                    return this.doubleValue() == (double) o;
+                case "java.math.BigDecimal":
+                    return this.bigDecimalValue().equals(o);
+                case "java.math.BigInteger":
+                    return this.bigIntegerValue().equals(o);
+                default:
+                    return false;
+            }
+
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -163,4 +187,6 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
     public String toString() {
         return this.originalString();
     }
+
+
 }
