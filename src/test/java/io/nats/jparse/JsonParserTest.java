@@ -643,7 +643,7 @@ class JsonParserTest {
         final ObjectNode j2 = jsonParser().parse(Json.niceJson(json)).asObject();
         assertEquals(j2, jsonObject);
 
-        jsonObject.entrySet().forEach(objectObjectEntry -> assertTrue(jsonObject.containsKey(objectObjectEntry.getKey())));
+        jsonObject.keySet().stream().forEach(key -> assertTrue(jsonObject.containsKey(key)));
     }
 
     @Test

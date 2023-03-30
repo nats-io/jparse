@@ -24,6 +24,8 @@ import io.nats.jparse.token.TokenTypes;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ObjectNode extends AbstractMap<CharSequence, Node> implements CollectionNode {
 
@@ -93,11 +95,46 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
     @Override
     public Node get(Object key) {
         final Node value = getNode(key);
+//        if (value != null) {
+//            switch (value.getClass().getName()) {
+//                case "io.nats.jparse.node.NullNode":
+//                    return null;
+//                case "io.nats.jparse.node.BooleanNode":
+//                    BooleanNode bn = (BooleanNode) value;
+//                    return bn.booleanValue();
+//
+//            }
+//        }
         return value instanceof NullNode ? null : value;
+    }
+
+    public boolean containsKey(Object key) {
+       return  lookupElement((CharSequence) key) != null;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return keys().isEmpty();
+    }
+
+    @Override
+    public int size() {
+        return keys().size();
+    }
+
+    @Override
+    public Set<CharSequence> keySet() {
+        return keys().stream().map(CharSequence::toString).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Collection<Node> values() {
+         return keys().stream().map(this::lookupElement).collect(Collectors.toList());
     }
 
     @Override
     public Set<Entry<CharSequence, Node>> entrySet() {
+
 
         return new AbstractSet<Entry<CharSequence, Node>>() {
 
@@ -117,7 +154,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
 
                     @Override
                     public Entry<CharSequence, Node> next() {
-                        CharSequence nextKey = iterator.next();
+                        final CharSequence nextKey = iterator.next().toString();
                         return new Entry<CharSequence, Node>() {
                             @Override
                             public CharSequence getKey() {
@@ -126,7 +163,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
 
                             @Override
                             public Node getValue() {
-                                return getObjectNode(nextKey);
+                                return lookupElement(nextKey);
                             }
 
                             @Override
