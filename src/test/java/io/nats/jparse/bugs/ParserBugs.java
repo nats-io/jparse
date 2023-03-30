@@ -47,20 +47,21 @@ public class ParserBugs {
 
 
 
-        //Not all map methods work.
+        //All read map methods should work.
         try {
-            map.entrySet().iterator().next();
-            fail();
+            String key = map.entrySet().iterator().next().getKey();
+            assertTrue(key.startsWith("key"));
         } catch (UnsupportedOperationException ex) {
-            //This map does not support this.
+           fail();
         }
 
         try {
             map.forEach((s, o) -> {
             });
-            fail();
+
         } catch (UnsupportedOperationException ex) {
             //This map does not support this.
+            fail();
         }
         // Most map methods should work like getOrDefault, computeIfEmpty, computeIfPresent, etc.
     }
