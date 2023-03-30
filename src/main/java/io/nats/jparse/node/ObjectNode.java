@@ -95,6 +95,16 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
     @Override
     public Node get(Object key) {
         final Node value = getNode(key);
+//        if (value != null) {
+//            switch (value.getClass().getName()) {
+//                case "io.nats.jparse.node.NullNode":
+//                    return null;
+//                case "io.nats.jparse.node.BooleanNode":
+//                    BooleanNode bn = (BooleanNode) value;
+//                    return bn.booleanValue();
+//
+//            }
+//        }
         return value instanceof NullNode ? null : value;
     }
 

@@ -60,6 +60,9 @@ public class ParserBugs {
             map.forEach((key, value) -> {
                 assertTrue(key.startsWith("key"));
                 assertTrue(value instanceof Node);
+                assertTrue(value instanceof Number || value instanceof List
+                            || value instanceof CharSequence
+                            || value instanceof BooleanNode);
             });
 
         } catch (UnsupportedOperationException ex) {
