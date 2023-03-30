@@ -2,6 +2,7 @@ package io.nats.jparse.bugs;
 
 import io.nats.jparse.Json;
 import io.nats.jparse.node.BooleanNode;
+import io.nats.jparse.node.Node;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -56,7 +57,9 @@ public class ParserBugs {
         }
 
         try {
-            map.forEach((s, o) -> {
+            map.forEach((key, value) -> {
+                assertTrue(key.startsWith("key"));
+                assertTrue(value instanceof Node);
             });
 
         } catch (UnsupportedOperationException ex) {
