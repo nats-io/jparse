@@ -13,6 +13,20 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ParserBugs {
 
     @Test
+    void issue16() {
+       Json.toMap(Json.niceJson("{\n" +
+               "'created': '2020-03-03T13:26:23.023Z',\n" +
+               "'name': 'l',\n" +
+               "'subscription': true,\n" +
+               "'id': 10,\n" +
+               "'updated-by': 1,\n" +
+               "'type': 'organization',\n" +
+               "'updated': '2023-04-03T19:58:04.743Z',\n" +
+               "'tags': []\n" +
+               "}"));
+    }
+
+    @Test
     void issue13() {
         //See https://github.com/nats-io/jparse/issues/13
 
