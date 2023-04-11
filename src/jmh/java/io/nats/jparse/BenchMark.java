@@ -120,26 +120,37 @@ public class BenchMark {
 
     public static void main(String... args) throws Exception {
 
-
         try {
-            long startTime = System.currentTimeMillis();
 
             JsonParser fastParser = Json.builder().setStrict(false).build();
+            fastParser.parse(doublesJsonData).asArray().getDoubleArray();
 
-            for (int i = 0; i < 10_500_000; i++) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-                final ObjectNode objectNode = fastParser.parse(glossaryEvent).asObject();
-                if (objectNode.getNode("subject").equalsContent("glossaryFeed")) {
-                    final String id = objectNode.getStringNode("id").toUnencodedString();
-                    final String type = objectNode.getStringNode("type").toUnencodedString();
-                    final String description = objectNode.getStringNode("description").toUnencodedString();
-                    final String data = Json.serializeToString(objectNode.getNode("data"));
 
-                    if (i % 1_000_000 == 0) {
-                        System.out.printf("Elapsed time %s %s \n", ((System.currentTimeMillis() - startTime) / 1000.0), data);
-                    }
-                }
-
+        System.out.println("DOME");
+//
+//        try {
+//            long startTime = System.currentTimeMillis();
+//
+//            JsonParser fastParser = Json.builder().setStrict(false).build();
+//
+//            for (int i = 0; i < 10_500_000; i++) {
+//
+//                final ObjectNode objectNode = fastParser.parse(glossaryEvent).asObject();
+//                if (objectNode.getNode("subject").equalsContent("glossaryFeed")) {
+//                    final String id = objectNode.getStringNode("id").toUnencodedString();
+//                    final String type = objectNode.getStringNode("type").toUnencodedString();
+//                    final String description = objectNode.getStringNode("description").toUnencodedString();
+//                    final String data = Json.serializeToString(objectNode.getNode("data"));
+//
+//                    if (i % 1_000_000 == 0) {
+//                        System.out.printf("Elapsed time %s %s \n", ((System.currentTimeMillis() - startTime) / 1000.0), data);
+//                    }
+//                }
+//
 //                final JsonIterator iter = JsonIterator.parse(glossaryEvent);
 //                final Map<String, Object> map = iter.read(mapTypeRefJI);
 //                if (map.get("subject").equals("glossaryFeed")) {
@@ -160,52 +171,62 @@ public class BenchMark {
 //                    final String data = mapper.writeValueAsString(map.get("data"));
 //                }
 
-
-
-            }
-            System.out.println("Total Elapsed time " + ((System.currentTimeMillis() - startTime) / 1000.0));
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+//
+//
+//            }
+//            System.out.println("Total Elapsed time " + ((System.currentTimeMillis() - startTime) / 1000.0));
+//
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
     }
 
+//
+//    @Benchmark
+//    public void cloudEventJsonIter(Blackhole bh) throws Exception{
+//        final JsonIterator iter = JsonIterator.parse(glossaryEvent);
+//        final Map<String, Object> map = iter.read(mapTypeRefJI);
+//        if (map.get("subject").equals("glossaryFeed")) {
+//                final String id =  (String) map.get("id");
+//                final String type = (String) map.get("type");
+//                final String description = (String) map.get("description");
+//                final String data = JsonStream.serialize(map.get("data"));
+//                bh.consume(new Object[]{id, type, data, description});
+//        }
+//    }
+//
+//    @Benchmark
+//    public void cloudEventJackson(Blackhole bh) throws JsonProcessingException {
+//        final HashMap<String, Object> map = mapper.readValue(glossaryEvent, mapTypeRef);
+//        if (map.get("subject").equals("glossaryFeed")) {
+//            final String id =  (String) map.get("id");
+//            final String type = (String) map.get("type");
+//            final String description = (String) map.get("description");
+//            final String data = mapper.writeValueAsString(map.get("data"));
+//            bh.consume(new Object[]{id, type, data, description});
+//        }
+//    }
+//
+//    @Benchmark
+//    public void cloudEventJParse(Blackhole bh) throws JsonProcessingException {
+//        final ObjectNode objectNode = fastParser.parse(glossaryEvent).asObject();
+//        if (objectNode.getNode("subject").equalsContent("glossaryFeed")) {
+//            final String id = objectNode.getStringNode("id").toUnencodedString();
+//            final String type = objectNode.getStringNode("type").toUnencodedString();
+//            final String description = objectNode.getStringNode("description").toUnencodedString();
+//            final String data = Json.serializeToString(objectNode.getNode("data"));
+//            bh.consume(new Object[]{id, type, data, description});
+//        }
+//    }
+//
+        @Benchmark
+    public void jParseFastFloatArray(Blackhole bh) {
+        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getFloatArray());
+  }
 
-    @Benchmark
-    public void cloudEventJsonIter(Blackhole bh) throws Exception{
-        final JsonIterator iter = JsonIterator.parse(glossaryEvent);
-        final Map<String, Object> map = iter.read(mapTypeRefJI);
-        if (map.get("subject").equals("glossaryFeed")) {
-                final String id =  (String) map.get("id");
-                final String type = (String) map.get("type");
-                final String description = (String) map.get("description");
-                final String data = JsonStream.serialize(map.get("data"));
-                bh.consume(new Object[]{id, type, data, description});
-        }
-    }
-
-    @Benchmark
-    public void cloudEventJackson(Blackhole bh) throws JsonProcessingException {
-        final HashMap<String, Object> map = mapper.readValue(glossaryEvent, mapTypeRef);
-        if (map.get("subject").equals("glossaryFeed")) {
-            final String id =  (String) map.get("id");
-            final String type = (String) map.get("type");
-            final String description = (String) map.get("description");
-            final String data = mapper.writeValueAsString(map.get("data"));
-            bh.consume(new Object[]{id, type, data, description});
-        }
-    }
-
-    @Benchmark
-    public void cloudEventJParse(Blackhole bh) throws JsonProcessingException {
-        final ObjectNode objectNode = fastParser.parse(glossaryEvent).asObject();
-        if (objectNode.getNode("subject").equalsContent("glossaryFeed")) {
-            final String id = objectNode.getStringNode("id").toUnencodedString();
-            final String type = objectNode.getStringNode("type").toUnencodedString();
-            final String description = objectNode.getStringNode("description").toUnencodedString();
-            final String data = Json.serializeToString(objectNode.getNode("data"));
-            bh.consume(new Object[]{id, type, data, description});
-        }
+        @Benchmark
+    public void jParseFastDoubleArray(Blackhole bh) {
+        bh.consume(this.fastParser.parse(doublesJsonData).asArray().getDoubleArray());
     }
 //
 //
