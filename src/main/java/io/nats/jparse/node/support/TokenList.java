@@ -87,6 +87,13 @@ public class TokenList extends AbstractList<Token> {
     }
 
     public void placeHolder() {
+
+        final int length = tokens.length;
+        if (index >= length) {
+            final Token[] newTokens = new Token[length * 2];
+            System.arraycopy(tokens, 0, newTokens, 0, length);
+            tokens = newTokens;
+        }
         index++;
     }
 
