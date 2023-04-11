@@ -10,7 +10,7 @@ plugins {
 }
 
 
-def jarVersion = "1.1.2"
+def jarVersion = "1.1.3"
 group = 'io.nats'
 
 def isMerge = System.getenv("BUILD_EVENT") == "push"
