@@ -94,7 +94,7 @@ class ParseFloatTest {
     @Test
     public void testParseFloatWithMultipleExponents() {
 
-        assertThrows(IllegalStateException.class, () -> {
+        assertThrows(UnexpectedCharacterException.class, () -> {
             char[] chars = {'1', 'e', '2', 'e', '3'};
             float f = ParseFloat.parseFloat(chars, 0, chars.length);
         });
@@ -104,7 +104,7 @@ class ParseFloatTest {
     @Test
     public void testParseFloatWithMultipleFractions() {
 
-        assertThrows(IllegalStateException.class, () -> {
+        assertThrows(UnexpectedCharacterException.class, () -> {
             char[] chars = {'1', '.', '2', '.', '3', '.', '4', '.', '5'};
             float f = ParseFloat.parseFloat(chars, 0, chars.length);
         });

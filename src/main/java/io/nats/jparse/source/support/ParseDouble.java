@@ -44,7 +44,7 @@ public class ParseDouble {
                     result = parseExponent(i + 1, endIndex, chars, result);
                     break loop;
                 default:
-                    throw new IllegalStateException("index " + i + " char " + ch);
+                    throw new UnexpectedCharacterException("parsing double", "Illegal character", ch, i);
             }
         }
 
@@ -81,7 +81,7 @@ public class ParseDouble {
                     return parseExponent(i + 1, endIndex, chars, result);
 
                 default:
-                    throw new IllegalStateException("index " + i + " char " + ch);
+                    throw new UnexpectedCharacterException("double parsing fraction part", "Illegal character", ch, i);
             }
 
         }
@@ -125,7 +125,7 @@ public class ParseDouble {
                     break;
 
                 default:
-                    throw new IllegalStateException("index " + i + " char " + ch);
+                    throw new UnexpectedCharacterException("double parsing parsing exponent", "Illegal character", ch, i);
             }
         }
 

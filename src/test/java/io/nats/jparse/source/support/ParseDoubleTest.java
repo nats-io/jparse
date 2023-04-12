@@ -28,12 +28,12 @@ class ParseDoubleTest {
     @Test
     public void testParseDoubleInvalidInput() {
         char[] input1 = "123a.456".toCharArray();
-        assertThrows(IllegalStateException.class, () -> ParseDouble.parseDouble(input1, 0, input1.length));
+        assertThrows(UnexpectedCharacterException.class, () -> ParseDouble.parseDouble(input1, 0, input1.length));
 
         char[] input2 = "123..456".toCharArray();
-        assertThrows(IllegalStateException.class, () -> ParseDouble.parseDouble(input2, 0, input2.length));
+        assertThrows(UnexpectedCharacterException.class, () -> ParseDouble.parseDouble(input2, 0, input2.length));
 
         char[] input3 = "1.23e4.5".toCharArray();
-        assertThrows(IllegalStateException.class, () -> ParseDouble.parseDouble(input3, 0, input3.length));
+        assertThrows(UnexpectedCharacterException.class, () -> ParseDouble.parseDouble(input3, 0, input3.length));
     }
 }

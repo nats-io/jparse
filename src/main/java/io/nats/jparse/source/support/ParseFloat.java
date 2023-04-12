@@ -42,7 +42,7 @@ public class ParseFloat {
                     result = parseExponent(i+1, endIndex, chars, result);
                     break loop;
                 default:
-                    throw new IllegalStateException("index " + i + " char " + ch);
+                    throw new UnexpectedCharacterException("parsing float", "Illegal character", ch, i);
             }
         }
 
@@ -78,7 +78,7 @@ public class ParseFloat {
                     return parseExponent(i + 1, endIndex, chars, result);
 
                 default:
-                    throw new IllegalStateException("index " + i + " char " + ch);
+                    throw new UnexpectedCharacterException("float parsing fraction part", "Illegal character", ch, i);
             }
 
         }
@@ -120,7 +120,7 @@ public class ParseFloat {
                     break;
 
                 default:
-                    throw new IllegalStateException("index " + i + " char " + ch);
+                    throw new UnexpectedCharacterException("float parsing exponent part", "Illegal character", ch, i);
 
             }
         }
