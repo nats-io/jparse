@@ -130,7 +130,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         double[] array = new double[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = source.getBigDecimal(token.startIndex, token.endIndex).doubleValue();
+            array[i] = source.getDouble(token.startIndex, token.endIndex);
         }
         return array;
     }
@@ -140,7 +140,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         float[] array = new float[length];
         for (int i = 0; i < length; i++) {
             final Token token = tokens.get(i + 1);
-            array[i] = (float) source.getBigDecimal(token.startIndex, token.endIndex).doubleValue();
+            array[i] = source.getFloat(token.startIndex, token.endIndex);
         }
         return array;
     }
