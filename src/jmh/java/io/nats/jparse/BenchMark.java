@@ -130,7 +130,7 @@ public class BenchMark {
         }
 
 
-        System.out.println("DOME");
+        System.out.println("DONE");
 //
 //        try {
 //            long startTime = System.currentTimeMillis();
