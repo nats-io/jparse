@@ -52,6 +52,12 @@ public class TokenSubList extends AbstractList<Token> {
         return new TokenSubList(tokens, this.offset + startIndex, this.offset + endIndex);
     }
 
+    public Token[] toArray() {
+        Token[] array = new Token[size];
+        System.arraycopy(tokens, offset, array, 0, size);
+        return array;
+    }
+
     public int countChildren(final int from, final Token rootToken) {
 
         int idx = from;

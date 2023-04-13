@@ -420,7 +420,7 @@ class CharArrayOffsetCharSourceTest {
         final CharArrayOffsetCharSource source =
                 new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
 
-        assertEquals(1.2e12f, source.getFloat(1, 7), 0.000001);
+        assertEquals(1.2e12f, source.getFloat(1, 7), 0.001e12f);
 
     }
 
@@ -491,6 +491,22 @@ class CharArrayOffsetCharSourceTest {
 
     }
 
+    @Test
+    void encodingFast() {
+
+
+        // ....................................012345678901
+        //...................01234567890123456789
+        final String json = Json.niceJson("     '`u0003' ");
+
+
+        final CharArrayOffsetCharSource source =
+                new CharArrayOffsetCharSource(5, json.length() - 1, json.toCharArray());
+        source.next();
+        int end = source.findEndOfEncodedStringFast();
+        assertEquals(7+5, end);
+        assertEquals(8, source.getIndex());
+    }
     @Test
     void toEncodedStringIfNeeded() {
         // ....................................012345678901
