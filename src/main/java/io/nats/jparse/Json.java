@@ -86,11 +86,11 @@ public class Json {
     }
 
     public static List<Object> toList(final String json) {
-        return (List<Object>) (Object) PARSER.parse(json).getArrayNode();
+        return (List<Object>) (Object) toArrayNode(json);
     }
 
     public static Map<String, Object> toMap(final String json) {
-        return (Map<String, Object>) (Object) PARSER.parse(json).getObjectNode();
+        return (Map<String, Object>) (Object) toObjectNode(json);
     }
 
     public static List<Token> toTokens(final String json) {

@@ -45,6 +45,18 @@ class IndexPathNodeTest {
     public void testValue() {
         IndexPathNode indexPathNode = new IndexPathNode(token, charSource);
         assertEquals(100, indexPathNode.value());
+        assertEquals(100, indexPathNode.intValue());
+        assertEquals(100, indexPathNode.longValue());
+        assertEquals(100f, indexPathNode.floatValue());
+        assertEquals(100.0, indexPathNode.doubleValue());
+    }
+
+    @Test
+    public void testEquals() {
+        IndexPathNode indexPathNode = new IndexPathNode(token, charSource);
+        IndexPathNode indexPathNode2 = new IndexPathNode(token, charSource);
+        assertEquals(indexPathNode, indexPathNode2);
+        assertEquals(indexPathNode.hashCode(), indexPathNode2.hashCode());
     }
 
     @Test
