@@ -15,16 +15,42 @@
  */
 package io.nats.jparse.node.support;
 
+/**
+ * Utility class for working with character arrays.
+ */
 public class CharArrayUtils {
 
+    private CharArrayUtils(){}
+    /**
+     * Mapping of escape control characters.
+     */
     static final char[] controlMap = new char[255];
+    /**
+     * Mapping of hex values.
+     */
     static final int[] hexValueMap = new int[255];
-
+    /**
+     * Escape character code.
+     */
     static final int ESCAPE = '\\';
+    /**
+     * Value of 10s place in hexadecimal.
+     */
     private final static int HEX_10s = 16;
+    /**
+     * Value of 100s place in hexadecimal.
+     */
     private final static int HEX_100s = 16 * 16;
+    /**
+     * Value of 1000s place in hexadecimal.
+     */
     private final static int HEX_1000s = 16 * 16 * 16;
 
+    /**
+
+     Initializes the controlMap and hexValueMap arrays with mappings for escape control characters
+     and hex values, respectively.
+     */
     static {
         controlMap['n'] = '\n';
         controlMap['b'] = '\b';
@@ -61,6 +87,14 @@ public class CharArrayUtils {
         hexValueMap['F'] = 15;
     }
 
+    /**
+     * Decodes a JSON string from the specified character array within the specified range.
+     *
+     * @param chars      the character array containing the JSON string
+     * @param startIndex the start index of the JSON string within the character array
+     * @param endIndex   the end index of the JSON string within the character array (exclusive)
+     * @return the decoded JSON string
+     */
     public static String decodeJsonString(char[] chars, int startIndex, int endIndex) {
         int length = endIndex - startIndex;
         char[] builder = new char[calculateLengthAfterEncoding(chars, startIndex, endIndex, length)];
@@ -99,6 +133,13 @@ public class CharArrayUtils {
 
     }
 
+    /**
+     * Retrieves the Unicode character from the specified character array at the given index.
+     *
+     * @param chars the character array
+     * @param index the index of the Unicode character
+     * @return the Unicode character
+     */
     private static char getUnicode(char[] chars, int index) {
         int d4 = hexValueMap[chars[index + 1]];
         int d3 = hexValueMap[chars[index + 2]];
@@ -107,7 +148,15 @@ public class CharArrayUtils {
         return (char) (d1 + (d2 * HEX_10s) + (d3 * HEX_100s) + (d4 * HEX_1000s));
     }
 
-
+    /**
+     * Calculates the length of the character array after encoding, excluding escape control characters.
+     *
+     * @param chars      the character array
+     * @param startIndex the start index of the range to calculate
+     * @param endIndex   the end index of the range to calculate
+     * @param length     the original length of the range
+     * @return the length of the character array after encoding
+     */
     private static int calculateLengthAfterEncoding(char[] chars, int startIndex, int endIndex, int length) {
         char c;
         int index = startIndex;
@@ -138,6 +187,14 @@ public class CharArrayUtils {
     }
 
 
+    /**
+     * Checks if the specified character array contains any escape characters.
+     *
+     * @param array      the character array to check
+     * @param startIndex the start index of the range to check
+     * @param endIndex   the end index of the range to check
+     * @return true if the array contains an escape character, false otherwise
+     */
     public static boolean hasEscapeChar(char[] array, int startIndex, int endIndex) {
         char currentChar;
         for (int index = startIndex; index < endIndex; index++) {

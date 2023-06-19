@@ -14,7 +14,9 @@ import io.nats.jparse.token.TokenTypes;
  */
 public class JsonParserFunctions {
 
-    /*
+    private JsonParserFunctions(){}
+
+    /**
      * Default Function.
      *
      */

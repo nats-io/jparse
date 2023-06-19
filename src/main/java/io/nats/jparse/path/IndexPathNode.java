@@ -33,10 +33,24 @@ import java.util.List;
  */
 public class IndexPathNode extends Number implements ScalarNode, CharSequence, PathElement {
 
+    /**
+     * The token associated with this path node.
+     */
     private final Token token;
+
+    /**
+     * The source of characters where this path node comes from.
+     */
     private final CharSource source;
 
+    /**
+     * A flag indicating whether the hashCode has been set for this path node.
+     */
     private boolean hashCodeSet;
+
+    /**
+     * The hash code of this path node. This is computed and cached for performance.
+     */
     private int hashCode;
 
     /**

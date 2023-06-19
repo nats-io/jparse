@@ -24,12 +24,23 @@ import io.nats.jparse.token.TokenEventListener;
 import io.nats.jparse.token.TokenTypes;
 
 
+/**
+ * Strict JSON Parser.
+ */
 public class JsonEventStrictParser extends JsonEventAbstractParser {
 
 
-    int nestLevel;
+    /**
+     * Nest level.
+     */
+    private int nestLevel;
 
 
+    /**
+     * Construct JsonEventStrictParser.
+     * @param objectsKeysCanBeEncoded can object keys be encoded
+     * @param tokenEventListener token listener
+     */
     public JsonEventStrictParser(boolean objectsKeysCanBeEncoded, TokenEventListener tokenEventListener) {
         super(objectsKeysCanBeEncoded, tokenEventListener);
     }

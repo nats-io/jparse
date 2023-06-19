@@ -1,11 +1,22 @@
 package io.nats.jparse.source.support;
 
+/**
+ * Parse Double class.
+ */
 public class ParseDouble {
+    private ParseDouble(){}
 
     static final double[] powersOf10 = {1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7,
             1e8, 1e9, 1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22};
 
 
+    /**
+     * Parse a float.
+     * @param chars chars
+     * @param startIndex start index
+     * @param endIndex end index
+     * @return float
+     */
     public static double parseDouble(char[] chars, int startIndex, int endIndex) {
 
 

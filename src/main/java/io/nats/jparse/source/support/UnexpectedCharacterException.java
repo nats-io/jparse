@@ -26,12 +26,34 @@ import java.util.Optional;
  * @see CharSource
  * @see io.nats.jparse.parser.JsonParser
  */
+/**
+ * This class represents an exception that is thrown when an unexpected character is encountered during parsing.
+ */
 public class UnexpectedCharacterException extends RuntimeException {
 
+    /**
+     * The source of characters where the unexpected character was found.
+     */
     private final CharSource source;
+
+    /**
+     * The operation or context during which the unexpected character was encountered.
+     */
     private final String whileDoing;
+
+    /**
+     * A detailed message about the exception.
+     */
     private final String message;
+
+    /**
+     * The index at which the unexpected character was found.
+     */
     private final int index;
+
+    /**
+     * The unexpected character that was encountered.
+     */
     private final int ch;
 
     /**

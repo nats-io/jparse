@@ -33,6 +33,11 @@ public class PathParser implements JsonParser {
 
 
     /**
+     * Construct a new path parser.
+     */
+    public PathParser() {
+    }
+    /**
      * Scans a given character source for tokens representing a JSONPath expression.
      *
      * @param source the character source to scan

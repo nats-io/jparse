@@ -27,8 +27,14 @@ import io.nats.jparse.token.TokenTypes;
 
 import java.util.List;
 
+/**
+ * Shared code for event parsers.
+ */
 public abstract class JsonEventAbstractParser implements JsonEventParser, JsonParser {
 
+    /**
+     * This field determines if objects keys can be encoded.
+     */
     protected final boolean objectsKeysCanBeEncoded;
     final TokenEventListener arrayItemListener = new TokenEventListener() {
         @Override
@@ -121,6 +127,11 @@ public abstract class JsonEventAbstractParser implements JsonEventParser, JsonPa
     private TokenList tokenList;
 
 
+    /**
+     * Construct JsonEventAbstractParser.
+     * @param objectsKeysCanBeEncoded can object keys be encoded
+     * @param tokenEventListener token listener
+     */
     public JsonEventAbstractParser(boolean objectsKeysCanBeEncoded, TokenEventListener tokenEventListener) {
         this.objectsKeysCanBeEncoded = objectsKeysCanBeEncoded;
         this.tokenEventListener = tokenEventListener;

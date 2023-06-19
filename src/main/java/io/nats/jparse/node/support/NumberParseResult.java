@@ -17,23 +17,53 @@ package io.nats.jparse.node.support;
 
 import java.util.Objects;
 
+/**
+ * Represents the result of a number parsing operation.
+ * <p>
+ * The NumberParseResult class represents the result of a number parsing operation.
+ * It provides methods to access the end index of the parsed number and to check if the parsed number was a float.
+ * The class also overrides the equals, hashCode, and toString methods for proper object comparison and string
+ * representation.
+ */
 public final class NumberParseResult {
     private final int endIndex;
     private final boolean wasFloat;
 
+    /**
+     * Constructs a new NumberParseResult.
+     *
+     * @param endIndex the end index of the parsed number
+     * @param wasFloat indicates whether the parsed number was a float
+     */
     public NumberParseResult(int endIndex, boolean wasFloat) {
         this.endIndex = endIndex;
         this.wasFloat = wasFloat;
     }
 
+    /**
+     * Returns the end index of the parsed number.
+     *
+     * @return the end index of the parsed number
+     */
     public int endIndex() {
         return endIndex;
     }
 
+    /**
+     * Indicates whether the parsed number was a float.
+     *
+     * @return true if the parsed number was a float, false otherwise
+     */
     public boolean wasFloat() {
         return wasFloat;
     }
 
+    /**
+     * Checks if this NumberParseResult is equal to another object.
+     *
+     * @param obj the object to compare to
+     * @return true if the objects are equal, false otherwise
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
@@ -43,16 +73,25 @@ public final class NumberParseResult {
                 this.wasFloat == that.wasFloat;
     }
 
+    /**
+     * Generates a hash code for this NumberParseResult.
+     *
+     * @return the hash code value for this NumberParseResult
+     */
     @Override
     public int hashCode() {
         return Objects.hash(endIndex, wasFloat);
     }
 
+    /**
+     * Returns a string representation of this NumberParseResult.
+     *
+     * @return a string representation of this NumberParseResult
+     */
     @Override
     public String toString() {
         return "NumberParseResult[" +
                 "endIndex=" + endIndex + ", " +
                 "wasFloat=" + wasFloat + ']';
     }
-
 }

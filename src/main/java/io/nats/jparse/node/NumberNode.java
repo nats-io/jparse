@@ -23,54 +23,126 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
+/**
+ * The NumberNode class represents a numeric node in a tree structure.
+ * <p>
+ * It implements the ScalarNode and CharSequence interfaces.
+ * <p>
+ * Number nodes can store integer, long, float, and double values.
+ */
 public class NumberNode extends Number implements ScalarNode, CharSequence {
 
+    /**
+     * Token associated with this number node.
+     * This token represents a parsed number from the source character sequence.
+     */
     private final Token token;
+
+    /**
+     * Source of characters used to create the token.
+     * This source is used to perform further operations like extracting string or sub-sequence.
+     */
     private final CharSource source;
+
+    /**
+     * The type of this node.
+     * This type defines the type of the value this node represents (integer, float, etc.).
+     */
     private final NodeType elementType;
+
+    /**
+     * Flag to indicate whether the hash code has been computed or not.
+     * It helps to avoid recomputing the hash code for every call of hashCode() method.
+     */
     private boolean hashCodeSet;
+
+    /**
+     * Cache for the hash code of this object.
+     * Once computed, the hash code is stored in this variable for subsequent calls.
+     */
     private int hashCode;
 
+
+    /**
+     * Constructs a NumberNode with the specified token, source, and element type.
+     *
+     * @param token       the token representing the numeric value
+     * @param source      the character source containing the numeric value
+     * @param elementType the element type of the number node
+     */
     public NumberNode(Token token, CharSource source, NodeType elementType) {
         this.token = token;
         this.source = source;
         this.elementType = elementType;
     }
 
+    /**
+     * Returns the integer value of the number node.
+     *
+     * @return the integer value of the number node
+     */
     @Override
     public int intValue() {
         return source.getInt(token.startIndex, token.endIndex);
     }
 
+    /**
+     * Returns the long value of the number node.
+     *
+     * @return the long value of the number node
+     */
     @Override
     public long longValue() {
         return source.getLong(token.startIndex, token.endIndex);
     }
 
+    /**
+     * Returns the float value of the number node.
+     *
+     * @return the float value of the number node
+     */
     @Override
     public float floatValue() {
         return source.getFloat(token.startIndex, token.endIndex);
     }
 
+    /**
+     * Returns the double value of the number node.
+     *
+     * @return the double value of the number node
+     */
     @Override
     public double doubleValue() {
         return source.getDouble(token.startIndex, token.endIndex);
     }
 
-
-    @Override
+    /**
+     * Returns the BigDecimal value of the number node.
+     *
+     * @return the BigDecimal value of the number node
+     */
     public BigDecimal bigDecimalValue() {
         return source.getBigDecimal(token.startIndex, token.endIndex);
     }
 
-    @Override
+    /**
+     * Returns the BigInteger value of the number node.
+     *
+     * @return the BigInteger value of the number node
+     */
     public BigInteger bigIntegerValue() {
         return source.getBigInteger(token.startIndex, token.endIndex);
     }
 
-
+    /**
+     * Returns the value of the number node as an Object.
+     * If the number node represents an integer, an Integer object is returned.
+     * If the number node represents a long, a Long object is returned.
+     * Otherwise, a Double object is returned.
+     *
+     * @return the value of the number node as an Object
+     */
     @Override
     public Object value() {
         if (isInteger()) {
@@ -82,16 +154,33 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
         }
     }
 
+    /**
+     * Returns the element type of the number node.
+     *
+     * @return the element type of the number node
+     */
     @Override
     public NodeType type() {
         return this.elementType;
     }
 
+    /**
+     * Returns the length of the number node.
+     *
+     * @return the length of the number node
+     */
     @Override
     public int length() {
         return token.endIndex - token.startIndex;
     }
 
+    /**
+     * Returns the character at the specified index in the number node.
+     *
+     * @param index the index of the character to retrieve
+     * @return the character at the specified index
+     * @throws ArrayIndexOutOfBoundsException if the index is out of range
+     */
     @Override
     public char charAt(int index) {
         if (index > length()) {
@@ -100,6 +189,14 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
         return source.getChartAt(token.startIndex + index);
     }
 
+    /**
+     * Returns a CharSequence that is a subsequence of the number node.
+     *
+     * @param start the start index of the subsequence (inclusive)
+     * @param end   the end index of the subsequence (exclusive)
+     * @return the subsequence of the number node
+     * @throws IndexOutOfBoundsException if the start or end index is out of range
+     */
     @Override
     public CharSequence subSequence(int start, int end) {
         if (end > length()) {
@@ -108,21 +205,47 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
         return source.getCharSequence(start + token.startIndex, end + token.startIndex);
     }
 
+    /**
+     * Returns a list containing the token of the number node.
+     *
+     * @return a list containing the token of the number node
+     */
     @Override
     public List<Token> tokens() {
         return Collections.singletonList(this.token);
     }
 
+    /**
+     * Returns the root element token of the number node.
+     *
+     * @return the root element token of the number node
+     */
     @Override
     public Token rootElementToken() {
         return token;
     }
 
+    /**
+     * Returns the character source associated with the number node.
+     *
+     * @return the character source associated with the number node
+     */
     @Override
     public CharSource charSource() {
         return source;
     }
 
+    /**
+     * Checks if the number node is equal to the specified object.
+     * <p>
+     * The number node is considered equal to another object if:
+     * <p>
+     * The other object is an instance of NumberNode and has the same CharSequence representation.
+     * The other object is an instance of Number and has the same numeric value.
+     *
+     * @param o the object to compare with the number node
+     * @return true if the number node is equal to the specified object, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -132,7 +255,6 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
             NumberNode other = (NumberNode) o;
             return CharSequenceUtils.equals(this, other);
         } else if (o instanceof Number) {
-
             switch (o.getClass().getName()) {
                 case "java.lang.Integer":
                     return this.intValue() == (int) o;
@@ -149,12 +271,16 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
                 default:
                     return false;
             }
-
         } else {
             return false;
         }
     }
 
+    /**
+     * Returns the hash code value for the number node.
+     *
+     * @return the hash code value for the number node
+     */
     @Override
     public int hashCode() {
         if (hashCodeSet) {
@@ -165,6 +291,11 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
         return hashCode;
     }
 
+    /**
+     * Checks if the number node represents an integer value.
+     *
+     * @return true if the number node represents an integer value, false otherwise
+     */
     public boolean isInteger() {
         switch (elementType) {
             case INT:
@@ -174,6 +305,11 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
         }
     }
 
+    /**
+     * Checks if the number node represents a long value.
+     *
+     * @return true if the number node represents a long value, false otherwise
+     */
     public boolean isLong() {
         switch (elementType) {
             case INT:
@@ -183,11 +319,13 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
         }
     }
 
-
+    /**
+     * Returns the string representation of the number node.
+     *
+     * @return the string representation of the number node
+     */
     @Override
     public String toString() {
         return this.originalString();
     }
-
-
 }
