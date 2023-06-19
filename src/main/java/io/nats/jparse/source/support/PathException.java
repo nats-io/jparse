@@ -17,11 +17,25 @@ package io.nats.jparse.source.support;
 
 import io.nats.jparse.source.CharSource;
 
+/**
+ * Exception class for handling errors related to JSON paths.
+ * This is a runtime exception that can be thrown when an unexpected condition
+ * is met while processing a path.
+ */
 public class PathException extends RuntimeException {
 
+    /**
+     * Constructs a new PathException with a detailed error message.
+     * The error message is formatted to include specific details about the operation,
+     * the error, and the location in the source where the error occurred.
+     *
+     * @param whileDoing The operation being performed when the error occurred.
+     * @param message The specific error message.
+     * @param source The CharSource where the error occurred.
+     * @param index The index in the source where the error occurred.
+     */
     public PathException(String whileDoing, String message, CharSource source, int index) {
-        super(String.format("Unexpected character while %, Error is '%s'. \n Details \n %s", whileDoing, message, source.errorDetails(message, index, source.getChartAt(index))));
+        super(String.format("Unexpected character while %s, Error is '%s'. \n Details \n %s",
+                whileDoing, message, source.errorDetails(message, index, source.getChartAt(index))));
     }
-
-
 }

@@ -26,23 +26,64 @@ import io.nats.jparse.source.support.UnexpectedCharacterException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+
+/**
+ * This class is a char source for char arrays.
+ * <p>
+ * This class is not thread safe.
+ * <p>
+ * This class is used by the parser to parse strings.
+ * <p>
+ * This class is not a general purpose char source.
+ * <p>
+ * This class is used by the parser to parse strings.
+ * <p>
+ * This class is not a general purpose char source.
+ */
 public class CharArrayCharSource implements CharSource, ParseConstants {
 
+    /**
+     * The min length int as a string.
+     */
     private final static char[] MIN_INT_CHARS = MIN_INT_STR.toCharArray();
+
+    /**
+     * The max int length as a string.
+     */
     private final static char[] MAX_INT_CHARS = MAX_INT_STR.toCharArray();
+
+    /**
+     * The data of the char source.
+     */
     private final char[] data;
+
+    /** The index into the data. */
     private int index;
 
+
+    /**
+     * Construct it
+     * @param chars for data source.
+     */
     public CharArrayCharSource(final char[] chars) {
         index = -1;
         data = chars;
     }
 
+    /**
+     * Construct it
+     * @param str for data source.
+     */
     public CharArrayCharSource(final String str) {
         index = -1;
         data = str.toCharArray();
     }
 
+    /**
+     * Create Debug description
+     * @param c char we left off at
+     * @return description of char.
+     */
     public static String debugCharDescription(int c) {
         String charString;
         if (c == ' ') {

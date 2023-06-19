@@ -22,9 +22,17 @@ import io.nats.jparse.token.TokenEventListener;
 import io.nats.jparse.token.TokenTypes;
 
 
+/**
+ * Fast JSON Event Parser.
+ */
 public class JsonEventFastParser extends JsonEventAbstractParser {
 
 
+    /**
+     * Construct JsonEventFastParser.
+     * @param objectsKeysCanBeEncoded can object keys be encoded
+     * @param tokenEventListener token listener
+     */
     public JsonEventFastParser(boolean objectsKeysCanBeEncoded, TokenEventListener tokenEventListener) {
         super(objectsKeysCanBeEncoded, tokenEventListener);
     }

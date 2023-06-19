@@ -20,22 +20,68 @@ package io.nats.jparse.token;
  * constants for object, attribute key, attribute value, array, and array item tokens, as well as for integer, float,
  * string, boolean, and null tokens. The interface also includes a method for getting a human-readable name for a
  * token type based on its integer value.
+ * This interface contains the integer codes representing different token types that might be encountered during parsing.
  */
 public interface TokenTypes {
 
+    /**
+     * Token type representing a JSON object.
+     */
     int OBJECT_TOKEN = 0;
+
+    /**
+     * Token type representing a key in a JSON object attribute.
+     */
     int ATTRIBUTE_KEY_TOKEN = 1;
+
+    /**
+     * Token type representing a value in a JSON object attribute.
+     */
     int ATTRIBUTE_VALUE_TOKEN = 2;
+
+    /**
+     * Token type representing a JSON array.
+     */
     int ARRAY_TOKEN = 3;
+
+    /**
+     * Token type representing an item in a JSON array.
+     */
     int ARRAY_ITEM_TOKEN = 4;
 
-
+    /**
+     * Token type representing an integer value.
+     */
     int INT_TOKEN = 5;
+
+    /**
+     * Token type representing a floating point value.
+     */
     int FLOAT_TOKEN = 6;
+
+    /**
+     * Token type representing a string value.
+     */
     int STRING_TOKEN = 7;
+
+    /**
+     * Token type representing a boolean value.
+     */
     int BOOLEAN_TOKEN = 8;
+
+    /**
+     * Token type representing a null value.
+     */
     int NULL_TOKEN = 9;
+
+    /**
+     * Token type representing a key in a JSON path.
+     */
     int PATH_KEY_TOKEN = 10;
+
+    /**
+     * Token type representing an index in a JSON path.
+     */
     int PATH_INDEX_TOKEN = 11;
 
     /**

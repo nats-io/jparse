@@ -34,13 +34,20 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class Json {
 
+    private Json() {
+    }
+
     private static final AtomicReference<JsonParserBuilder> builderRef =
             new AtomicReference<>(new JsonParserBuilder().setStrict(false));
     /**
      * The `JsonParser` used by the `Json` class for parsing JSON data.
      */
     private static final JsonParser PARSER = builder().build();
+
+    /** Environment variable for turning on strict parse support. */
     public static String J_PARSE_JSON_STRICT = "J_PARSE_JSON_STRICT";
+
+    /** Environment variable for turning off keys can be encoded parse support. */
     public static String J_OBJECT_KEY_CAN_BE_ENCODED = "J_OBJECT_KEY_CAN_BE_ENCODED";
 
     static {

@@ -27,14 +27,22 @@ import java.util.List;
 
 import static io.nats.jparse.token.TokenTypes.ARRAY_ITEM_TOKEN;
 
+/**
+ * Utility class for working with Node objects.
+ */
 public class NodeUtils {
 
+    private NodeUtils() {}
 
+    /**
+     * Retrieves the children tokens of a given TokenSubList.
+     *
+     * @param tokens the TokenSubList representing the root element and its children
+     * @return the List of children tokens
+     */
     public static List<List<Token>> getChildrenTokens(final TokenSubList tokens) {
-
         final Token root = tokens.get(0);
-        final List<List<Token>> childrenTokens;
-        childrenTokens = new ArrayList<>(16);
+        final List<List<Token>> childrenTokens = new ArrayList<>(16);
 
         for (int index = 1; index < tokens.size(); index++) {
             Token token = tokens.get(index);
@@ -44,23 +52,28 @@ public class NodeUtils {
             }
 
             if (token.type <= ARRAY_ITEM_TOKEN) {
-
                 int childCount = tokens.countChildren(index, token);
                 int endIndex = index + childCount;
                 childrenTokens.add(tokens.subList(index, endIndex));
                 index = endIndex - 1;
-
             } else {
                 childrenTokens.add(Collections.singletonList(token));
             }
-
         }
 
         return childrenTokens;
     }
 
+    /**
+     * Creates a Node object based on the given tokens and source.
+     *
+     * @param tokens                  the List of tokens representing the node
+     * @param source                  the CharSource providing the character data
+     * @param objectsKeysCanBeEncoded whether object keys can be encoded
+     * @return the created Node object
+     * @throws IllegalStateException if the NodeType is invalid
+     */
     public static Node createNode(final List<Token> tokens, final CharSource source, boolean objectsKeysCanBeEncoded) {
-
         final NodeType nodeType = NodeType.tokenTypeToElement(tokens.get(0).type);
 
         switch (nodeType) {
@@ -87,9 +100,16 @@ public class NodeUtils {
         }
     }
 
-
+    /**
+     * Creates a Node object for an object representation based on the given tokens and source.
+     *
+     * @param theTokens               the List of tokens representing the object
+     * @param source                  the CharSource providing the character data
+     * @param objectsKeysCanBeEncoded whether object keys can be encoded
+     * @return the created Node object
+     * @throws IllegalStateException if the NodeType is invalid
+     */
     public static Node createNodeForObject(final List<Token> theTokens, final CharSource source, boolean objectsKeysCanBeEncoded) {
-
         final Token rootToken = theTokens.get(1);
         final List<Token> tokens = theTokens.subList(1, theTokens.size());
         final NodeType nodeType = NodeType.tokenTypeToElement(rootToken.type);
@@ -113,6 +133,4 @@ public class NodeUtils {
                 throw new IllegalStateException();
         }
     }
-
-
 }

@@ -33,6 +33,12 @@ public class KeyPathNode implements ScalarNode, PathElement {
     private final Token rootElementToken;
     private final CharSource charSource;
 
+
+    /**
+     * Construct KeyPathNode.
+     * @param token token
+     * @param charSource charSource
+     */
     public KeyPathNode(final Token token, final CharSource charSource) {
         this.rootElementToken = token;
         this.charSource = charSource;

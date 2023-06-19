@@ -36,6 +36,8 @@ import java.util.Iterator;
  */
 public class Path {
 
+    private Path(){}
+
     /**
      * Finds the node at the specified path in the input JSON string.
      *

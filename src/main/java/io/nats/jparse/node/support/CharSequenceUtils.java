@@ -15,14 +15,25 @@
  */
 package io.nats.jparse.node.support;
 
-
+/**
+ * Utility class for working with CharSequence objects.
+ */
 public class CharSequenceUtils {
 
+    private CharSequenceUtils() {}
+
+    /**
+     * Compares two CharSequence objects for equality.
+     *
+     * @param cs1 the first CharSequence
+     * @param cs2 the second CharSequence
+     * @return true if the CharSequences are equal, false otherwise
+     */
     public static boolean equals(CharSequence cs1, CharSequence cs2) {
-
-        if (cs1.length() != cs2.length()) return false;
+        if (cs1.length() != cs2.length()) {
+            return false;
+        }
         final int len = cs1.length();
-
         for (int i = 0; i < len; i++) {
             char a = cs1.charAt(i);
             char b = cs2.charAt(i);
@@ -33,6 +44,12 @@ public class CharSequenceUtils {
         return true;
     }
 
+    /**
+     * Calculates the hash code of a CharSequence.
+     *
+     * @param cs the CharSequence
+     * @return the hash code value for the CharSequence
+     */
     public static int hashCode(final CharSequence cs) {
         int h = 0;
         for (int index = 0; index < cs.length(); index++) {

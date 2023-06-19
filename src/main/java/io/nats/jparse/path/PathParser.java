@@ -28,11 +28,15 @@ import java.util.List;
 /**
  * Provides similar functionality for parsing Json Pats as JSONPath expressions.
  *
- * @see <a href="<https://github.com/json-path/JsonPath>">JsonPath on GitHub</a>.
  */
 public class PathParser implements JsonParser {
 
 
+    /**
+     * Construct a new path parser.
+     */
+    public PathParser() {
+    }
     /**
      * Scans a given character source for tokens representing a JSONPath expression.
      *

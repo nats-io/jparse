@@ -67,6 +67,9 @@ import java.nio.file.Paths;
  */
 public class Sources {
 
+    private Sources() {
+    }
+
     /**
      * Creates a `CharSource` object from the specified `CharSequence`.
      *

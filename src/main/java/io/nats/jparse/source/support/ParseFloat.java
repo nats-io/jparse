@@ -1,11 +1,23 @@
 package io.nats.jparse.source.support;
 
+/**
+ * Parse Float class.
+ */
 public class ParseFloat {
+
+    private ParseFloat(){}
 
     static final float[] powersOf10 = {1e0f, 1e1f, 1e2f, 1e3f, 1e4f, 1e5f, 1e6f, 1e7f,
             1e8f, 1e9f, 1e10f, 1e11f, 1e12f, 1e13f, 1e14f, 1e15f, 1e16f, 1e17f, 1e18f};
 
 
+    /**
+     * Parse a float.
+     * @param chars chars
+     * @param startIndex start index
+     * @param endIndex end index
+     * @return float
+     */
     public static float parseFloat(char[] chars, int startIndex, int endIndex) {
         boolean negative = false;
         int i = startIndex;

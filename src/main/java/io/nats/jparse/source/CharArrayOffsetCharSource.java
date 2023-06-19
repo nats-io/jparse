@@ -44,6 +44,12 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     private final int length;
     private int index;
 
+    /**
+     * Create char source from offset into array
+     * @param startIndex start index
+     * @param endIndex end index
+     * @param chars characters in source
+     */
     public CharArrayOffsetCharSource(final int startIndex, final int endIndex, final char[] chars) {
         index = startIndex - 1;
         data = chars;
@@ -52,6 +58,11 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         length = endIndex - startIndex;
     }
 
+    /**
+     * Create Debug description
+     * @param c char we left off at
+     * @return description of char.
+     */
     public static String debugCharDescription(int c) {
         String charString;
         if (c == ' ') {

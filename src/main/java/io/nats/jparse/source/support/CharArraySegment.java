@@ -15,12 +15,24 @@
  */
 package io.nats.jparse.source.support;
 
+/**
+ * A segment of a character array (char[]), providing access to a subsequence
+ * of the array as a {@link CharSequence}.
+ */
 public class CharArraySegment implements CharSequence {
 
     private final int offset;
     private final int length;
     private final char[] data;
 
+    /**
+     * Creates a new CharArraySegment that starts at the given offset in the
+     * character array and extends for the specified length.
+     *
+     * @param offset The starting index in the character array.
+     * @param length The number of characters in the segment.
+     * @param data   The character array.
+     */
     public CharArraySegment(int offset, int length, char[] data) {
         this.offset = offset;
         this.length = length;
@@ -47,6 +59,15 @@ public class CharArraySegment implements CharSequence {
         return new String(data, offset, length);
     }
 
+    /**
+     * Compares this CharArraySegment to another object for equality. The other
+     * object is considered equal if it is a CharArraySegment with the same
+     * length and same characters, or if it is a CharSequence with the same
+     * length and same characters.
+     *
+     * @param o The object to compare for equality.
+     * @return True if the objects are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -87,6 +108,11 @@ public class CharArraySegment implements CharSequence {
 
     }
 
+    /**
+     * Returns a hash code value for this CharArraySegment.
+     *
+     * @return A hash code value for this CharArraySegment.
+     */
     @Override
     public int hashCode() {
         return toString().hashCode();

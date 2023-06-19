@@ -87,6 +87,15 @@ public class JsonParserBuilder {
      */
     private boolean supportNoQuoteKeys;
 
+
+    /**
+     * Builds a new instance of `JsonParser`.
+     *
+     */
+    public JsonParserBuilder() {
+
+    }
+
     /**
      * Returns a new instance of `JsonParserBuilder`.
      *
@@ -96,6 +105,10 @@ public class JsonParserBuilder {
         return new JsonParserBuilder();
     }
 
+    /**
+     * Does this support keys with no quotes.
+     * @return answer
+     */
     public boolean isSupportNoQuoteKeys() {
         return supportNoQuoteKeys;
     }
@@ -316,7 +329,7 @@ public class JsonParserBuilder {
 
     /**
      * Sets whether to allow comments when parsing JSON.
-     *
+     * @param allowComments allow comments
      * @return `true` if comments are allowed, `false` otherwise
      */
     public JsonParserBuilder setAllowComments(boolean allowComments) {

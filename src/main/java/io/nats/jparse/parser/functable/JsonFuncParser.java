@@ -46,6 +46,13 @@ public class JsonFuncParser implements JsonParser {
 
     /**
      * Create a new `JsonFuncParser` with the default function table.
+     * The default function table is defined by the `JsonParserFunctions` class.
+     *
+     * @param objectsKeysCanBeEncoded If true, the parser will encode the keys of objects when parsing
+     * @param funcTable function table
+     * @param defaultFunc default function if no function is found in the table.
+     * @param parseKey the function to parse keys.
+     * @see io.nats.jparse.parser.functable.JsonParserFunctions
      */
     public JsonFuncParser(final boolean objectsKeysCanBeEncoded, final ParseFunction[] funcTable,
                           final ParseFunction defaultFunc, final ParsePartFunction parseKey) {
