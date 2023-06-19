@@ -230,7 +230,7 @@ public class Json {
 
 
     /**
-     * Serialize the given {@link Object} to a String, the object must be a {@see Node}.
+     * Serialize the given {@link Object} to a String, the object must be a `Node`.
      *
      * @param object the object to serialize
      * @return the String representation of the object, or empty string if the object is null
@@ -241,7 +241,7 @@ public class Json {
     }
 
     /**
-     * Serialize the given {@link Object} to a {@link CharSequence}, the object must be a {@see Node}.
+     * Serialize the given {@link Object} to a {@link CharSequence}, the object must be a `Node.
      *
      * @param object the object to serialize
      * @return the CharSequence representation of the object, or empty CharSequence if the object is null
