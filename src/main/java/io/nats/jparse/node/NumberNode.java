@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class NumberNode extends Number implements ScalarNode, CharSequence {
 
@@ -165,21 +166,17 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
     }
 
     public boolean isInteger() {
-        switch (elementType) {
-            case INT:
-                return source.isInteger(this.token.startIndex, this.token.endIndex);
-            default:
-                return false;
+        if (Objects.requireNonNull(elementType) == NodeType.INT) {
+            return source.isInteger(this.token.startIndex, this.token.endIndex);
         }
+        return false;
     }
 
     public boolean isLong() {
-        switch (elementType) {
-            case INT:
-                return !source.isInteger(this.token.startIndex, this.token.endIndex);
-            default:
-                return false;
+        if (Objects.requireNonNull(elementType) == NodeType.INT) {
+            return !source.isInteger(this.token.startIndex, this.token.endIndex);
         }
+        return false;
     }
 
 

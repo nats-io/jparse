@@ -26,22 +26,48 @@ import io.nats.jparse.source.support.UnexpectedCharacterException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/**
+ * The CharArrayOffsetCharSource class is a concrete implementation of the CharSource abstract class.
+ * It represents a character source backed by a char array, with an offset indicating the starting position
+ * of the character sequence in the array. The class provides methods for parsing int, long, float, and double
+ * values from the character sequence, as well as for checking whether a substring represents a valid integer.
+ * It also provides an implementation of the errorDetails method, which generates a detailed error message
+ * based on the current character being processed and the current parsing state.
+ */
 public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
     private final static char[] MIN_INT_CHARS = MIN_INT_STR.toCharArray();
     private final static char[] MAX_INT_CHARS = MAX_INT_STR.toCharArray();
     private final char[] data;
-    private int index;
-    private final int  sourceStartIndex;
-    private final int  sourceEndIndex;
+    private final int sourceStartIndex;
+    private final int sourceEndIndex;
     private final int length;
+    private int index;
 
     public CharArrayOffsetCharSource(final int startIndex, final int endIndex, final char[] chars) {
-        index =  startIndex -1;
+        index = startIndex - 1;
         data = chars;
         sourceStartIndex = startIndex;
         sourceEndIndex = endIndex;
         length = endIndex - startIndex;
+    }
+
+    public static String debugCharDescription(int c) {
+        String charString;
+        if (c == ' ') {
+            charString = "[SPACE]";
+        } else if (c == '\t') {
+            charString = "[TAB]";
+        } else if (c == '\n') {
+            charString = "[NEWLINE]";
+        } else if (c == ETX) {
+            charString = "ETX";
+        } else {
+            charString = "'" + (char) c + "'";
+        }
+
+        charString = charString + " with an int value of " + c;
+        return charString;
     }
 
     @Override
@@ -60,7 +86,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         final int end = this.sourceEndIndex;
 
         loop:
-        for (; index < end; index++){
+        for (; index < end; index++) {
             char ch = data[index];
             switch (ch) {
                 case NEW_LINE_WS:
@@ -82,8 +108,8 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         final char[] data = this.data;
         final int end = sourceEndIndex;
 
-        for (; index < end; index++){
-            if (data[index]==c){
+        for (; index < end; index++) {
+            if (data[index] == c) {
                 this.index = index;
                 return true;
             }
@@ -133,7 +159,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
                     break loop;
             }
         }
-        this.index = index ;
+        this.index = index;
         return index == endIndex ? ETX : ch;
     }
 
@@ -158,7 +184,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
                     break loop;
             }
         }
-        this.index = index ;
+        this.index = index;
         return data[index];
     }
 
@@ -167,7 +193,6 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         return index - sourceStartIndex;
     }
 
-
     @Override
     public char getCurrentChar() {
         return data[index];
@@ -175,12 +200,11 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
     @Override
     public char getCurrentCharSafe() {
-        if (index  >= sourceEndIndex) {
+        if (index >= sourceEndIndex) {
             return ETX;
         }
         return data[index];
     }
-
 
     @Override
     public char getChartAt(final int index) {
@@ -237,7 +261,6 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     public String toString() {
         return new String(data, sourceStartIndex, length);
     }
-
 
     @Override
     public NumberParseResult findEndOfNumberFast() {
@@ -303,7 +326,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
 
         int i = index + 1;
-        char ch =  0;
+        char ch = 0;
         final char[] data = this.data;
         final int endIndex = this.sourceEndIndex;
 
@@ -341,7 +364,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
 
                 default:
-                    throw new UnexpectedCharacterException("Parsing JSON Float Number", "Unexpected character", this,  ch, i);
+                    throw new UnexpectedCharacterException("Parsing JSON Float Number", "Unexpected character", this, ch, i);
 
             }
 
@@ -444,25 +467,25 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         char ch = 0;
 
 
-            ch = data[i];
-            switch (ch) {
-                case CONTROL_ESCAPE_TOKEN:
-                case STRING_END_TOKEN:
-                case 'n':
-                case 'b':
-                case '/':
-                case 'r':
-                case 't':
-                case 'f':
-                    return i;
+        ch = data[i];
+        switch (ch) {
+            case CONTROL_ESCAPE_TOKEN:
+            case STRING_END_TOKEN:
+            case 'n':
+            case 'b':
+            case '/':
+            case 'r':
+            case 't':
+            case 'f':
+                return i;
 
-                case 'u':
-                    return findEndOfHexEncoding(i);
+            case 'u':
+                return findEndOfHexEncoding(i);
 
-                default:
-                    throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this, ch, i);
+            default:
+                throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this, ch, i);
 
-            }
+        }
 
     }
 
@@ -479,26 +502,25 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
                     i = findEndOfStringControlEncode(i + 1);
                     continue;
                 case STRING_END_TOKEN:
-                    index = i +1;
+                    index = i + 1;
                     return i;
                 default:
                     if (ch >= SPACE_WS) {
                         continue;
                     }
-                    throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this,  ch, i);
+                    throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this, ch, i);
 
             }
         }
 
-        throw new UnexpectedCharacterException("Parsing JSON Encoded String", "Unable to find closing for String", this, (int) ch, i);
+        throw new UnexpectedCharacterException("Parsing JSON Encoded String", "Unable to find closing for String", this, ch, i);
     }
-
 
     private int findEndOfHexEncoding(int index) {
         final char[] data = this.data;
         final int length = data.length;
 
-        if (isHex(data[++index]) && isHex(data[++index])  && isHex(data[++index])  && isHex(data[++index]) ) {
+        if (isHex(data[++index]) && isHex(data[++index]) && isHex(data[++index]) && isHex(data[++index])) {
             return index;
         } else {
             throw new UnexpectedCharacterException("Parsing hex encoding in a string", "Unexpected character", this);
@@ -545,21 +567,18 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         char ch = 0;
 
         for (; i < length; i++) {
-           ch = data[i];
-            switch (ch) {
-                case STRING_END_TOKEN:
-                    index = i;
-                    return i;
-                default:
-                    if (ch >= SPACE_WS) {
-                        continue;
-                    }
-                    throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this,  ch, i);
+            ch = data[i];
+            if (ch == STRING_END_TOKEN) {
+                index = i;
+                return i;
             }
+            if (ch >= SPACE_WS) {
+                continue;
+            }
+            throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this, ch, i);
         }
-        throw new UnexpectedCharacterException("Parsing JSON String", "Unable to find closing for String", this,  ch, i);
+        throw new UnexpectedCharacterException("Parsing JSON String", "Unable to find closing for String", this, ch, i);
     }
-
 
     @Override
     public NumberParseResult findEndOfNumber() {
@@ -589,7 +608,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
                 case ARRAY_SEP:
                 case OBJECT_END_TOKEN:
                 case ARRAY_END_TOKEN:
-                   break loop;
+                    break loop;
 
                 case NUM_0:
                 case NUM_1:
@@ -608,7 +627,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
                     if (startCh == MINUS) {
                         final int numLenSoFar = i - startIndex;
                         if (numLenSoFar == 1) {
-                            throw new UnexpectedCharacterException("Parsing JSON Number", "Unexpected character", this,  ch, i);
+                            throw new UnexpectedCharacterException("Parsing JSON Number", "Unexpected character", this, ch, i);
                         }
                     }
                     index = i;
@@ -622,7 +641,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
 
                 default:
-                    throw new UnexpectedCharacterException("Parsing JSON Number", "Unexpected character", this,  ch, i);
+                    throw new UnexpectedCharacterException("Parsing JSON Number", "Unexpected character", this, ch, i);
 
             }
 
@@ -663,10 +682,10 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     private NumberParseResult findEndOfFloat() {
 
         int i = index + 1;
-        char ch =  (char) next();
+        char ch = (char) next();
 
         if (!isNumber(ch)) {
-            throw new UnexpectedCharacterException("Parsing float part of number", "After decimal point expecting number but got", this, (int) ch, this.index);
+            throw new UnexpectedCharacterException("Parsing float part of number", "After decimal point expecting number but got", this, ch, this.index);
         }
         final char[] data = this.data;
 
@@ -706,7 +725,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
 
                 default:
-                    throw new UnexpectedCharacterException("Parsing JSON Float Number", "Unexpected character", this,  ch, i);
+                    throw new UnexpectedCharacterException("Parsing JSON Float Number", "Unexpected character", this, ch, i);
 
             }
 
@@ -739,15 +758,15 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     private NumberParseResult parseFloatWithExponent() {
 
 
-        char ch =  (char) next();
+        char ch = (char) next();
         if (!isNumberOrSign(ch)) {
-            throw new UnexpectedCharacterException("Parsing exponent part of float", "After exponent expecting number or sign but got", this, (int) ch, this.index);
+            throw new UnexpectedCharacterException("Parsing exponent part of float", "After exponent expecting number or sign but got", this, ch, this.index);
         }
 
         if (isSign(ch)) {
-            ch =  (char) next();
+            ch = (char) next();
             if (!isNumber(ch)) {
-                throw new UnexpectedCharacterException("Parsing exponent part of float after sign", "After sign expecting number but got", this, (int) ch, this.index);
+                throw new UnexpectedCharacterException("Parsing exponent part of float after sign", "After sign expecting number but got", this, ch, this.index);
             }
         }
 
@@ -785,7 +804,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
                     break;
 
                 default:
-                    throw new UnexpectedCharacterException("Parsing Float with exponent", "Unable to find closing for Number", this,  ch, i);
+                    throw new UnexpectedCharacterException("Parsing Float with exponent", "Unable to find closing for Number", this, ch, i);
 
             }
         }
@@ -857,11 +876,10 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
                     this.index = i + 1;
                     return true;
                 case ATTRIBUTE_SEP:
-                    this.index = i ;
+                    this.index = i;
                     return false;
             }
         }
-
 
 
         throw new UnexpectedCharacterException("Parsing Object Key", "Finding object end or separator", this);
@@ -881,7 +899,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
                     this.index = i + 1;
                     return true;
                 case ARRAY_SEP:
-                    this.index = i ;
+                    this.index = i;
                     return false;
 
                 case NEW_LINE_WS:
@@ -920,7 +938,7 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
             case 1:
                 return key.charAt(0) == data[idx];
             case 2:
-                return key.charAt(0) == data[idx ] &&
+                return key.charAt(0) == data[idx] &&
                         key.charAt(1) == data[idx + 1];
             case 3:
                 return key.charAt(0) == data[idx] &&
@@ -1102,7 +1120,6 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
     }
 
-
     @Override
     public long getLong(final int startIndex, final int endIndex) {
         int from = startIndex + sourceStartIndex;
@@ -1134,25 +1151,24 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
     }
 
-
     @Override
-    public String errorDetails( String message, int index, int ch ) {
+    public String errorDetails(String message, int index, int ch) {
         StringBuilder buf = new StringBuilder(255);
 
         final char[] array = data;
 
-        buf.append( message ).append("\n");
+        buf.append(message).append("\n");
 
 
         buf.append("\n");
-        buf.append( "The current character read is " + debugCharDescription( ch ) ).append('\n');
+        buf.append("The current character read is " + debugCharDescription(ch)).append('\n');
 
 
         int line = 0;
         int lastLineIndex = 0;
 
-        for ( int i = 0; i < index && i < array.length; i++ ) {
-            if ( array[ i ] == '\n' ) {
+        for (int i = 0; i < index && i < array.length; i++) {
+            if (array[i] == '\n') {
                 line++;
                 lastLineIndex = i + 1;
             }
@@ -1160,55 +1176,35 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
         int count = 0;
 
-        for ( int i = lastLineIndex; i < array.length; i++, count++ ) {
-            if ( array[ i ] == '\n' ) {
+        for (int i = lastLineIndex; i < array.length; i++, count++) {
+            if (array[i] == '\n') {
                 break;
             }
         }
 
 
-        buf.append( "line number " + (line + 1) ).append('\n');
-        buf.append( "index number " + index ).append('\n');
-        buf.append( "offset index number " + index + sourceStartIndex).append('\n');
+        buf.append("line number " + (line + 1)).append('\n');
+        buf.append("index number " + index).append('\n');
+        buf.append("offset index number " + index + sourceStartIndex).append('\n');
 
 
         try {
-            buf.append( new String( array, lastLineIndex, count ) ).append('\n');
-        } catch ( Exception ex ) {
+            buf.append(new String(array, lastLineIndex, count)).append('\n');
+        } catch (Exception ex) {
 
             try {
-                int start =  index = ( index - 10 < 0 ) ? 0 : index - 10;
+                int start = index = (index - 10 < 0) ? 0 : index - 10;
 
-                buf.append( new String( array, start, index ) ).append('\n');
-            } catch ( Exception ex2 ) {
-                buf.append( new String( array, 0, array.length ) ).append('\n');
+                buf.append(new String(array, start, index)).append('\n');
+            } catch (Exception ex2) {
+                buf.append(new String(array)).append('\n');
             }
         }
-        for ( int i = 0; i < ( index - lastLineIndex ); i++ ) {
-            buf.append( '.' );
+        for (int i = 0; i < (index - lastLineIndex); i++) {
+            buf.append('.');
         }
-        buf.append( '^' );
+        buf.append('^');
 
         return buf.toString();
-    }
-
-
-
-    public static String debugCharDescription( int c ) {
-        String charString;
-        if ( c == ' ' ) {
-            charString = "[SPACE]";
-        } else if ( c == '\t' ) {
-            charString = "[TAB]";
-        } else if ( c == '\n' ) {
-            charString = "[NEWLINE]";
-        } else if ( c == ETX) {
-            charString = "ETX";
-        } else{
-            charString = "'" + (char)c + "'";
-        }
-
-        charString = charString + " with an int value of " + ( ( int ) c );
-        return charString;
     }
 }

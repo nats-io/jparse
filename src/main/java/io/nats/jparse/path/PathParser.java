@@ -16,23 +16,43 @@
 package io.nats.jparse.path;
 
 import io.nats.jparse.node.RootNode;
+import io.nats.jparse.node.support.ParseConstants;
 import io.nats.jparse.node.support.TokenList;
 import io.nats.jparse.parser.JsonParser;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.token.Token;
 import io.nats.jparse.token.TokenTypes;
-import io.nats.jparse.node.support.ParseConstants;
 
 import java.util.List;
 
+/**
+ * Provides similar functionality for parsing Json Pats as JSONPath expressions.
+ *
+ * @see <a href="<https://github.com/json-path/JsonPath>">JsonPath on GitHub</a>.
+ */
 public class PathParser implements JsonParser {
 
 
+    /**
+     * Scans a given character source for tokens representing a JSONPath expression.
+     *
+     * @param source the character source to scan
+     * @return a list of tokens representing the JSONPath expression
+     */
     @Override
     public List<Token> scan(final CharSource source) {
-
         return scan(source, new TokenList());
+    }
 
+    /**
+     * Compiles a given JSON Path expression into a parse tree represented by a `RootNode`.
+     *
+     * @param source the character source containing the JSONPath expression
+     * @return a `RootNode` representing the parse tree for the JSONPath expression
+     */
+    @Override
+    public RootNode parse(CharSource source) {
+        return new RootNode((TokenList) scan(source), source, true);
     }
 
     private List<Token> scan(CharSource source, TokenList tokens) {
@@ -382,11 +402,5 @@ public class PathParser implements JsonParser {
 
         tokens.add(new Token(startIndex, endIndex, TokenTypes.PATH_INDEX_TOKEN));
 
-    }
-
-
-    @Override
-    public RootNode parse(CharSource source) {
-        return new RootNode((TokenList) scan(source), source, true);
     }
 }

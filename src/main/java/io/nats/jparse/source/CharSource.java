@@ -80,7 +80,7 @@ public interface CharSource {
      * Returns the string containing characters from the source between the given start and end indices.
      *
      * @param startIndex The index of the first character to retrieve
-     * @param endIndex The index of the last character to retrieve
+     * @param endIndex   The index of the last character to retrieve
      * @return The string containing characters from the source between the given start and end indices
      */
     String getString(int startIndex, int endIndex);
@@ -89,7 +89,7 @@ public interface CharSource {
      * Parses a double value from the characters in the source between the given start and end indices.
      *
      * @param startIndex The index of the first character to parse
-     * @param endIndex The index of the last character to parse
+     * @param endIndex   The index of the last character to parse
      * @return The double value parsed from the characters in the source between the given start and end indices
      */
     double getDouble(int startIndex, int endIndex);
@@ -98,7 +98,7 @@ public interface CharSource {
      * Parses a float value from the characters in the source between the given start and end indices.
      *
      * @param startIndex The index of the first character to parse
-     * @param endIndex The index of the last character to parse
+     * @param endIndex   The index of the last character to parse
      * @return The float value parsed from the characters in the source between the given start and end indices
      */
     float getFloat(int startIndex, int endIndex);
@@ -107,7 +107,7 @@ public interface CharSource {
      * Parses an integer value from the characters in the source between the given start and end indices.
      *
      * @param startIndex The index of the first character to parse
-     * @param endIndex The index of the last character to parse
+     * @param endIndex   The index of the last character to parse
      * @return The integer value parsed from the characters in the source between the given start and end indices
      */
     int getInt(int startIndex, int endIndex);
@@ -116,7 +116,7 @@ public interface CharSource {
      * Parses a long value from the characters in the source between the given start and end indices.
      *
      * @param startIndex The index of the first character to parse
-     * @param endIndex The index of the last character to parse
+     * @param endIndex   The index of the last character to parse
      * @return The long value parsed from the characters in the source between the given start and end indices
      */
     long getLong(int startIndex, int endIndex);
@@ -125,7 +125,7 @@ public interface CharSource {
      * Returns a character sequence containing characters from the source between the given start and end indices.
      *
      * @param startIndex The index of the first character to retrieve
-     * @param endIndex The index of the last character to retrieve
+     * @param endIndex   The index of the last character to retrieve
      * @return A character sequence containing characters from the source between the given start and end indices
      */
     CharSequence getCharSequence(int startIndex, int endIndex);
@@ -134,7 +134,7 @@ public interface CharSource {
      * Returns a character array containing characters from the source between the given start and end indices.
      *
      * @param startIndex The index of the first character to retrieve
-     * @param endIndex The index of the last character to retrieve
+     * @param endIndex   The index of the last character to retrieve
      * @return A character array containing characters from the source between the given start and end indices
      */
     char[] getArray(int startIndex, int endIndex);
@@ -143,7 +143,7 @@ public interface CharSource {
      * Returns an encoded string containing characters from the source between the given start and end indices.
      *
      * @param start The index of the first character to include in the encoded string
-     * @param end The index of the last character to include in the encoded string
+     * @param end   The index of the last character to include in the encoded string
      * @return An encoded string containing characters from the source between the given start and end indices
      */
     String getEncodedString(int start, int end);
@@ -153,7 +153,7 @@ public interface CharSource {
      * or a plain string if no encoding is necessary.
      *
      * @param start The index of the first character to include in the encoded string
-     * @param end The index of the last character to include in the encoded string
+     * @param end   The index of the last character to include in the encoded string
      * @return An encoded or plain string containing characters from the source between the given start and end indices
      */
     String toEncodedStringIfNeeded(int start, int end);
@@ -162,7 +162,7 @@ public interface CharSource {
      * Parses a BigDecimal value from the characters in the source between the given start and end indices.
      *
      * @param startIndex The index of the first character to parse
-     * @param endIndex The index of the last character to parse
+     * @param endIndex   The index of the last character to parse
      * @return The BigDecimal value parsed from the characters in the source between the given start and end indices
      */
     BigDecimal getBigDecimal(int startIndex, int endIndex);
@@ -171,7 +171,7 @@ public interface CharSource {
      * Parses a BigInteger value from the characters in the source between the given start and end indices.
      *
      * @param startIndex The index of the first character to parse
-     * @param endIndex The index of the last character to parse
+     * @param endIndex   The index of the last character to parse
      * @return The BigInteger value parsed from the characters in the source between the given start and end indices
      */
     BigInteger getBigInteger(int startIndex, int endIndex);
@@ -222,8 +222,8 @@ public interface CharSource {
      * Checks if the characters in the source between the given start and end indices match a given character sequence.
      *
      * @param startIndex The index of the first character to compare
-     * @param endIndex The index of the last character to compare
-     * @param key The character sequence to compare the source to
+     * @param endIndex   The index of the last character to compare
+     * @param key        The character sequence to compare the source to
      * @return `true` if the characters in the source match the character sequence, otherwise `false`
      */
     boolean matchChars(int startIndex, int endIndex, CharSequence key);
@@ -232,7 +232,7 @@ public interface CharSource {
      * Checks if the characters in the source between the given start and end indices represent an integer value.
      *
      * @param startIndex The index of the first character to check
-     * @param endIndex The index of the last character to check
+     * @param endIndex   The index of the last character to check
      * @return `true` if the characters represent an integer value, otherwise `false`
      */
     boolean isInteger(int startIndex, int endIndex);
@@ -248,8 +248,8 @@ public interface CharSource {
      * Returns a string containing error details for the given message, index, and character.
      *
      * @param message The error message to include in the details
-     * @param index The index in the source where the error occurred
-     * @param ch The character causing the error
+     * @param index   The index in the source where the error occurred
+     * @param ch      The character causing the error
      * @return A string containing error details for the given message, index, and character
      */
     String errorDetails(String message, int index, int ch);

@@ -18,7 +18,7 @@ package io.nats.jparse.node;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public interface ScalarNode extends Node{
+public interface ScalarNode extends Node {
 
     @Override
     default boolean isScalar() {
@@ -33,35 +33,35 @@ public interface ScalarNode extends Node{
 
     Object value();
 
-    default boolean booleanValue()  {
+    default boolean booleanValue() {
         throw new UnsupportedOperationException();
     }
 
-    default int intValue()  {
+    default int intValue() {
         throw new UnsupportedOperationException();
     }
 
-    default long longValue()  {
+    default long longValue() {
         throw new UnsupportedOperationException();
     }
 
-    default double doubleValue()  {
+    default double doubleValue() {
         throw new UnsupportedOperationException();
     }
 
-    default BigDecimal bigDecimalValue()  {
+    default BigDecimal bigDecimalValue() {
         throw new UnsupportedOperationException();
     }
 
-    default BigInteger bigIntegerValue()  {
+    default BigInteger bigIntegerValue() {
         throw new UnsupportedOperationException();
     }
 
-    default CharSequence charSequenceValue()  {
-       return this.originalCharSequence();
+    default CharSequence charSequenceValue() {
+        return this.originalCharSequence();
     }
 
-    default String stringValue()  {
+    default String stringValue() {
         return this.originalString();
     }
 

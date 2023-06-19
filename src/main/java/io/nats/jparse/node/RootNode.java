@@ -76,11 +76,11 @@ public class RootNode implements CollectionNode {
     }
 
     private List<List<Token>> doGetChildrenTokens() {
-            return ((CollectionNode) getNode()).childrenTokens();
+        return ((CollectionNode) getNode()).childrenTokens();
     }
 
     private Node doGetNode(Object key) {
-            return ((CollectionNode) getNode()).getNode(key);
+        return ((CollectionNode) getNode()).getNode(key);
     }
 
     public Node getNode() {

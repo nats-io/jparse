@@ -35,7 +35,7 @@ import io.nats.jparse.token.Token;
 import java.util.List;
 import java.util.Optional;
 
-public interface CollectionNode extends Node{
+public interface CollectionNode extends Node {
 
     @Override
     default boolean isScalar() {
@@ -56,7 +56,7 @@ public interface CollectionNode extends Node{
     List<List<Token>> childrenTokens();
 
     default ArrayNode asArray() {
-        return (ArrayNode ) this;
+        return (ArrayNode) this;
     }
 
     default ObjectNode asObject() {

@@ -95,7 +95,7 @@ public class ParseDouble {
         int exponent = 0;
 
 
-        char sign =  chars[i];
+        char sign = chars[i];
 
         switch (sign) {
             case '-':

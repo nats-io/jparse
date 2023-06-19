@@ -26,21 +26,44 @@ import io.nats.jparse.token.TokenTypes;
 
 import java.util.List;
 
+/**
+ * The `JsonStrictParser` class is an implementation of the `JsonParser` interface that uses a strict
+ * JSON parsing algorithm. The parser does not accept JSON strings that are not strictly compliant
+ * with the JSON RFC.
+ */
 public class JsonStrictParser implements JsonParser {
 
     private final boolean objectsKeysCanBeEncoded;
     int nestLevel;
 
 
+    /**
+     * Create a new `JsonStrictParser` instance.
+     *
+     * @param objectsKeysCanBeEncoded If `true`, then object keys can be encoded (e.g. `{"key\n\t": "value"}`).
+     */
     public JsonStrictParser(boolean objectsKeysCanBeEncoded) {
         this.objectsKeysCanBeEncoded = objectsKeysCanBeEncoded;
     }
 
+
+    /**
+     * Scan a character source and return a list of tokens representing the JSON string.
+     *
+     * @param source The character source to scan
+     * @return A list of tokens representing the JSON
+     */
     @Override
     public List<Token> scan(final CharSource source) {
-         return scan(source, new TokenList());
+        return scan(source, new TokenList());
     }
 
+    /**
+     * Parse a character source and return a root node representing the parsed JSON.
+     *
+     * @param source The character source to parse
+     * @return A root node representing the parsed JSON
+     */
     @Override
     public RootNode parse(CharSource source) {
 
@@ -140,11 +163,9 @@ public class JsonStrictParser implements JsonParser {
     }
 
 
-
-
     private boolean parseArrayItem(CharSource source, TokenList tokens) {
         char startChar = source.getCurrentChar();
-        int ch  = source.nextSkipWhiteSpace();
+        int ch = source.nextSkipWhiteSpace();
 
         switch (ch) {
             case OBJECT_START_TOKEN:
@@ -157,53 +178,52 @@ public class JsonStrictParser implements JsonParser {
 
             case TRUE_BOOLEAN_START:
                 parseTrue(source, tokens);
-                    break;
+                break;
 
-                case FALSE_BOOLEAN_START:
-                    parseFalse(source, tokens);
-                    break;
+            case FALSE_BOOLEAN_START:
+                parseFalse(source, tokens);
+                break;
 
 
-                case NULL_START:
-                    parseNull(source, tokens);
-                    break;
+            case NULL_START:
+                parseNull(source, tokens);
+                break;
 
-                case STRING_START_TOKEN:
-                    parseString(source, tokens);
-                    break;
+            case STRING_START_TOKEN:
+                parseString(source, tokens);
+                break;
 
-                case NUM_0:
-                case NUM_1:
-                case NUM_2:
-                case NUM_3:
-                case NUM_4:
-                case NUM_5:
-                case NUM_6:
-                case NUM_7:
-                case NUM_8:
-                case NUM_9:
-                case MINUS:
-                case PLUS:
-                    parseNumber(source, tokens);
-                    if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == ARRAY_SEP) {
-                        if (source.getCurrentChar() == ARRAY_END_TOKEN) {
-                            source.next();
-                            return true;
-                        }
+            case NUM_0:
+            case NUM_1:
+            case NUM_2:
+            case NUM_3:
+            case NUM_4:
+            case NUM_5:
+            case NUM_6:
+            case NUM_7:
+            case NUM_8:
+            case NUM_9:
+            case MINUS:
+            case PLUS:
+                parseNumber(source, tokens);
+                if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == ARRAY_SEP) {
+                    if (source.getCurrentChar() == ARRAY_END_TOKEN) {
+                        source.next();
+                        return true;
                     }
-                    break;
+                }
+                break;
 
-                 case ARRAY_END_TOKEN:
-                     if (startChar == ARRAY_SEP) {
-                         throw new UnexpectedCharacterException("Parsing Array Item", "Trailing comma", source, (char) ch);
-                     }
-                    source.next();
-                    return true;
-
+            case ARRAY_END_TOKEN:
+                if (startChar == ARRAY_SEP) {
+                    throw new UnexpectedCharacterException("Parsing Array Item", "Trailing comma", source, (char) ch);
+                }
+                source.next();
+                return true;
 
 
             default:
-                    throw new UnexpectedCharacterException("Parsing Array Item", "Unexpected character", source, (char) ch);
+                throw new UnexpectedCharacterException("Parsing Array Item", "Unexpected character", source, (char) ch);
 
         }
 
@@ -253,18 +273,17 @@ public class JsonStrictParser implements JsonParser {
         }
 
 
+        boolean done = source.findObjectEndOrAttributeSep();
 
-            boolean done = source.findObjectEndOrAttributeSep();
+        if (!done && found) {
+            tokens.set(tokenListIndex, new Token(startIndex + 1, source.getIndex(), TokenTypes.ATTRIBUTE_KEY_TOKEN));
+        } else if (found && done) {
 
-            if (!done && found) {
-                tokens.set(tokenListIndex, new Token(startIndex + 1, source.getIndex(), TokenTypes.ATTRIBUTE_KEY_TOKEN));
-            } else if (found && done) {
+            throw new UnexpectedCharacterException("Parsing key", "Not found", source);
 
-                throw new UnexpectedCharacterException("Parsing key", "Not found", source);
+        }
 
-            }
-
-            return done;
+        return done;
 
     }
 

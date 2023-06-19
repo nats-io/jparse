@@ -60,7 +60,7 @@ public enum NodeType implements TokenTypes {
             case PATH_INDEX_TOKEN:
                 return NodeType.PATH_INDEX;
             default:
-                throw new IllegalStateException("" + tokenType);
+                throw new IllegalStateException(String.valueOf(tokenType));
         }
 
     }

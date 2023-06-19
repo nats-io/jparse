@@ -10,7 +10,7 @@ plugins {
 }
 
 
-def jarVersion = "1.2.0"
+def jarVersion = "1.2.1"
 
 group = 'io.nats'
 

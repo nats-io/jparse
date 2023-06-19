@@ -58,7 +58,7 @@ public class CharArraySegment implements CharSequence {
             }
 
             final int end = length + offset;
-            for (int i = offset,  j = other.offset; i < end; i++, j++) {
+            for (int i = offset, j = other.offset; i < end; i++, j++) {
                 final char cOther = other.data[j];
                 final char cThis = data[i];
                 if (cOther != cThis) {
@@ -73,7 +73,7 @@ public class CharArraySegment implements CharSequence {
                 return false;
             }
             final int end = length + offset;
-            for (int i = offset,  j = 0; i < end; i++, j++) {
+            for (int i = offset, j = 0; i < end; i++, j++) {
                 final char cOther = other.charAt(j);
                 final char cThis = data[i];
                 if (cOther != cThis) {
