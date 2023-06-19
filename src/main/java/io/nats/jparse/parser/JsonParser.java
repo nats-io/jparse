@@ -23,12 +23,47 @@ import io.nats.jparse.token.Token;
 
 import java.util.List;
 
+/**
+ * The `JsonParser` interface provides methods for scanning and parsing JSON strings. It defines methods for
+ * scanning a character source and returning a list of tokens, as well as for parsing a character source
+ * and returning a root node representing the parsed JSON. The interface also includes default methods
+ * for parsing and scanning strings,
+ * and it extends the `ParseConstants` interface, which defines constants used for parsing JSON strings.
+ */
 public interface JsonParser extends ParseConstants {
+
+    /**
+     * Scan a character source and return a list of tokens representing the JSON string.
+     *
+     * @param source The character source to scan
+     * @return A list of tokens representing the JSON string
+     */
     List<Token> scan(final CharSource source);
+
+    /**
+     * Parse a character source and return a root node representing the parsed JSON.
+     *
+     * @param source The character source to parse
+     * @return A root node representing the parsed JSON
+     */
     RootNode parse(final CharSource source);
+
+    /**
+     * Parse a string and return a root node representing the parsed JSON.
+     *
+     * @param source The string to parse
+     * @return A root node representing the parsed JSON
+     */
     default RootNode parse(final String source) {
         return parse(Sources.stringSource(source));
     }
+
+    /**
+     * Scan a string and return a list of tokens representing the JSON string.
+     *
+     * @param source The string to scan
+     * @return A list of tokens representing the JSON string
+     */
     default List<Token> scan(final String source) {
         return scan(Sources.stringSource(source));
     }

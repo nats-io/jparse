@@ -20,6 +20,15 @@ class JsonTest {
 
 
     @Test
+    public void niceJson() {
+
+        String niceJson = "[{ 'name': 'John Doe', 'age': 98 }, { 'name': 'Jane `nDoe', 'age': 89 }]";
+        String expectedJson = niceJson.replace('`', '\\').replace('\'', '"');
+        String validJson = Json.niceJson(niceJson);
+        assertEquals(expectedJson, validJson);
+
+    }
+    @Test
     public void testToArrayNodeReturnsArrayNodeForValidJson() {
         String validJson = Json.niceJson("[{ 'name': 'John Doe', 'age': 98 }, { 'name': 'Jane Doe', 'age': 89 }]");
         ArrayNode arrayNode = Json.toArrayNode(validJson);

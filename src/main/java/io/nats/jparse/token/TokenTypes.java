@@ -15,6 +15,12 @@
  */
 package io.nats.jparse.token;
 
+/**
+ * The TokenTypes interface defines constants for the different token types used during JSON parsing. It includes
+ * constants for object, attribute key, attribute value, array, and array item tokens, as well as for integer, float,
+ * string, boolean, and null tokens. The interface also includes a method for getting a human-readable name for a
+ * token type based on its integer value.
+ */
 public interface TokenTypes {
 
     int OBJECT_TOKEN = 0;
@@ -32,6 +38,12 @@ public interface TokenTypes {
     int PATH_KEY_TOKEN = 10;
     int PATH_INDEX_TOKEN = 11;
 
+    /**
+     * Returns a human-readable name for a token type based on its integer value.
+     *
+     * @param tokenType The integer token type to get the name for
+     * @return A human-readable name for the token type
+     */
     static String getTypeName(final int tokenType) {
         switch (tokenType) {
             case OBJECT_TOKEN:
