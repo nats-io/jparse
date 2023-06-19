@@ -18,28 +18,94 @@ package io.nats.jparse.node;
 
 import io.nats.jparse.token.TokenTypes;
 
+/**
+ * This enum represents the different types of nodes in the JParse library.
+ * <p>
+ * Each node type corresponds to a specific token type.
+ *
+ * <p>The enum values include ROOT, OBJECT, ARRAY, INT, FLOAT, STRING, BOOLEAN, NULL,
+ * PATH_KEY, PATH_INDEX, PATH, and OTHER.
+ *
+ * <p>The tokenTypeToElement method allows converting a token type to its corresponding NodeType.
+ *
+ * @see io.nats.jparse.token.TokenTypes
+ */
 public enum NodeType implements TokenTypes {
-    ROOT(-1),
-    OBJECT(OBJECT_TOKEN),
-    ARRAY(ARRAY_TOKEN),
-    INT(INT_TOKEN),
-    FLOAT(FLOAT_TOKEN),
-    STRING(STRING_TOKEN),
-    BOOLEAN(BOOLEAN_TOKEN),
-    NULL(NULL_TOKEN),
-    PATH_KEY(PATH_KEY_TOKEN),
-    PATH_INDEX(PATH_INDEX_TOKEN),
-    PATH(-1),
-    OTHER(-2);
 
+    /**
+
+     The root node type.
+     */
+    ROOT(-1),
+    /**
+
+     The object node type.
+     */
+    OBJECT(OBJECT_TOKEN),
+    /**
+
+     The array node type.
+     */
+    ARRAY(ARRAY_TOKEN),
+    /**
+
+     The integer node type.
+     */
+    INT(INT_TOKEN),
+    /**
+
+     The float node type.
+     */
+    FLOAT(FLOAT_TOKEN),
+    /**
+
+     The string node type.
+     */
+    STRING(STRING_TOKEN),
+    /**
+
+     The boolean node type.
+     */
+    BOOLEAN(BOOLEAN_TOKEN),
+    /**
+
+     The null node type.
+     */
+    NULL(NULL_TOKEN),
+    /**
+
+     The path key node type.
+     */
+    PATH_KEY(PATH_KEY_TOKEN),
+    /**
+
+     The path index node type.
+     */
+    PATH_INDEX(PATH_INDEX_TOKEN),
+    /**
+
+     The path node type.
+     */
+    PATH(-1),
+    /**
+
+     An other or unrecognized node type.
+     */
+    OTHER(-2);
     private final int tokenType;
 
-    NodeType(int tokenTYpe) {
-        this.tokenType = tokenTYpe;
+    NodeType(int tokenType) {
+        this.tokenType = tokenType;
     }
 
-    public static NodeType tokenTypeToElement(final int tokenType) {
+    /**
 
+     Converts a token type to its corresponding NodeType.
+     @param tokenType the token type to convert
+     @return the corresponding NodeType
+     @throws IllegalStateException if the token type is invalid
+     */
+    public static NodeType tokenTypeToElement(final int tokenType) {
         switch (tokenType) {
             case OBJECT_TOKEN:
                 return NodeType.OBJECT;
@@ -62,6 +128,5 @@ public enum NodeType implements TokenTypes {
             default:
                 throw new IllegalStateException(String.valueOf(tokenType));
         }
-
     }
 }
