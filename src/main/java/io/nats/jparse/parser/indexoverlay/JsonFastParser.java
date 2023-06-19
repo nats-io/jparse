@@ -26,20 +26,44 @@ import io.nats.jparse.token.TokenTypes;
 
 import java.util.List;
 
+/**
+ * The `JsonFastParser` class provides methods for scanning and parsing JSON strings. It defines methods for
+ * scanning a character source and returning a list of tokens, as well as for parsing a character source
+ * and returning a root node representing the parsed JSON. The class also includes default methods
+ * for parsing and scanning strings,
+ * and it extends the `ParseConstants` interface, which defines constants used for parsing JSON strings.
+ */
 public class JsonFastParser implements JsonParser {
 
     private final boolean objectsKeysCanBeEncoded;
 
 
+    /**
+     * Create a new `JsonFastParser` instance.
+     *
+     * @param objectsKeysCanBeEncoded If `true`, then object keys can be encoded (e.g. `{"key\n\t": "value"}`).
+     */
     public JsonFastParser(boolean objectsKeysCanBeEncoded) {
         this.objectsKeysCanBeEncoded = objectsKeysCanBeEncoded;
     }
 
+    /**
+     * Scan a character source and return a list of tokens representing the JSON string.
+     *
+     * @param source The character source to scan
+     * @return A list of tokens representing the JSON
+     */
     @Override
     public List<Token> scan(final CharSource source) {
-         return scan(source, new TokenList());
+        return scan(source, new TokenList());
     }
 
+    /**
+     * Parse a character source and return a root node representing the parsed JSON.
+     *
+     * @param source The character source to parse
+     * @return A root node representing the parsed JSON
+     */
     @Override
     public RootNode parse(CharSource source) {
         return new RootNode((TokenList) scan(source), source, objectsKeysCanBeEncoded);
@@ -185,7 +209,7 @@ public class JsonFastParser implements JsonParser {
                     return false;
 
                 default:
-                    throw new UnexpectedCharacterException("Parsing Array Item", "Unexpected character", source, (char) ch);
+                    throw new UnexpectedCharacterException("Parsing Array Item", "Unexpected character", source, ch);
 
 
             }
@@ -237,18 +261,17 @@ public class JsonFastParser implements JsonParser {
         }
 
 
+        boolean done = source.findObjectEndOrAttributeSep();
 
-            boolean done = source.findObjectEndOrAttributeSep();
+        if (!done && found) {
+            tokens.set(tokenListIndex, new Token(startIndex + 1, source.getIndex(), TokenTypes.ATTRIBUTE_KEY_TOKEN));
+        } else if (found && done) {
 
-            if (!done && found) {
-                tokens.set(tokenListIndex, new Token(startIndex + 1, source.getIndex(), TokenTypes.ATTRIBUTE_KEY_TOKEN));
-            } else if (found && done) {
+            throw new UnexpectedCharacterException("Parsing key", "Not found", source);
 
-                throw new UnexpectedCharacterException("Parsing key", "Not found", source);
+        }
 
-            }
-
-            return done;
+        return done;
 
     }
 
@@ -342,7 +365,7 @@ public class JsonFastParser implements JsonParser {
         while (!done) {
             done = parseKey(source, tokens);
             if (!done)
-              done = parseValue(source, tokens);
+                done = parseValue(source, tokens);
         }
         source.next();
         tokens.set(tokenListIndex, new Token(startSourceIndex, source.getIndex(), TokenTypes.OBJECT_TOKEN));

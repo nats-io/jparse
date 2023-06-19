@@ -29,9 +29,7 @@ import java.util.List;
 
 public abstract class JsonEventAbstractParser implements JsonEventParser, JsonParser {
 
-    private final TokenEventListener tokenEventListener;
-    private TokenList tokenList;
-
+    protected final boolean objectsKeysCanBeEncoded;
     final TokenEventListener arrayItemListener = new TokenEventListener() {
         @Override
         public void start(int tokenId, int index, CharSource source) {
@@ -52,7 +50,7 @@ public abstract class JsonEventAbstractParser implements JsonEventParser, JsonPa
 
         }
     };
-    protected final boolean objectsKeysCanBeEncoded;
+    private final TokenEventListener tokenEventListener;
     private final TokenEventListener stringListener = new JsonEventStrictParser.ScalarListener(TokenTypes.STRING_TOKEN);
     private final TokenEventListener floatListener = new JsonEventStrictParser.ScalarListener(TokenTypes.FLOAT_TOKEN);
     private final TokenEventListener intListener = new JsonEventStrictParser.ScalarListener(TokenTypes.INT_TOKEN);
@@ -120,8 +118,7 @@ public abstract class JsonEventAbstractParser implements JsonEventParser, JsonPa
             stackIndex--;
         }
     };
-
-
+    private TokenList tokenList;
 
 
     public JsonEventAbstractParser(boolean objectsKeysCanBeEncoded, TokenEventListener tokenEventListener) {
@@ -129,10 +126,27 @@ public abstract class JsonEventAbstractParser implements JsonEventParser, JsonPa
         this.tokenEventListener = tokenEventListener;
     }
 
+    @Override
+    public List<Token> scan(final CharSource source) {
+        tokenList = new TokenList();
+        this.parseWithEvents(source, base);
+        return tokenList;
+    }
+
+    @Override
+    public TokenEventListener tokenEvents() {
+        return this.tokenEventListener;
+    }
+
+    @Override
+    public RootNode parse(CharSource source) {
+        return new RootNode((TokenList) scan(source), source, objectsKeysCanBeEncoded);
+    }
 
     class ScalarListener implements TokenEventListener {
         final int tokenType;
         int startIndex;
+
         ScalarListener(final int tokenType) {
             this.tokenType = tokenType;
         }
@@ -185,23 +199,5 @@ public abstract class JsonEventAbstractParser implements JsonEventParser, JsonPa
                     ", tokenListIndex=" + tokenListIndex +
                     '}';
         }
-    }
-
-
-    @Override
-    public List<Token> scan(final CharSource source) {
-        tokenList = new TokenList();
-        this.parseWithEvents(source, base);
-        return tokenList;
-    }
-
-    @Override
-    public TokenEventListener tokenEvents() {
-        return this.tokenEventListener;
-    }
-
-    @Override
-    public RootNode parse(CharSource source) {
-        return new RootNode((TokenList) scan(source), source, objectsKeysCanBeEncoded);
     }
 }

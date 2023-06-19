@@ -126,7 +126,7 @@ public class BooleanNode implements ScalarNode {
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o instanceof  BooleanNode) {
+        if (o instanceof BooleanNode) {
             BooleanNode that = (BooleanNode) o;
             return value == that.value;
         } else if (o instanceof Boolean) {

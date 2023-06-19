@@ -24,6 +24,13 @@ import io.nats.jparse.token.Token;
 import java.util.Collections;
 import java.util.List;
 
+
+/**
+ * Represents a index element of a JSON Path expression.
+ * <p>
+ * Represents an index path node in the parse tree which also implements
+ * the ScalarNode, CharSequence, and PathElement interfaces.
+ */
 public class IndexPathNode extends Number implements ScalarNode, CharSequence, PathElement {
 
     private final Token token;
@@ -32,56 +39,115 @@ public class IndexPathNode extends Number implements ScalarNode, CharSequence, P
     private boolean hashCodeSet;
     private int hashCode;
 
+    /**
+     * Constructor for IndexPathNode.
+     *
+     * @param token  The token representing the node.
+     * @param source The source of characters to be parsed.
+     */
     public IndexPathNode(Token token, CharSource source) {
         this.token = token;
         this.source = source;
     }
 
+    // Overridden Number class methods with their appropriate Javadoc comments
+
+    /**
+     * Returns the value of this node as an int.
+     *
+     * @return The int value represented by this object.
+     */
     @Override
     public int intValue() {
         return source.getInt(token.startIndex, token.endIndex);
     }
 
+    /**
+     * Returns the value of this node as a long.
+     *
+     * @return The long value represented by this object.
+     */
     @Override
     public long longValue() {
         return intValue();
     }
 
+    /**
+     * Returns the value of this node as a float.
+     *
+     * @return The float value represented by this object.
+     */
     @Override
     public float floatValue() {
         return intValue();
     }
 
+    /**
+     * Returns the value of this node as a double.
+     *
+     * @return The double value represented by this object.
+     */
     @Override
     public double doubleValue() {
         return intValue();
     }
 
+    /**
+     * Returns the type of the node.
+     *
+     * @return The type of the node.
+     */
     @Override
     public NodeType type() {
         return NodeType.PATH_INDEX;
     }
 
+    /**
+     * Returns the value of the node.
+     *
+     * @return The value of the node.
+     */
     @Override
     public Object value() {
         return intValue();
     }
 
+    /**
+     * Returns the list of tokens representing the node.
+     *
+     * @return The list of tokens representing the node.
+     */
     @Override
     public List<Token> tokens() {
         return Collections.singletonList(this.token);
     }
 
+    /**
+     * Returns the root element token.
+     *
+     * @return The root element token.
+     */
     @Override
     public Token rootElementToken() {
         return token;
     }
 
+    /**
+     * Returns the char source of the node.
+     *
+     * @return The char source of the node.
+     */
     @Override
     public CharSource charSource() {
         return source;
     }
 
+    /**
+     * Indicates whether some other object is equal to this one.
+     *
+     * @param o The reference object with which to compare.
+     * @return true if this object is the same as the obj argument; false otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -93,6 +159,11 @@ public class IndexPathNode extends Number implements ScalarNode, CharSequence, P
         }
     }
 
+    /**
+     * Returns a hash code value for the object.
+     *
+     * @return a hash code value for this object.
+     */
     @Override
     public int hashCode() {
         if (hashCodeSet) {
@@ -103,12 +174,21 @@ public class IndexPathNode extends Number implements ScalarNode, CharSequence, P
         return hashCode;
     }
 
-
+    /**
+     * Indicates whether the node is an index.
+     *
+     * @return true if the node is an index; false otherwise.
+     */
     @Override
     public boolean isIndex() {
         return true;
     }
 
+    /**
+     * Indicates whether the node is a key.
+     *
+     * @return true if the node is a key; false otherwise.
+     */
     @Override
     public boolean isKey() {
         return false;

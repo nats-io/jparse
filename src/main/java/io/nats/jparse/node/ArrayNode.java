@@ -93,7 +93,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
     }
 
     public Optional<Node> lookupNodeAt(int index) {
-       return Optional.ofNullable(getNodeAt(index));
+        return Optional.ofNullable(getNodeAt(index));
     }
 
     public long getLong(int index) {

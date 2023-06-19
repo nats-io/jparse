@@ -47,6 +47,7 @@ public interface Node extends CharSequence {
     CharSource charSource();
 
     boolean isScalar();
+
     boolean isCollection();
 
     default ScalarNode asScalar() {

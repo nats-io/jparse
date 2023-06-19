@@ -50,7 +50,7 @@ public class Path {
     /**
      * Finds the node at the specified path in the input `Node`.
      *
-     * @param path The path to search for
+     * @param path     The path to search for
      * @param rootNode The input `Node`
      * @return The node at the specified path
      */
@@ -61,11 +61,10 @@ public class Path {
     /**
      * Finds the node at the specified path in the input `Node`.
      *
-     * @see Node
-     *
-     * @param path The `PathNode` representing the path to search for
+     * @param path     The `PathNode` representing the path to search for
      * @param rootNode The input `Node`
      * @return The node at the specified path
+     * @see Node
      */
     public static Node atPath(final PathNode path, final Node rootNode) {
         Iterator<PathElement> iterator = path.iterator();

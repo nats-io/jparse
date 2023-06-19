@@ -17,10 +17,10 @@ package io.nats.jparse.source.support;
 
 import io.nats.jparse.source.CharSource;
 
-public class PathException extends RuntimeException{
+public class PathException extends RuntimeException {
 
-    public PathException(String whileDoing, String message, CharSource source,  int index) {
-       super(String.format("Unexpected character while %, Error is '%s'. \n Details \n %s", whileDoing, message, source.errorDetails(message, index, source.getChartAt(index))));
+    public PathException(String whileDoing, String message, CharSource source, int index) {
+        super(String.format("Unexpected character while %, Error is '%s'. \n Details \n %s", whileDoing, message, source.errorDetails(message, index, source.getChartAt(index))));
     }
 
 

@@ -17,11 +17,11 @@ package io.nats.jparse.parser.event;
 
 
 import io.nats.jparse.node.support.NumberParseResult;
+import io.nats.jparse.node.support.ParseConstants;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.source.support.UnexpectedCharacterException;
 import io.nats.jparse.token.TokenEventListener;
 import io.nats.jparse.token.TokenTypes;
-import io.nats.jparse.node.support.ParseConstants;
 
 
 public class JsonEventStrictParser extends JsonEventAbstractParser {
@@ -40,51 +40,51 @@ public class JsonEventStrictParser extends JsonEventAbstractParser {
         int ch = source.nextSkipWhiteSpace();
 
 
-            switch (ch) {
-                case ParseConstants.OBJECT_START_TOKEN:
-                    parseObject(source, event);
-                    break;
+        switch (ch) {
+            case ParseConstants.OBJECT_START_TOKEN:
+                parseObject(source, event);
+                break;
 
-                case ParseConstants.ARRAY_START_TOKEN:
-                    parseArray(source, event);
-                    break;
+            case ParseConstants.ARRAY_START_TOKEN:
+                parseArray(source, event);
+                break;
 
-                case ParseConstants.TRUE_BOOLEAN_START:
-                    parseTrue(source, event);
-                    break;
+            case ParseConstants.TRUE_BOOLEAN_START:
+                parseTrue(source, event);
+                break;
 
-                case ParseConstants.FALSE_BOOLEAN_START:
-                    parseFalse(source, event);
-                    break;
+            case ParseConstants.FALSE_BOOLEAN_START:
+                parseFalse(source, event);
+                break;
 
-                case ParseConstants.NULL_START:
-                    parseNull(source, event);
-                    break;
+            case ParseConstants.NULL_START:
+                parseNull(source, event);
+                break;
 
-                case ParseConstants.STRING_START_TOKEN:
-                    parseString(source, event);
-                    break;
+            case ParseConstants.STRING_START_TOKEN:
+                parseString(source, event);
+                break;
 
-                case ParseConstants.NUM_0:
-                case ParseConstants.NUM_1:
-                case ParseConstants.NUM_2:
-                case ParseConstants.NUM_3:
-                case ParseConstants.NUM_4:
-                case ParseConstants.NUM_5:
-                case ParseConstants.NUM_6:
-                case ParseConstants.NUM_7:
-                case ParseConstants.NUM_8:
-                case ParseConstants.NUM_9:
-                case ParseConstants.MINUS:
-                case ParseConstants.PLUS:
-                    parseNumber(source, event);
-                    break;
+            case ParseConstants.NUM_0:
+            case ParseConstants.NUM_1:
+            case ParseConstants.NUM_2:
+            case ParseConstants.NUM_3:
+            case ParseConstants.NUM_4:
+            case ParseConstants.NUM_5:
+            case ParseConstants.NUM_6:
+            case ParseConstants.NUM_7:
+            case ParseConstants.NUM_8:
+            case ParseConstants.NUM_9:
+            case ParseConstants.MINUS:
+            case ParseConstants.PLUS:
+                parseNumber(source, event);
+                break;
 
-                default:
-                    throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character", source, (char) ch);
-            }
+            default:
+                throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character", source, (char) ch);
+        }
 
-            source.checkForJunk();
+        source.checkForJunk();
 
 
     }
@@ -134,54 +134,54 @@ public class JsonEventStrictParser extends JsonEventAbstractParser {
                 event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
                 parseArray(source, event);
                 event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    break;
+                break;
 
-                case ParseConstants.TRUE_BOOLEAN_START:
-                    event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    parseTrue(source, event);
-                    event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    break;
+            case ParseConstants.TRUE_BOOLEAN_START:
+                event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                parseTrue(source, event);
+                event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                break;
 
-                case ParseConstants.FALSE_BOOLEAN_START:
-                    event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    parseFalse(source, event);
-                    event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    break;
+            case ParseConstants.FALSE_BOOLEAN_START:
+                event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                parseFalse(source, event);
+                event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                break;
 
-                case ParseConstants.NULL_START:
-                    event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    parseNull(source, event);
-                    event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    break;
+            case ParseConstants.NULL_START:
+                event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                parseNull(source, event);
+                event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                break;
 
-                case ParseConstants.STRING_START_TOKEN:
-                    event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    parseString(source, event);
-                    event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    break;
+            case ParseConstants.STRING_START_TOKEN:
+                event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                parseString(source, event);
+                event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                break;
 
-                case ParseConstants.NUM_0:
-                case ParseConstants.NUM_1:
-                case ParseConstants.NUM_2:
-                case ParseConstants.NUM_3:
-                case ParseConstants.NUM_4:
-                case ParseConstants.NUM_5:
-                case ParseConstants.NUM_6:
-                case ParseConstants.NUM_7:
-                case ParseConstants.NUM_8:
-                case ParseConstants.NUM_9:
-                case ParseConstants.MINUS:
-                case ParseConstants.PLUS:
-                    event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    parseNumber(source, event);
-                    event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    if (source.getCurrentChar() == ParseConstants.ARRAY_END_TOKEN || source.getCurrentChar() == ParseConstants.ARRAY_SEP) {
-                        if (source.getCurrentChar() == ParseConstants.ARRAY_END_TOKEN) {
-                            source.next();
-                            return true;
-                        }
+            case ParseConstants.NUM_0:
+            case ParseConstants.NUM_1:
+            case ParseConstants.NUM_2:
+            case ParseConstants.NUM_3:
+            case ParseConstants.NUM_4:
+            case ParseConstants.NUM_5:
+            case ParseConstants.NUM_6:
+            case ParseConstants.NUM_7:
+            case ParseConstants.NUM_8:
+            case ParseConstants.NUM_9:
+            case ParseConstants.MINUS:
+            case ParseConstants.PLUS:
+                event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                parseNumber(source, event);
+                event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                if (source.getCurrentChar() == ParseConstants.ARRAY_END_TOKEN || source.getCurrentChar() == ParseConstants.ARRAY_SEP) {
+                    if (source.getCurrentChar() == ParseConstants.ARRAY_END_TOKEN) {
+                        source.next();
+                        return true;
                     }
-                    break;
+                }
+                break;
 
             case ParseConstants.ARRAY_END_TOKEN:
                 if (startChar == ParseConstants.ARRAY_SEP) {

@@ -25,6 +25,16 @@ import io.nats.jparse.token.TokenTypes;
 
 import java.util.List;
 
+/**
+ * The `JsonFuncParser` class implements the `JsonParser` interface using a function table to define the
+ * behavior of the parser. The function table is an array of `ParseFunction` objects, one for each possible
+ * character value. The function table is used to determine which function to call when parsing a particular
+ * character. The function table can be customized by subclassing this class and overriding the `initFuncTable`
+ * method. The function table can be configured via the `JsonParserBuilder` and the JsonFuncParser can be created with a
+ * `JsonParserBuilder`.
+ *
+ * @see io.nats.jparse.parser.JsonParserBuilder
+ */
 public class JsonFuncParser implements JsonParser {
 
     private final boolean objectsKeysCanBeEncoded;
@@ -34,6 +44,9 @@ public class JsonFuncParser implements JsonParser {
     private final ParseFunction defaultFunc;
 
 
+    /**
+     * Create a new `JsonFuncParser` with the default function table.
+     */
     public JsonFuncParser(final boolean objectsKeysCanBeEncoded, final ParseFunction[] funcTable,
                           final ParseFunction defaultFunc, final ParsePartFunction parseKey) {
 
@@ -56,11 +69,23 @@ public class JsonFuncParser implements JsonParser {
 
     }
 
+    /**
+     * Scan a character source and return a list of tokens representing the JSON string.
+     *
+     * @param source The character source to scan
+     * @return A list of tokens representing the JSON
+     */
     @Override
     public List<Token> scan(final CharSource source) {
-         return scan(source, new TokenList());
+        return scan(source, new TokenList());
     }
 
+    /**
+     * Parse a character source and return a root node representing the parsed JSON.
+     *
+     * @param source The character source to parse
+     * @return A root node representing the parsed JSON
+     */
     @Override
     public RootNode parse(CharSource source) {
         return new RootNode((TokenList) scan(source), source, objectsKeysCanBeEncoded);
@@ -80,7 +105,7 @@ public class JsonFuncParser implements JsonParser {
         }
     }
 
-    public  void parseArray(final CharSource source, final TokenList tokens) {
+    private void parseArray(final CharSource source, final TokenList tokens) {
         final int startSourceIndex = source.getIndex();
         final int tokenListIndex = tokens.getIndex();
         tokens.placeHolder();
@@ -94,7 +119,7 @@ public class JsonFuncParser implements JsonParser {
         tokens.set(tokenListIndex, arrayToken);
     }
 
-    public  boolean parseArrayItem(CharSource source, TokenList tokens) {
+    private boolean parseArrayItem(CharSource source, TokenList tokens) {
         char ch = (char) source.nextSkipWhiteSpace();
 
         forLoop:
@@ -111,8 +136,8 @@ public class JsonFuncParser implements JsonParser {
                     return false;
 
                 default:
-                   doParse(source, tokens, ch);
-                   break forLoop;
+                    doParse(source, tokens, ch);
+                    break forLoop;
             }
         }
 
@@ -124,7 +149,7 @@ public class JsonFuncParser implements JsonParser {
     }
 
 
-    public  boolean parseValue(final CharSource source, TokenList tokens) {
+    private boolean parseValue(final CharSource source, TokenList tokens) {
         int ch = source.nextSkipWhiteSpace();
         final int startIndex = source.getIndex();
         final int tokenListIndex = tokens.getIndex();
@@ -156,7 +181,7 @@ public class JsonFuncParser implements JsonParser {
     }
 
 
-    public  void  parseObject(final CharSource source, TokenList tokens) {
+    private void parseObject(final CharSource source, TokenList tokens) {
         final int startSourceIndex = source.getIndex();
         final int tokenListIndex = tokens.getIndex();
         tokens.placeHolder();
@@ -165,7 +190,7 @@ public class JsonFuncParser implements JsonParser {
         while (!done) {
             done = parseKey.parse(source, tokens);
             if (!done)
-              done = parseValue(source, tokens);
+                done = parseValue(source, tokens);
         }
         source.next();
         tokens.set(tokenListIndex, new Token(startSourceIndex, source.getIndex(), TokenTypes.OBJECT_TOKEN));

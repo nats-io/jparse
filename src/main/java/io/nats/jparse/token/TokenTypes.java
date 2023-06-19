@@ -67,7 +67,7 @@ public interface TokenTypes {
             case NULL_TOKEN:
                 return "Null";
             default:
-                return "" + tokenType;
+                return String.valueOf(tokenType);
         }
     }
 }

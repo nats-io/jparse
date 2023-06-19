@@ -73,8 +73,8 @@ public interface ParseConstants {
     int EXPONENT_MARKER = 'e';
     int EXPONENT_MARKER2 = 'E';
 
-    String  MIN_INT_STR = String.valueOf( Integer.MIN_VALUE );
-    String  MAX_INT_STR = String.valueOf( Integer.MAX_VALUE );
+    String MIN_INT_STR = String.valueOf(Integer.MIN_VALUE);
+    String MAX_INT_STR = String.valueOf(Integer.MAX_VALUE);
 
     String MIN_LONG_STR = String.valueOf(Long.MIN_VALUE);
     String MAX_LONG_STR = String.valueOf(Long.MAX_VALUE);

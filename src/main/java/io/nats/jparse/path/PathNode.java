@@ -15,7 +15,6 @@
  */
 package io.nats.jparse.path;
 
-import io.nats.jparse.node.ArrayNode;
 import io.nats.jparse.node.CollectionNode;
 import io.nats.jparse.node.Node;
 import io.nats.jparse.node.NodeType;
@@ -48,7 +47,7 @@ public class PathNode extends AbstractList<PathElement> implements CollectionNod
     @Override
     public List<List<Token>> childrenTokens() {
         if (childrenTokens == null) {
-            childrenTokens =  Arrays.stream(tokens.toArray()).map(Collections::singletonList).collect(Collectors.toList());
+            childrenTokens = Arrays.stream(tokens.toArray()).map(Collections::singletonList).collect(Collectors.toList());
         }
         return childrenTokens;
     }

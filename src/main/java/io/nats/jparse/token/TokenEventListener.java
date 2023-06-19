@@ -29,22 +29,22 @@ public interface TokenEventListener {
     /**
      * Called when a token is started during parsing.
      * The tokenId refers to its token type TokenTypes.
-     * @see TokenTypes
      *
      * @param tokenId The ID of the token being started (TokenTypes)
-     * @param index The index of the token within the source
-     * @param source The character source being parsed
+     * @param index   The index of the token within the source
+     * @param source  The character source being parsed
+     * @see TokenTypes
      */
     void start(int tokenId, int index, CharSource source);
 
     /**
      * Called when a token is ended during parsing.
      * The tokenId refers to its token type TokenTypes.
-     * @see TokenTypes
      *
      * @param tokenId The ID of the token being ended (TokenTypes)
-     * @param index The index of the token within the source
-     * @param source The character source being parsed
+     * @param index   The index of the token within the source
+     * @param source  The character source being parsed
+     * @see TokenTypes
      */
     void end(int tokenId, int index, CharSource source);
 }

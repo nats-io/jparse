@@ -25,8 +25,6 @@ import io.nats.jparse.token.TokenTypes;
 public class JsonEventFastParser extends JsonEventAbstractParser {
 
 
-
-
     public JsonEventFastParser(boolean objectsKeysCanBeEncoded, TokenEventListener tokenEventListener) {
         super(objectsKeysCanBeEncoded, tokenEventListener);
     }
@@ -37,49 +35,49 @@ public class JsonEventFastParser extends JsonEventAbstractParser {
         int ch = source.nextSkipWhiteSpace();
 
 
-            switch (ch) {
-                case OBJECT_START_TOKEN:
-                    parseObject(source, event);
-                    break;
+        switch (ch) {
+            case OBJECT_START_TOKEN:
+                parseObject(source, event);
+                break;
 
-                case ARRAY_START_TOKEN:
-                    parseArray(source, event);
-                    break;
+            case ARRAY_START_TOKEN:
+                parseArray(source, event);
+                break;
 
-                case TRUE_BOOLEAN_START:
-                    parseTrue(source, event);
-                    break;
+            case TRUE_BOOLEAN_START:
+                parseTrue(source, event);
+                break;
 
-                case FALSE_BOOLEAN_START:
-                    parseFalse(source, event);
-                    break;
+            case FALSE_BOOLEAN_START:
+                parseFalse(source, event);
+                break;
 
-                case NULL_START:
-                    parseNull(source, event);
-                    break;
+            case NULL_START:
+                parseNull(source, event);
+                break;
 
-                case STRING_START_TOKEN:
-                    parseString(source, event);
-                    break;
+            case STRING_START_TOKEN:
+                parseString(source, event);
+                break;
 
-                case NUM_0:
-                case NUM_1:
-                case NUM_2:
-                case NUM_3:
-                case NUM_4:
-                case NUM_5:
-                case NUM_6:
-                case NUM_7:
-                case NUM_8:
-                case NUM_9:
-                case MINUS:
-                case PLUS:
-                    parseNumber(source, event);
-                    break;
+            case NUM_0:
+            case NUM_1:
+            case NUM_2:
+            case NUM_3:
+            case NUM_4:
+            case NUM_5:
+            case NUM_6:
+            case NUM_7:
+            case NUM_8:
+            case NUM_9:
+            case MINUS:
+            case PLUS:
+                parseNumber(source, event);
+                break;
 
-                default:
-                    throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character", source, (char) ch);
-            }
+            default:
+                throw new UnexpectedCharacterException("Scanning JSON", "Unexpected character", source, (char) ch);
+        }
 
     }
 
@@ -127,54 +125,54 @@ public class JsonEventFastParser extends JsonEventAbstractParser {
                 event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
                 parseArray(source, event);
                 event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    break;
+                break;
 
-                case TRUE_BOOLEAN_START:
-                    event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    parseTrue(source, event);
-                    event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    break;
+            case TRUE_BOOLEAN_START:
+                event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                parseTrue(source, event);
+                event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                break;
 
-                case FALSE_BOOLEAN_START:
-                    event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    parseFalse(source, event);
-                    event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    break;
+            case FALSE_BOOLEAN_START:
+                event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                parseFalse(source, event);
+                event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                break;
 
-                case NULL_START:
-                    event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    parseNull(source, event);
-                    event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    break;
+            case NULL_START:
+                event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                parseNull(source, event);
+                event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                break;
 
-                case STRING_START_TOKEN:
-                    event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    parseString(source, event);
-                    event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    break;
+            case STRING_START_TOKEN:
+                event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                parseString(source, event);
+                event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                break;
 
-                case NUM_0:
-                case NUM_1:
-                case NUM_2:
-                case NUM_3:
-                case NUM_4:
-                case NUM_5:
-                case NUM_6:
-                case NUM_7:
-                case NUM_8:
-                case NUM_9:
-                case MINUS:
-                case PLUS:
-                    event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    parseNumber(source, event);
-                    event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
-                    if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == ARRAY_SEP) {
-                        if (source.getCurrentChar() == ARRAY_END_TOKEN) {
-                            source.next();
-                            return true;
-                        }
+            case NUM_0:
+            case NUM_1:
+            case NUM_2:
+            case NUM_3:
+            case NUM_4:
+            case NUM_5:
+            case NUM_6:
+            case NUM_7:
+            case NUM_8:
+            case NUM_9:
+            case MINUS:
+            case PLUS:
+                event.start(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                parseNumber(source, event);
+                event.end(TokenTypes.ARRAY_ITEM_TOKEN, source.getIndex(), source);
+                if (source.getCurrentChar() == ARRAY_END_TOKEN || source.getCurrentChar() == ARRAY_SEP) {
+                    if (source.getCurrentChar() == ARRAY_END_TOKEN) {
+                        source.next();
+                        return true;
                     }
-                    break;
+                }
+                break;
 
             case ARRAY_END_TOKEN:
                 if (startChar == ARRAY_SEP) {

@@ -17,16 +17,42 @@ package io.nats.jparse.path;
 
 import io.nats.jparse.node.ScalarNode;
 
+/**
+ * An interface for representing elements of a JSON Path expression.
+ *
+ * <p>Implementing classes must provide methods for determining whether an element is an index or a key, as well as
+ * methods for converting an element to its index or key representation.</p>
+ */
 public interface PathElement extends ScalarNode {
 
+    /**
+     * Determines whether this element is an index.
+     *
+     * @return `true` if this element is an index, `false` otherwise
+     */
     boolean isIndex();
 
+    /**
+     * Determines whether this element is a key.
+     *
+     * @return `true` if this element is a key, `false` otherwise
+     */
     boolean isKey();
 
+    /**
+     * Returns this element as an index.
+     *
+     * @return this element as an `IndexPathNode`
+     */
     default IndexPathNode asIndex() {
         return (IndexPathNode) this;
     }
 
+    /**
+     * Returns this element as a key.
+     *
+     * @return this element as a `KeyPathNode`
+     */
     default KeyPathNode asKey() {
         return (KeyPathNode) this;
     }

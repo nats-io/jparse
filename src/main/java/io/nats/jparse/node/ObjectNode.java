@@ -24,7 +24,6 @@ import io.nats.jparse.token.TokenTypes;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ObjectNode extends AbstractMap<CharSequence, Node> implements CollectionNode {
@@ -43,7 +42,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
 
     public ObjectNode(TokenSubList tokens, CharSource source, boolean objectsKeysCanBeEncoded) {
 
-        this.tokens =  tokens;
+        this.tokens = tokens;
         this.source = source;
         this.rootToken = tokens.get(0);
         this.objectsKeysCanBeEncoded = objectsKeysCanBeEncoded;
@@ -109,7 +108,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
     }
 
     public boolean containsKey(Object key) {
-       return  lookupElement((CharSequence) key) != null;
+        return lookupElement((CharSequence) key) != null;
     }
 
     @Override
@@ -129,7 +128,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
 
     @Override
     public Collection<Node> values() {
-         return keys().stream().map(this::lookupElement).collect(Collectors.toList());
+        return keys().stream().map(this::lookupElement).collect(Collectors.toList());
     }
 
     @Override
@@ -186,7 +185,7 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof  ObjectNode)) return false;
+        if (!(o instanceof ObjectNode)) return false;
 
         final ObjectNode other = (ObjectNode) o;
 
@@ -355,7 +354,6 @@ public class ObjectNode extends AbstractMap<CharSequence, Node> implements Colle
         }
         return false;
     }
-
 
 
     private List<CharSequence> keys() {

@@ -6,7 +6,6 @@ public class ParseFloat {
             1e8f, 1e9f, 1e10f, 1e11f, 1e12f, 1e13f, 1e14f, 1e15f, 1e16f, 1e17f, 1e18f};
 
 
-
     public static float parseFloat(char[] chars, int startIndex, int endIndex) {
         boolean negative = false;
         int i = startIndex;
@@ -36,10 +35,10 @@ public class ParseFloat {
                     i++;
                     break;
                 case '.':
-                    result =  parseFractionPart(i + 1, endIndex, chars, result);
+                    result = parseFractionPart(i + 1, endIndex, chars, result);
                     break loop;
                 case 'e':
-                    result = parseExponent(i+1, endIndex, chars, result);
+                    result = parseExponent(i + 1, endIndex, chars, result);
                     break loop;
                 default:
                     throw new UnexpectedCharacterException("parsing float", "Illegal character", ch, i);
@@ -90,7 +89,7 @@ public class ParseFloat {
         boolean exponentNegative = false;
         int exponent = 0;
 
-        char sign =  chars[i];
+        char sign = chars[i];
 
         switch (sign) {
             case '-':
