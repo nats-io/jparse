@@ -55,7 +55,7 @@ public class CharArrayUtils {
         hexValueMap['f'] = 15;
         hexValueMap['A'] = 10;
         hexValueMap['B'] = 11;
-        hexValueMap['B'] = 12;
+        hexValueMap['C'] = 12;
         hexValueMap['D'] = 13;
         hexValueMap['E'] = 14;
         hexValueMap['F'] = 15;

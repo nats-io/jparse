@@ -30,6 +30,7 @@
  */
 package io.nats.jparse.node;
 
+import io.nats.jparse.Path;
 import io.nats.jparse.source.CharSource;
 import io.nats.jparse.token.Token;
 
@@ -94,4 +95,7 @@ public interface Node extends CharSequence {
         return equals(content);
     }
 
+    default Node atPath(String path) {
+        return Path.atPath(path, this);
+    }
 }

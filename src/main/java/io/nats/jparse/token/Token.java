@@ -19,6 +19,13 @@ import io.nats.jparse.source.CharSource;
 
 import java.util.Objects;
 
+/**
+ * The Token class represents a token that has been parsed from a JSON string. It includes the start and end indices
+ * of the token within the source, as well as its type (@see TokenTypes). The class provides methods for getting the
+ * string representation of the token, as well as its length and a string representation that includes its start
+ * and end indices and type. Additionally, the class includes equals and hashCode methods for comparing tokens.
+ * @see TokenTypes
+ */
 public class Token {
 
     public final int startIndex;

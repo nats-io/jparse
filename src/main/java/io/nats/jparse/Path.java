@@ -25,16 +25,48 @@ import io.nats.jparse.source.support.PathException;
 
 import java.util.Iterator;
 
+
+/**
+ * The `Path` class provides utility methods for working with JSON paths. It includes methods for parsing
+ * JSON paths, looking up nodes at specified paths, and converting paths to `PathNode` objects.
+ *
+ * @see Node
+ * @see Json
+ * @see PathNode
+ */
 public class Path {
 
+    /**
+     * Finds the node at the specified path in the input JSON string.
+     *
+     * @param path The path to search for
+     * @param json The input JSON string
+     * @return The node at the specified path
+     */
     public static Node atPath(final String path, final String json) {
         return atPath(path, Json.toRootNode(json));
     }
 
+    /**
+     * Finds the node at the specified path in the input `Node`.
+     *
+     * @param path The path to search for
+     * @param rootNode The input `Node`
+     * @return The node at the specified path
+     */
     public static Node atPath(final String path, final Node rootNode) {
         return atPath(toPath(path), rootNode);
     }
 
+    /**
+     * Finds the node at the specified path in the input `Node`.
+     *
+     * @see Node
+     *
+     * @param path The `PathNode` representing the path to search for
+     * @param rootNode The input `Node`
+     * @return The node at the specified path
+     */
     public static Node atPath(final PathNode path, final Node rootNode) {
         Iterator<PathElement> iterator = path.iterator();
         Node node = rootNode;
@@ -72,6 +104,12 @@ public class Path {
 
     }
 
+    /**
+     * Converts the input path string to a `PathNode` object.
+     *
+     * @param path The input path string
+     * @return The `PathNode` representing the input path string
+     */
     public static PathNode toPath(final String path) {
         final PathParser pathParser = new PathParser();
         return pathParser.parse(path).getPathNode();

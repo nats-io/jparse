@@ -15,6 +15,12 @@
  */
 package io.nats.jparse.node.support;
 
+/**
+ * The ParseConstants class provides a Java interface that defines constants used for parsing JSON strings.
+ * It includes a number of integer constants, such as tokens for object and array delimiters, as well as
+ * string constants for the minimum and maximum values of integers and longs. The interface also includes
+ * a number of character constants, such as those for whitespace and various characters used in the JSON format.
+ */
 public interface ParseConstants {
 
     int NEST_LEVEL = 2_000;

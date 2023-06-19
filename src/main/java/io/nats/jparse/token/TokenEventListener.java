@@ -17,10 +17,34 @@ package io.nats.jparse.token;
 
 import io.nats.jparse.source.CharSource;
 
+/**
+ * The TokenEventListener interface defines methods for handling events related to JSON tokens during parsing.
+ * It includes methods for handling start and end events, which are called when a token is started or ended
+ * during parsing. The interface includes parameters for the ID and index of the token, as well as the character
+ * source being parsed.
+ *
+ * @see TokenTypes
+ */
 public interface TokenEventListener {
-
+    /**
+     * Called when a token is started during parsing.
+     * The tokenId refers to its token type TokenTypes.
+     * @see TokenTypes
+     *
+     * @param tokenId The ID of the token being started (TokenTypes)
+     * @param index The index of the token within the source
+     * @param source The character source being parsed
+     */
     void start(int tokenId, int index, CharSource source);
 
+    /**
+     * Called when a token is ended during parsing.
+     * The tokenId refers to its token type TokenTypes.
+     * @see TokenTypes
+     *
+     * @param tokenId The ID of the token being ended (TokenTypes)
+     * @param index The index of the token within the source
+     * @param source The character source being parsed
+     */
     void end(int tokenId, int index, CharSource source);
-
 }
