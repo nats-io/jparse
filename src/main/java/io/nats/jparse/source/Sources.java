@@ -25,6 +25,45 @@ import java.nio.file.Paths;
 /**
  * The `Sources` class provides utility methods for creating `CharSource` objects from various input sources, such as strings,
  * byte arrays, files, input streams, and readers.
+ * <p>
+ * The `Sources` class provides a set of utility methods that allow you to create `CharSource` objects from various
+ * input sources. These sources include strings, byte arrays, files, input streams, and readers.
+ * </p>
+ * <p>
+ * The `charSeqSource` method creates a `CharSource` object from a `CharSequence`. If the `CharSequence` is an
+ * instance of `String`, it creates a `CharArrayCharSource` object with the `String` as input. Otherwise, it creates
+ * a `CharArrayCharSource` object with the `CharSequence` converted to a `String`.
+ * </p>
+ * <p>
+ * The `stringSource` method creates a `CharSource` object from a `String`. It does this by calling the `charSource`
+ * method with the `String` converted to a `char` array.
+ * </p>
+ * <p>
+ * The `byteSource` method creates a `CharSource` object from a byte array using a specified `Charset`. If a `Charset`
+ * is not specified, it defaults to the UTF-8 `Charset`.
+ * </p>
+ * <p>
+ * The `charSource` method creates a `CharSource` object from a `char` array. The `charSource` method has three
+ * overloaded versions. One version creates a `CharSource` object from a `char` array with no offset. Another version creates a `CharSource` object from a `char` array with a specified offset. The third version creates a `CharSource` object from a `char` array with a specified offset and end index.
+ * </p>
+ * <p>
+ * The `charBufferSource` method creates a `CharSource` object from a `CharBuffer` by calling the `charSeqSource`
+ * method with the `CharBuffer` as input.
+ * </p>
+ * <p>
+ * The `fileSource` method creates a `CharSource` object from a file. It has two overloaded versions, one of
+ * which allows you to specify a `Charset`. If a `Charset` is not specified, it defaults to the UTF-8 `Charset`.
+ * If there is an error reading the file, an `IllegalStateException` is thrown.
+ * </p>
+ * <p>
+ * The `inputStreamSource` method creates a `CharSource` object from an input stream. It has two overloaded versions,
+ * one of which allows you to specify a `Charset`. If a `Charset` is not specified, it defaults to the UTF-8 `Charset`.
+ * </p>
+ * <p>
+ * The `readerSource` method creates a `CharSource` object from a `Reader`. It does this by reading the `Reader`
+ * line by line and appending each line to a `StringBuilder`. The resulting `StringBuilder` is then used to create
+ * a `CharArrayCharSource` object. If there is an error reading the `Reader`, an `IllegalStateException` is thrown.
+ * </p>
  */
 public class Sources {
 
