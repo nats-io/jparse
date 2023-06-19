@@ -166,17 +166,21 @@ public class NumberNode extends Number implements ScalarNode, CharSequence {
     }
 
     public boolean isInteger() {
-        if (Objects.requireNonNull(elementType) == NodeType.INT) {
-            return source.isInteger(this.token.startIndex, this.token.endIndex);
+        switch (elementType) {
+            case INT:
+                return source.isInteger(this.token.startIndex, this.token.endIndex);
+            default:
+                return false;
         }
-        return false;
     }
 
     public boolean isLong() {
-        if (Objects.requireNonNull(elementType) == NodeType.INT) {
-            return !source.isInteger(this.token.startIndex, this.token.endIndex);
+        switch (elementType) {
+            case INT:
+                return !source.isInteger(this.token.startIndex, this.token.endIndex);
+            default:
+                return false;
         }
-        return false;
     }
 
 

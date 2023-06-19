@@ -567,17 +567,19 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
         char ch = 0;
 
         for (; i < length; i++) {
-            ch = data[i];
-            if (ch == STRING_END_TOKEN) {
-                index = i;
-                return i;
+           ch = data[i];
+            switch (ch) {
+                case STRING_END_TOKEN:
+                    index = i;
+                    return i;
+                default:
+                    if (ch >= SPACE_WS) {
+                        continue;
+                    }
+                    throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this,  ch, i);
             }
-            if (ch >= SPACE_WS) {
-                continue;
-            }
-            throw new UnexpectedCharacterException("Parsing JSON String", "Unexpected character while finding closing for String", this, ch, i);
         }
-        throw new UnexpectedCharacterException("Parsing JSON String", "Unable to find closing for String", this, ch, i);
+        throw new UnexpectedCharacterException("Parsing JSON String", "Unable to find closing for String", this,  ch, i);
     }
 
     @Override
