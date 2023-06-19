@@ -19,6 +19,8 @@ import io.nats.jparse.node.support.CharArrayUtils;
 import io.nats.jparse.node.support.NumberParseResult;
 import io.nats.jparse.node.support.ParseConstants;
 import io.nats.jparse.source.support.CharArraySegment;
+import io.nats.jparse.source.support.ParseDouble;
+import io.nats.jparse.source.support.ParseFloat;
 import io.nats.jparse.source.support.UnexpectedCharacterException;
 
 import java.math.BigDecimal;
@@ -28,57 +30,6 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
     private final static char[] MIN_INT_CHARS = MIN_INT_STR.toCharArray();
     private final static char[] MAX_INT_CHARS = MAX_INT_STR.toCharArray();
-    private static final double[] powersOf10 = {
-            1.0,
-            10.0,
-            100.0,
-            1_000.0,
-            10_000.0,
-            100_000.0,
-            1_000_000.0,
-            10_000_000.0,
-            100_000_000.0,
-            1_000_000_000.0,
-            10_000_000_000.0,
-            100_000_000_000.0,
-            1_000_000_000_000.0,
-            10_000_000_000_000.0,
-            100_000_000_000_000.0,
-            1_000_000_000_000_000.0,
-            10_000_000_000_000_000.0,
-            100_000_000_000_000_000.0,
-            1_000_000_000_000_000_000.0,
-            10_000_000_000_000_000_000.0,
-            100_000_000_000_000_000_000.0,
-            1_000_000_000_000_000_000_000.0,
-            10_000_000_000_000_000_000_000.0,
-            100_000_000_000_000_000_000_000.0,
-            1_000_000_000_000_000_000_000_000.0,
-            10_000_000_000_000_000_000_000_000.0,
-            100_000_000_000_000_000_000_000_000.0,
-            1_000_000_000_000_000_000_000_000_000.0,
-            10_000_000_000_000_000_000_000_000_000.0,
-            100_000_000_000_000_000_000_000_000_000.0,
-            1_000_000_000_000_000_000_000_000_000_000.0,
-            10_000_000_000_000_000_000_000_000_000_000.0,
-            100_000_000_000_000_000_000_000_000_000_000.0,
-            1_000_000_000_000_000_000_000_000_000_000_000.0,
-            10_000_000_000_000_000_000_000_000_000_000_000.0,
-            100_000_000_000_000_000_000_000_000_000_000_000.0,
-            1_000_000_000_000_000_000_000_000_000_000_000_000.0,
-            10_000_000_000_000_000_000_000_000_000_000_000_000.0,
-            100_000_000_000_000_000_000_000_000_000_000_000_000.0,
-            1_000_000_000_000_000_000_000_000_000_000_000_000_000.0,
-            10_000_000_000_000_000_000_000_000_000_000_000_000_000.0,
-            100_000_000_000_000_000_000_000_000_000_000_000_000_000.0,
-            1_000_000_000_000_000_000_000_000_000_000_000_000_000_000.0,
-            10_000_000_000_000_000_000_000_000_000_000_000_000_000_000.0,
-            100_000_000_000_000_000_000_000_000_000_000_000_000_000_000.0,
-            1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000.0,
-            10_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000.0,
-            100_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000.0,
-
-    };
     private final char[] data;
     private int index;
     private final int  sourceStartIndex;
@@ -463,9 +414,9 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     public int findEndOfEncodedStringFast() {
         int i = ++index;
         final char[] data = this.data;
-        final int length = data.length;
+        final int end = sourceEndIndex;
         boolean controlChar = false;
-        for (; i < length; i++) {
+        for (; i < end; i++) {
             char ch = data[i];
             switch (ch) {
                 case CONTROL_ESCAPE_TOKEN:
@@ -1108,96 +1059,12 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
     @Override
     public double getDouble(final int startIndex, final int endIndex) {
 
-        return getBigDecimal(startIndex, endIndex).doubleValue();
-//        final int offset = this.sourceStartIndex;
-//        int from = startIndex + offset;
-//        int to = endIndex + offset;
-//        int index = from;
-
-//
-//
-//        try {
-//            char[] buffer = data;
-//            final int length = endIndex - startIndex;
-//            double value = Double.NaN;
-//            boolean simple = true;
-//            int digitsPastPoint = 0;
-//            boolean negative = false;
-//            if (buffer[index] == MINUS) {
-//                index++;
-//                negative = true;
-//            }
-//            boolean foundDot = false;
-//            int indexOfExponent = -1;
-//            loop:
-//            for (; index < to; index++) {
-//                char ch = buffer[index];
-//
-//                switch (ch) {
-//                    case NUM_0:
-//                    case NUM_1:
-//                    case NUM_2:
-//                    case NUM_3:
-//                    case NUM_4:
-//                    case NUM_5:
-//                    case NUM_6:
-//                    case NUM_7:
-//                    case NUM_8:
-//                    case NUM_9:
-//                        if (foundDot) {
-//                            digitsPastPoint++;
-//                        }
-//                        break;
-//
-//                    case DECIMAL_POINT:
-//                        foundDot = true;
-//                        break;
-//
-//                    case EXPONENT_MARKER:
-//                    case EXPONENT_MARKER2:
-//                        simple = false;
-//                        indexOfExponent = index + 1;
-//                        break loop;
-//
-//                }
-//            }
-//
-//            final int powLength = powersOf10.length;
-//
-//            if (length >=  powLength ) {
-//                return Double.parseDouble(this.getString(from, to));
-//            }
-//
-//            if (!simple) {
-//                long lvalue = parseLongFromToIgnoreDot(from, index);
-//                int exp = getInt(indexOfExponent, to);
-//                double power =  powersOf10[digitsPastPoint];
-//                value = (lvalue / power);
-//                double pow = Math.pow(10, exp);
-//                value = value * pow;
-//                //return Double.parseDouble(this.getString(from, to));
-//            } else if (!foundDot) {
-//                value = getLong(from, index);
-//            } else {
-//                long lvalue = parseLongFromToIgnoreDot(from, index);
-//                double power = powersOf10[digitsPastPoint];
-//                value = lvalue / power;
-//            }
-//
-//            if (value == 0.0 && negative) {
-//                return -0.0;
-//            } else {
-//                return value;
-//            }
-//        } catch (Exception ex) {
-//            throw new UnexpectedCharacterException("Convert JSON number to Java double",
-//                    "Unable to parse " + getString(from, to), this,  this.getChartAt(from), from);
-//        }
+        return ParseDouble.parseDouble(data, startIndex + sourceStartIndex, endIndex + sourceStartIndex);
     }
 
     @Override
     public float getFloat(int from, int to) {
-        return (float) getDouble(from, to);
+        return ParseFloat.parseFloat(data, from + sourceStartIndex, to + sourceStartIndex);
     }
 
     @Override
@@ -1235,53 +1102,6 @@ public class CharArrayOffsetCharSource implements CharSource, ParseConstants {
 
     }
 
-    public long parseLongFromToIgnoreDot(int offset, int to) {
-
-
-        final char[] digitChars = this.data;
-
-        long num;
-        boolean negative = false;
-        char c = digitChars[offset];
-        if (c == MINUS) {
-            offset++;
-            negative = true;
-        }
-
-        c = digitChars[offset];
-        num = (c - NUM_0);
-        offset++;
-
-        loop:
-        for (; offset < to; offset++) {
-            c = digitChars[offset];
-            switch (c) {
-                case DECIMAL_POINT:
-                    break;
-                case NUM_0:
-                case NUM_1:
-                case NUM_2:
-                case NUM_3:
-                case NUM_4:
-                case NUM_5:
-                case NUM_6:
-                case NUM_7:
-                case NUM_8:
-                case NUM_9:
-                    num = (num * 10) + (c - NUM_0);
-                    break;
-
-
-                case EXPONENT_MARKER:
-                case EXPONENT_MARKER2:
-                    break loop;
-
-            }
-
-        }
-
-        return negative ? num * -1 : num;
-    }
 
     @Override
     public long getLong(final int startIndex, final int endIndex) {

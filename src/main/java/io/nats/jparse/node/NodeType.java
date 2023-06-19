@@ -29,6 +29,7 @@ public enum NodeType implements TokenTypes {
     NULL(NULL_TOKEN),
     PATH_KEY(PATH_KEY_TOKEN),
     PATH_INDEX(PATH_INDEX_TOKEN),
+    PATH(-1),
     OTHER(-2);
 
     private final int tokenType;

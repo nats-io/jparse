@@ -48,7 +48,7 @@ public class PathNode extends AbstractList<PathElement> implements CollectionNod
     @Override
     public List<List<Token>> childrenTokens() {
         if (childrenTokens == null) {
-            childrenTokens = NodeUtils.getChildrenTokens(tokens);
+            childrenTokens =  Arrays.stream(tokens.toArray()).map(Collections::singletonList).collect(Collectors.toList());
         }
         return childrenTokens;
     }
@@ -97,7 +97,7 @@ public class PathNode extends AbstractList<PathElement> implements CollectionNod
 
     @Override
     public NodeType type() {
-        return NodeType.ARRAY;
+        return NodeType.PATH;
     }
 
     @Override
@@ -124,7 +124,7 @@ public class PathNode extends AbstractList<PathElement> implements CollectionNod
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ArrayNode)) return false;
+        if (!(o instanceof PathNode)) return false;
 
         final PathNode other = (PathNode) o;
 

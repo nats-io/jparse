@@ -237,7 +237,7 @@ public class ArrayNode extends AbstractList<Node> implements CollectionNode {
         return getStringNode(index).toString();
     }
 
-    public ObjectNode getObject(int index) {
+    public ObjectNode getObjectNode(int index) {
         return (ObjectNode) getNodeAt(index);
     }
 

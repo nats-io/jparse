@@ -824,7 +824,7 @@ class JsonParserTest {
         final String json = "[ { 'h' : 'a' } ]";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
 
-        String hVal = jsonRoot.getArrayNode().getObject(0).getStringNode("h").toString();
+        String hVal = jsonRoot.getArrayNode().getObjectNode(0).getStringNode("h").toString();
         assertEquals("a", "a");
 
     }
@@ -836,7 +836,7 @@ class JsonParserTest {
         final String json = "[{'h':'a'}]";
         final RootNode jsonRoot = parser.parse(Sources.stringSource(json.replace("'", "\"")));
 
-        final ObjectNode object = jsonRoot.getArrayNode().getObject(0);
+        final ObjectNode object = jsonRoot.getArrayNode().getObjectNode(0);
 
         final StringNode h = object.getStringNode("h");
 

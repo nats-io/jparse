@@ -113,6 +113,7 @@ public class BenchMark {
 
             webXmlJsonData = Sources.fileSource(new File("./src/test/resources/json/webxml.json")).toString().trim();
             jsonData = webXmlJsonData;
+
         } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }

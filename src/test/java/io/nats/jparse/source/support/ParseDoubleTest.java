@@ -36,4 +36,39 @@ class ParseDoubleTest {
         char[] input3 = "1.23e4.5".toCharArray();
         assertThrows(UnexpectedCharacterException.class, () -> ParseDouble.parseDouble(input3, 0, input3.length));
     }
+
+    @Test
+    public void testParseDoubleWithIntegerPartOnly() {
+        char[] chars = {'1', '2', '3', '4', '5'};
+        double f = ParseDouble.parseDouble(chars, 0, chars.length);
+        assertEquals(Double.parseDouble(new String(chars)), f, 0.001f);
+    }
+
+    @Test
+    public void testParseDoubleWithFractionalPartOnly() {
+        char[] chars = {'.', '1', '2', '3', '4', '5'};
+        double f = ParseDouble.parseDouble(chars, 0, chars.length);
+        assertEquals(Double.parseDouble(new String(chars)), f, 0.001f);
+    }
+
+    @Test
+    public void testParseDoubleWithExponentOnly() {
+        char[] chars = {'1', 'e', '2'};
+        double f = ParseDouble.parseDouble(chars, 0, chars.length);
+        assertEquals(Double.parseDouble(new String(chars)), f, 0.001f);
+    }
+
+    @Test
+    public void testParseDoubleWithPositiveExponent() {
+        char[] chars = {'1', '2', '3', 'e', '4'};
+        double f = ParseDouble.parseDouble(chars, 0, chars.length);
+        assertEquals(Double.parseDouble(new String(chars)), f, 0.001f);
+    }
+
+    @Test
+    public void testParseDoubleWithNegativeExponent() {
+        char[] chars = {'1', '2', '3', 'e', '-', '4'};
+        double f = ParseDouble.parseDouble(chars, 0, chars.length);
+        assertEquals(Double.parseDouble(new String(chars)), f, 0.001f);
+    }
 }

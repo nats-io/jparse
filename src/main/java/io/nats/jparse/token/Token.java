@@ -17,6 +17,8 @@ package io.nats.jparse.token;
 
 import io.nats.jparse.source.CharSource;
 
+import java.util.Objects;
+
 public class Token {
 
     public final int startIndex;
@@ -48,5 +50,18 @@ public class Token {
                 ", endIndex=" + endIndex +
                 ", type=" + TokenTypes.getTypeName(type) + " " + type +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Token token = (Token) o;
+        return startIndex == token.startIndex && endIndex == token.endIndex && type == token.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startIndex, endIndex, type);
     }
 }
